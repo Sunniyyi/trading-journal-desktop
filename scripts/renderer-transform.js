@@ -80,6 +80,7 @@ function injectDesktopRuntime(source) {
   const injection = [
     '<script src="./desktop-performance.js"></script>',
     '<script type="module" src="./ui/bootstrap.js"></script>',
+    '<script type="module" src="./ui/stability-runtime.js"></script>',
     marker
   ].join('\n');
   return replaceOnce(source, marker, injection, 'desktop runtime injection');
@@ -91,7 +92,8 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/tokens.css">',
     '<link rel="stylesheet" href="./ui/shell.css">',
     '<link rel="stylesheet" href="./ui/components.css">',
-    '<link rel="stylesheet" href="./ui/workspaces.css">'
+    '<link rel="stylesheet" href="./ui/workspaces.css">',
+    '<link rel="stylesheet" href="./ui/stability.css">'
   ].join('\n');
   if (!source.includes(marker)) throw new Error('Renderer transform: </head> introuvable.');
   return source.replace(marker, links + '\n' + marker);

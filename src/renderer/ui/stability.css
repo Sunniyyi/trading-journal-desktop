@@ -1,0 +1,45 @@
+/* Trading Journal Desktop 2.1 — visual stability fixes */
+
+/* Use the actual Electron content height after resize/maximize. */
+body.tj-desktop-v2,#tjAppShell{height:var(--tj-viewport-height,100vh)}
+
+/* Keep inspector content fully reachable: height must include its own padding. */
+.tj-inspector-scroll{box-sizing:border-box}
+
+/* The tools popover is positioned from JS against its trigger. */
+.tj-tools-menu{right:auto;top:auto;max-width:calc(100vw - 24px);box-sizing:border-box}
+
+/* Avoid global hover transforms shifting legacy controls and table actions. */
+body.tj-desktop-v2 button:hover{transform:none!important}
+.tj-nav-button:hover,.tj-top-button:hover,.tj-action-card:hover,.tj-section-tab:hover,.tj-command-item:hover,.tj-inspector-link:hover,.tj-inspector-toolgrid button:hover{transform:none!important}
+
+/* Visible keyboard focus for the desktop shell without changing legacy form geometry. */
+body.tj-desktop-v2 :is(.tj-nav-button,.tj-top-button,.tj-sidebar-toggle,.tj-icon-button,.tj-status-action,.tj-tools-item,.tj-command-item,.tj-inspector-link,.tj-inspector-toolgrid button,.tj-action-card,.tj-section-tab):focus-visible,
+#tjGlobalSearch:focus-visible{outline:2px solid rgba(88,201,255,.72);outline-offset:2px}
+
+/* Prevent narrow-window workspaces from forcing horizontal overflow. */
+.tj-panel,.tj-kpi,.tj-workspace-frame,.tj-overview-main,.tj-journal-grid,.tj-bt-dashboard-grid,.tj-bt-trades-grid,.tj-bt-sims-grid{min-width:0}
+.tj-workspace img,.tj-workspace canvas{max-width:100%}
+
+@media(max-width:1280px){
+  .tj-inspector{pointer-events:none}
+  body.tj-inspector-open .tj-inspector{pointer-events:auto}
+  .tj-inspector-resizer{display:none}
+}
+
+@media(max-width:1180px){
+  .tj-stage{padding-inline:14px}
+  .tj-statusbar{margin-inline:10px}
+  .tj-workspace-strip{align-items:flex-start;flex-direction:column}
+  .tj-workspace-strip-right{justify-content:flex-start;width:100%}
+}
+
+@media(max-height:780px){
+  .tj-command-backdrop{padding-top:4vh}
+  .tj-command-list{max-height:52vh}
+  #tjFxrDrawer{bottom:62px;max-height:calc(100vh - 92px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+  #tjAppShell,.tj-inspector,.tj-session-progress>i,body.tj-desktop-v2 button{transition:none!important;scroll-behavior:auto!important}
+}

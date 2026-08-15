@@ -12,10 +12,12 @@ assert(!output.includes(CHART_CDN), 'Chart.js CDN should be replaced by the loca
 assert(output.includes(CHART_LOCAL), 'Local Chart.js path is missing.');
 assert(output.includes('./desktop-performance.js'), 'Desktop performance layer is missing.');
 assert(output.includes('./ui/bootstrap.js'), 'Desktop UI bootstrap is missing.');
+assert(output.includes('./ui/stability-runtime.js'), 'Desktop stability runtime is missing.');
 assert(output.includes('./ui/tokens.css'), 'Desktop design tokens are missing.');
 assert(output.includes('./ui/shell.css'), 'Desktop shell stylesheet is missing.');
 assert(output.includes('./ui/components.css'), 'Desktop component stylesheet is missing.');
 assert(output.includes('./ui/workspaces.css'), 'Desktop workspace stylesheet is missing.');
+assert(output.includes('./ui/stability.css'), 'Desktop stability stylesheet is missing.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
 
