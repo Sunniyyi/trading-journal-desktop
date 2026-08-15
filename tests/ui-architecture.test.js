@@ -44,11 +44,19 @@ for (const id of ['overview','journal','backtesting','scan','context','gate','di
   assert(config.includes(`id:'${id}'`), `Workspace missing from config: ${id}`);
 }
 const stability = fs.readFileSync(path.join(root, 'src/renderer/ui/stability.css'), 'utf8');
-for (const marker of ['.tj-inspector-scroll{box-sizing:border-box}','@media(max-width:1280px)','@media(prefers-reduced-motion:reduce)']) {
+for (const marker of [
+  '.tj-inspector-scroll{box-sizing:border-box}',
+  '.tj-workspace{box-sizing:border-box;padding-top:var(--tj-backup-offset,0)}',
+  '#settingsOverlay>div',
+  'body.tj-inspector-open .tj-overview-actions{grid-template-columns:1fr}',
+  '@media(max-width:1280px)',
+  '@media(prefers-reduced-motion:reduce)'
+]) {
   assert(stability.includes(marker), `Visual stability guard missing: ${marker}`);
 }
 const stabilityRuntime = fs.readFileSync(path.join(root, 'src/renderer/ui/stability-runtime.js'), 'utf8');
-for (const capability of ['positionToolsMenu','hardenCommandPalette','hardenViewportUnits']) {
+for (const capability of ['installChartReuseGuard','positionToolsMenu','hardenCommandPalette','hardenViewportUnits','hardenBackupSpacing']) {
   assert(stabilityRuntime.includes(capability), `Visual stability runtime capability missing: ${capability}`);
 }
+assert(stabilityRuntime.includes("existing.destroy()"), 'Chart reuse guard must destroy an existing chart before canvas reuse.');
 console.log('ui architecture OK');
