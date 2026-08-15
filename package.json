@@ -1,8 +1,8 @@
 {
   "name": "trading-journal-desktop",
   "productName": "Trading Journal",
-  "version": "2.1.2",
-  "description": "Trading Journal Desktop 2.1.2 — correctifs de stabilité graphique du workbench, base V206 compatible et FXReplay V21.",
+  "version": "2.1.3",
+  "description": "Trading Journal Desktop 2.1.3 — refonte corrective des layouts Journal, Backtesting, Scan TA, Contexte, Decision Gate et Discipline, base V206 compatible et FXReplay V21.",
   "author": "Noam",
   "license": "UNLICENSED",
   "repository": {
