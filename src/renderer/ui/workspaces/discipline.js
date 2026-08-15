@@ -16,8 +16,8 @@ export function buildDiscipline(){
   const header=el('div','tj-discipline-header-cards');
   header.append(
     summaryCard('Trades relus','#mistakeKpis > div:nth-child(1) span'),
-    summaryCard('Trades propres','#mistakeKpis > div:nth-child(2) span'),
-    summaryCard('Trades avec erreur','#mistakeKpis > div:nth-child(3) span'),
+    summaryCard('Moy. trades propres','#mistakeKpis > div:nth-child(2) span'),
+    summaryCard('Moy. trades avec erreur','#mistakeKpis > div:nth-child(3) span'),
     summaryCard('Coût estimé','#mistakeKpis > div:nth-child(4) span','bad')
   );
   const grid=el('div','tj-discipline-grid');
