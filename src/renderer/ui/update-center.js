@@ -1,7 +1,7 @@
 import { el } from './lib/dom.js';
 
 const UPDATE_STATES={
-  idle:{label:'Prêt',tone:'neutral'},
+  idle:{label:'À vérifier',tone:'neutral'},
   current:{label:'À jour',tone:'good'},
   checking:{label:'Vérification',tone:'info'},
   available:{label:'Disponible',tone:'info'},
@@ -15,8 +15,8 @@ function formatDate(value){
   const n=Number(value)||0;if(!n)return 'Jamais';
   try{return new Intl.DateTimeFormat('fr-FR',{dateStyle:'medium',timeStyle:'short'}).format(new Date(n));}catch(_){return new Date(n).toLocaleString();}
 }
-
 function stateMeta(state){return UPDATE_STATES[state]||{label:String(state||'Inconnu'),tone:'neutral'};}
+function cleanVersion(value){const v=String(value||'').trim();return v&&v!=='—'?v:'';}
 
 function createMetric(label,valueId){
   const card=el('div','tj-update-metric');
@@ -25,7 +25,7 @@ function createMetric(label,valueId){
 }
 
 export function createUpdateCenter(){
-  let status={state:'idle',version:'—',progress:0};
+  let status={state:'idle',version:'',progress:0,checkedAt:0};
   let busy=false;
   let unsubscribe=null;
 
@@ -44,9 +44,9 @@ export function createUpdateCenter(){
         <div class="tj-update-hero">
           <div class="tj-update-orb" aria-hidden="true"><span></span></div>
           <div class="tj-update-hero-copy">
-            <div class="tj-update-state-row"><span class="tj-update-state" data-tone="neutral">Prêt</span><span class="tj-update-version-line">Version installée <b id="tjUpdateInstalled">—</b></span></div>
-            <h3 id="tjUpdateHeadline">Trading Journal est prêt.</h3>
-            <p id="tjUpdateDetail">Aucune opération de mise à jour en cours.</p>
+            <div class="tj-update-state-row"><span class="tj-update-state" data-tone="neutral">À vérifier</span><span class="tj-update-version-line">Version installée <b id="tjUpdateInstalled">—</b></span></div>
+            <h3 id="tjUpdateHeadline">Vérification de l’état du logiciel…</h3>
+            <p id="tjUpdateDetail">Lecture des informations de mise à jour.</p>
           </div>
         </div>
         <div class="tj-update-progress" hidden>
@@ -61,7 +61,7 @@ export function createUpdateCenter(){
       <footer class="tj-update-center-foot">
         <button class="tj-update-btn" id="tjUpdateCheck" type="button">↻ Vérifier maintenant</button>
         <span class="tj-update-foot-spacer"></span>
-        <button class="tj-update-btn tj-update-btn-primary" id="tjUpdatePrimary" type="button" hidden></button>
+        <button class="tj-update-btn tj-update-btn-primary" id="tjUpdatePrimary" type="button" hidden>Action</button>
       </footer>
     </section>`;
 
@@ -80,10 +80,13 @@ export function createUpdateCenter(){
     const state=String(status.state||'idle');
     const meta=stateMeta(state);
     const progress=Math.max(0,Math.min(100,Number(status.progress)||0));
-    const installed=String(status.version||'—');
-    const latest=String(status.downloadedVersion||status.availableVersion||installed||'—');
+    const installed=cleanVersion(status.version)||'Inconnue';
+    const explicitLatest=cleanVersion(status.downloadedVersion)||cleanVersion(status.availableVersion);
+    const latest=explicitLatest||(Number(status.checkedAt)?installed:'À vérifier');
     const phase=String(status.phase||state);
     const stateChip=$('.tj-update-state');
+
+    overlay.dataset.updateState=state;
     stateChip.textContent=meta.label;stateChip.dataset.tone=meta.tone;
     $('#tjUpdateInstalled').textContent=installed;
     $('#tjUpdateMetricInstalled').textContent=installed;
@@ -91,7 +94,7 @@ export function createUpdateCenter(){
     $('#tjUpdateMetricChecked').textContent=formatDate(status.checkedAt);
     $('#tjUpdateDetail').textContent=status.detail||'Aucune opération de mise à jour en cours.';
 
-    let headline='Trading Journal est prêt.';
+    let headline='Trading Journal est prêt à être vérifié.';
     if(state==='current')headline='Trading Journal est à jour.';
     if(state==='checking')headline='Recherche de la dernière version…';
     if(state==='available')headline=`Trading Journal ${latest} est disponible.`;
@@ -110,7 +113,7 @@ export function createUpdateCenter(){
     progressBox.classList.toggle('is-indeterminate',state==='checking'&&progress<=0);
 
     const primary=$('#tjUpdatePrimary');
-    primary.hidden=true;primary.dataset.action='';
+    primary.hidden=true;primary.dataset.action='';primary.textContent='Action';
     if(state==='available'){
       primary.hidden=false;primary.textContent=`Mettre à jour vers ${latest}`;primary.dataset.action='start';
     }else if(state==='ready'){
@@ -132,6 +135,14 @@ export function createUpdateCenter(){
     window.dispatchEvent(new CustomEvent('tj:update-ui-status',{detail:status}));
   }
 
+  async function hydrateInstalledVersion(next={}){
+    if(cleanVersion(next.version))return next;
+    try{
+      const version=cleanVersion(await window.desktopApp?.getAppVersion?.());
+      return version?{...next,version}:next;
+    }catch(_){return next;}
+  }
+
   async function run(action){
     if(busy||!window.desktopApp)return;
     busy=true;render(status);
@@ -140,7 +151,7 @@ export function createUpdateCenter(){
       if(action==='check')next=await window.desktopApp.checkForUpdates?.();
       if(action==='start')next=await window.desktopApp.startUpdate?.();
       if(action==='restart')next=await window.desktopApp.restartForUpdate?.();
-      if(next&&typeof next==='object')render(next);
+      if(next&&typeof next==='object')render(await hydrateInstalledVersion(next));
     }catch(err){render({state:'error',phase:'error',detail:err?.message||String(err)});}
     finally{busy=false;render(status);}
   }
@@ -152,11 +163,20 @@ export function createUpdateCenter(){
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!overlay.hidden)close();});
   document.body.appendChild(overlay);
 
-  if(typeof window.desktopApp?.onUpdateStatus==='function')unsubscribe=window.desktopApp.onUpdateStatus(next=>render(next||{}));
+  if(typeof window.desktopApp?.onUpdateStatus==='function')unsubscribe=window.desktopApp.onUpdateStatus(async next=>render(await hydrateInstalledVersion(next||{})));
 
   async function open(){
     overlay.hidden=false;document.body.classList.add('tj-update-center-open');
-    try{const current=await window.desktopApp?.getUpdateStatus?.();if(current)render(current);}catch(_){}
+    let current={};
+    try{
+      current=await hydrateInstalledVersion(await window.desktopApp?.getUpdateStatus?.()||{});
+      render(current);
+    }catch(_){
+      current=await hydrateInstalledVersion(status);
+      render(current);
+    }
+    const needsInitialCheck=!Number(current.checkedAt)&&['idle','current'].includes(String(current.state||'idle'));
+    if(needsInitialCheck&&!busy)await run('check');
     $('.tj-update-close')?.focus();
   }
 
