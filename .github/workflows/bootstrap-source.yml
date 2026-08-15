@@ -1,0 +1,68 @@
+name: Bootstrap desktop source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'desktop-source.zip'
+      - 'trading-journal-desktop-v1-autoupdate.zip'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Locate source archive
+        id: archive
+        shell: pwsh
+        run: |
+          $candidates = @('desktop-source.zip', 'trading-journal-desktop-v1-autoupdate.zip')
+          $archive = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+          if (-not $archive) { throw 'Archive source introuvable. Ajoute desktop-source.zip à la racine du dépôt.' }
+          "path=$archive" >> $env:GITHUB_OUTPUT
+
+      - name: Extract source
+        shell: pwsh
+        run: |
+          $dest = Join-Path $env:RUNNER_TEMP 'tj-source'
+          if (Test-Path $dest) { Remove-Item $dest -Recurse -Force }
+          Expand-Archive -Path '${{ steps.archive.outputs.path }}' -DestinationPath $dest -Force
+
+          $items = Get-ChildItem $dest
+          if ($items.Count -eq 1 -and $items[0].PSIsContainer) {
+            $source = $items[0].FullName
+          } else {
+            $source = $dest
+          }
+
+          # Preserve the GitHub workflows installed by this bootstrap.
+          Get-ChildItem $source -Force | Where-Object { $_.Name -ne '.github' } | ForEach-Object {
+            $target = Join-Path $env:GITHUB_WORKSPACE $_.Name
+            if (Test-Path $target) { Remove-Item $target -Recurse -Force }
+            Copy-Item $_.FullName $target -Recurse -Force
+          }
+
+      - name: Remove bootstrap archive from tracked source
+        shell: pwsh
+        run: |
+          Remove-Item 'desktop-source.zip' -Force -ErrorAction SilentlyContinue
+          Remove-Item 'trading-journal-desktop-v1-autoupdate.zip' -Force -ErrorAction SilentlyContinue
+
+      - name: Commit extracted project
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if (git diff --cached --quiet) {
+            Write-Host 'Aucun changement à valider.'
+            exit 0
+          }
+          git commit -m 'Bootstrap Trading Journal Desktop source [bootstrap]'
+          git push
