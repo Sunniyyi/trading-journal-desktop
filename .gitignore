@@ -3,3 +3,4 @@ out/
 *.log
 .DS_Store
 src/renderer/trade-journal.html
+src/renderer/vendor/
