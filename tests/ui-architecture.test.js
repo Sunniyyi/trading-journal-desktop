@@ -23,7 +23,8 @@ const files = [
   'src/renderer/ui/workspaces.css',
   'src/renderer/ui/stability.css',
   'src/renderer/ui/visual-hotfix.css',
-  'src/renderer/ui/layout-v214.css'
+  'src/renderer/ui/layout-v214.css',
+  'src/renderer/ui/layout-v215.css'
 ];
 for (const rel of files) {
   const full = path.join(root, rel);
@@ -79,6 +80,17 @@ for (const marker of [
   '#tjDisciplineView .tj-discipline-grid'
 ]) {
   assert(v214.includes(marker), `2.1.4 layout regression guard missing: ${marker}`);
+}
+const v215 = fs.readFileSync(path.join(root, 'src/renderer/ui/layout-v215.css'), 'utf8');
+for (const marker of [
+  ':root{--tj-topbar:78px}',
+  '#journalCalGrid .cal-cell',
+  '#journalCalGrid .cal-day',
+  'background-image:none!important',
+  '.tj-bt-dashboard-main>#btChartCard',
+  'min-height:clamp(500px,64vh,650px)'
+]) {
+  assert(v215.includes(marker), `2.1.5 visual regression guard missing: ${marker}`);
 }
 const journal = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/journal.js'), 'utf8');
 assert(journal.includes("$('#journalCalCard',view)"), 'Journal desktop layout must explicitly keep the calendar.');
