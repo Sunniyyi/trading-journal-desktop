@@ -3,6 +3,10 @@
 /* Use the actual Electron content height after resize/maximize. */
 body.tj-desktop-v2,#tjAppShell{height:var(--tj-viewport-height,100vh)}
 
+/* Reserve room for the auto-backup warning instead of letting it cover workspace content. */
+.tj-workspace{box-sizing:border-box;padding-top:var(--tj-backup-offset,0)}
+.tj-backup-slot{z-index:42}
+
 /* Keep inspector content fully reachable: height must include its own padding. */
 .tj-inspector-scroll{box-sizing:border-box}
 
@@ -21,10 +25,20 @@ body.tj-desktop-v2 :is(.tj-nav-button,.tj-top-button,.tj-sidebar-toggle,.tj-icon
 .tj-panel,.tj-kpi,.tj-workspace-frame,.tj-overview-main,.tj-journal-grid,.tj-bt-dashboard-grid,.tj-bt-trades-grid,.tj-bt-sims-grid{min-width:0}
 .tj-workspace img,.tj-workspace canvas{max-width:100%}
 
+/* Settings must remain fully usable at the Electron minimum height. */
+body.tj-desktop-v2 #settingsOverlay{box-sizing:border-box!important;padding:24px!important;overflow:hidden!important}
+body.tj-desktop-v2 #settingsOverlay>div{box-sizing:border-box!important;max-height:calc(var(--tj-viewport-height,100vh) - 48px)!important;overflow:auto!important;overscroll-behavior:contain;scrollbar-gutter:stable}
+
+/* Give quick actions enough text room when the inspector reduces the center stage. */
+body.tj-inspector-open .tj-overview-actions{grid-template-columns:1fr}
+body.tj-inspector-open .tj-action-card{min-height:64px}
+.tj-action-card span{display:block;line-height:1.35;color:var(--tj-muted);overflow-wrap:normal;word-break:normal}
+
 @media(max-width:1280px){
   .tj-inspector{pointer-events:none}
   body.tj-inspector-open .tj-inspector{pointer-events:auto}
   .tj-inspector-resizer{display:none}
+  body.tj-inspector-open .tj-overview-actions{grid-template-columns:1fr 1fr}
 }
 
 @media(max-width:1180px){
@@ -38,6 +52,8 @@ body.tj-desktop-v2 :is(.tj-nav-button,.tj-top-button,.tj-sidebar-toggle,.tj-icon
   .tj-command-backdrop{padding-top:4vh}
   .tj-command-list{max-height:52vh}
   #tjFxrDrawer{bottom:62px;max-height:calc(100vh - 92px)}
+  body.tj-desktop-v2 #settingsOverlay{padding:14px!important}
+  body.tj-desktop-v2 #settingsOverlay>div{max-height:calc(var(--tj-viewport-height,100vh) - 28px)!important}
 }
 
 @media(prefers-reduced-motion:reduce){
