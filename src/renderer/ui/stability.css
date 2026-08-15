@@ -1,5 +1,8 @@
 /* Trading Journal Desktop 2.1 — visual stability fixes */
 
+/* Use the actual Electron content height after resize/maximize. */
+body.tj-desktop-v2,#tjAppShell{height:var(--tj-viewport-height,100vh)}
+
 /* Keep inspector content fully reachable: height must include its own padding. */
 .tj-inspector-scroll{box-sizing:border-box}
 
