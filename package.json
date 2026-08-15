@@ -5,6 +5,10 @@
   "description": "Trading Journal Desktop V1 (V206 + FXReplay V21) avec mises à jour GitHub automatiques.",
   "author": "Noam",
   "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Sunniyyi/trading-journal-desktop.git"
+  },
   "main": "src/main.js",
   "scripts": {
     "start": "npm run prepare:renderer && electron .",
