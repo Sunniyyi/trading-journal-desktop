@@ -21,7 +21,8 @@ const files = [
   'src/renderer/ui/shell.css',
   'src/renderer/ui/components.css',
   'src/renderer/ui/workspaces.css',
-  'src/renderer/ui/stability.css'
+  'src/renderer/ui/stability.css',
+  'src/renderer/ui/visual-hotfix.css'
 ];
 for (const rel of files) {
   const full = path.join(root, rel);
@@ -54,9 +55,28 @@ for (const marker of [
 ]) {
   assert(stability.includes(marker), `Visual stability guard missing: ${marker}`);
 }
+const hotfix = fs.readFileSync(path.join(root, 'src/renderer/ui/visual-hotfix.css'), 'utf8');
+for (const marker of [
+  '#tjWorkspaceTitle::after',
+  '.tj-journal-main',
+  '.tj-bt-trades-right>.tablecard',
+  '.tj-bt-sims-grid',
+  '#viewScan.tj-scan-workspace',
+  '.ctx-deep-details .ctx-attention-grid',
+  '#viewGate.tj-gate-workspace',
+  '#tjDisciplineView .tj-discipline-grid'
+]) {
+  assert(hotfix.includes(marker), `2.1.3 visual regression guard missing: ${marker}`);
+}
+const journal = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/journal.js'), 'utf8');
+assert(journal.includes("$('#journalCalCard',view)"), 'Journal desktop layout must explicitly keep the calendar in the main column.');
+assert(journal.includes("el('div','tj-journal-main')"), 'Journal main column wrapper is missing.');
+const backtesting = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/backtesting.js'), 'utf8');
+assert(backtesting.includes("$('#btTbody',main)"), 'Backtesting trade table must be anchored from #btTbody, not the first generic tablecard.');
+assert(backtesting.includes("[back,months,cal,table,pagination]"), 'Backtesting content rail order guard is missing.');
 const stabilityRuntime = fs.readFileSync(path.join(root, 'src/renderer/ui/stability-runtime.js'), 'utf8');
 for (const capability of ['installChartReuseGuard','positionToolsMenu','hardenCommandPalette','hardenViewportUnits','hardenBackupSpacing']) {
   assert(stabilityRuntime.includes(capability), `Visual stability runtime capability missing: ${capability}`);
 }
-assert(stabilityRuntime.includes("existing.destroy()"), 'Chart reuse guard must destroy an existing chart before canvas reuse.');
+assert(stabilityRuntime.includes("existing.destroy()"), 'Chart reuse guard must destroy an existing chart before the canvas is reused.');
 console.log('ui architecture OK');
