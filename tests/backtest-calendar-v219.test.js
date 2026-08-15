@@ -3,6 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const css=fs.readFileSync(path.join(__dirname,'../src/renderer/ui/backtest-calendar-v219.css'),'utf8');
+const guard=fs.readFileSync(path.join(__dirname,'../src/renderer/ui/backtest-state-guard.css'),'utf8');
 const js=fs.readFileSync(path.join(__dirname,'../src/renderer/ui/workspaces/backtesting.js'),'utf8');
 const count=(s,ch)=>[...s].filter(c=>c===ch).length;
 assert.equal(count(css,'{'),count(css,'}'),'Backtesting 2.1.19 CSS braces must stay balanced.');
@@ -13,6 +14,7 @@ assert(js.includes("viewButton('▧ Galerie','gallery'"),'Gallery view switch is
 assert(css.includes('[data-bt-trades-mode="calendar"] .tj-bt-trades-table'),'Calendar mode must hide the table.');
 assert(css.includes('[data-bt-trades-mode="table"] .tj-bt-trades-table'),'Table mode must explicitly show the audit table.');
 assert(css.includes('[data-bt-trades-mode="table"] #btDayCalCard'),'Table mode must hide the calendar.');
+assert(guard.includes('[data-bt-trades-mode="table"] .tj-bt-trades-table'),'V206 state guard must allow the explicit Desktop table mode.');
 assert(css.includes('grid-template-areas:'),'Simulation lab layout is missing.');
 assert(css.includes('"mc dsr"') && css.includes('"wf wf"'),'Simulation lab must keep Monte-Carlo/DSR above Walk-Forward.');
 assert(!css.includes('#viewTrading'),'2.1.19 Backtesting CSS must stay scoped away from Journal.');
