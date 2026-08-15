@@ -22,12 +22,18 @@ concurrency:
 
 jobs:
   release:
-    if: ${{ hashFiles('package.json') != '' }}
     runs-on: windows-latest
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Ensure desktop source exists
+        shell: pwsh
+        run: |
+          if (-not (Test-Path 'package.json')) { throw 'package.json manquant.' }
+          if (-not (Test-Path 'src/main.js')) { throw 'src/main.js manquant.' }
+          if (-not (Test-Path 'forge.config.js')) { throw 'forge.config.js manquant.' }
 
       - name: Setup Node
         uses: actions/setup-node@v4
