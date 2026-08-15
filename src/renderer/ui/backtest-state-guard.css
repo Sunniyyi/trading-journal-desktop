@@ -5,3 +5,9 @@ body[data-workspace="backtesting"] #viewBacktest [style*="display:none"],
 body[data-workspace="backtesting"] #viewBacktest [style*="display: none"]{
   display:none!important;
 }
+
+/* 2.1.19: the Desktop trade-view switch is an explicit user override.
+   Only the real trades table may bypass V206's page-level display:none. */
+body[data-workspace="backtesting"] #viewBacktest [data-bt-trades-mode="table"] .tj-bt-trades-table{
+  display:block!important;
+}
