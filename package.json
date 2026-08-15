@@ -1,8 +1,8 @@
 {
   "name": "trading-journal-desktop",
   "productName": "Trading Journal",
-  "version": "2.1.7",
-  "description": "Trading Journal Desktop 2.1.7 — fiabilisation du Centre de mise à jour intégré, états et version installée corrigés, base V206 compatible et FXReplay V21.",
+  "version": "2.1.8",
+  "description": "Trading Journal Desktop 2.1.8 — correction racine du preload sandboxé et restauration fiable du bridge Desktop/FXReplay/mises à jour, base V206 compatible et FXReplay V21.",
   "author": "Noam",
   "license": "UNLICENSED",
   "repository": {
