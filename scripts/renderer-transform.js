@@ -106,6 +106,7 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/journal-premium.css">',
     '<link rel="stylesheet" href="./ui/backtest-premium.css">',
     '<link rel="stylesheet" href="./ui/backtest-layout-v217.css">',
+    '<link rel="stylesheet" href="./ui/backtest-polish-v218.css">',
     '<link rel="stylesheet" href="./ui/backtest-state-guard.css">',
     '<link rel="stylesheet" href="./ui/workspace-routing-fix.css">'
   ].join('\n');
