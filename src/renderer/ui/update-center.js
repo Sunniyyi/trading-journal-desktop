@@ -60,7 +60,6 @@ export function createUpdateCenter(){
       </div>
       <footer class="tj-update-center-foot">
         <button class="tj-update-btn" id="tjUpdateCheck" type="button">↻ Vérifier maintenant</button>
-        <button class="tj-update-btn" id="tjUpdateConfig" type="button">⚙ Configuration</button>
         <span class="tj-update-foot-spacer"></span>
         <button class="tj-update-btn tj-update-btn-primary" id="tjUpdatePrimary" type="button" hidden></button>
       </footer>
@@ -122,7 +121,6 @@ export function createUpdateCenter(){
 
     const disabled=busy||state==='checking'||state==='downloading';
     $('#tjUpdateCheck').disabled=disabled;
-    $('#tjUpdateConfig').disabled=busy;
     primary.disabled=busy||state==='downloading';
 
     const notice=$('#tjUpdateNotice');
@@ -148,7 +146,6 @@ export function createUpdateCenter(){
   }
 
   $('#tjUpdateCheck').addEventListener('click',()=>run('check'));
-  $('#tjUpdateConfig').addEventListener('click',()=>window.desktopApp?.openUpdateConfig?.());
   $('#tjUpdatePrimary').addEventListener('click',e=>run(e.currentTarget.dataset.action));
   $('.tj-update-close').addEventListener('click',close);
   overlay.addEventListener('mousedown',e=>{if(e.target===overlay)close();});
