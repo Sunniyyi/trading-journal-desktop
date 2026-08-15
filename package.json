@@ -1,32 +1,21 @@
 {
   "name": "trading-journal-desktop",
   "productName": "Trading Journal",
-  "version": "2.1.18",
-  "description": "Trading Journal Desktop 2.1.18 — finition du Backtesting: onglets, simulations, tableau, filtres sessions et vue d'ensemble plus lisibles, base V206 compatible et FXReplay V21.",
+  "version": "2.1.19",
+  "description": "Trading Journal Desktop 2.1.19 — Backtesting calendrier-first: calendrier par défaut, tableau à la demande, galerie dédiée et laboratoire de simulations mieux hiérarchisé, base V206 compatible et FXReplay V21.",
   "author": "Noam",
   "license": "UNLICENSED",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Sunniyyi/trading-journal-desktop.git"
-  },
+  "repository": {"type":"git","url":"https://github.com/Sunniyyi/trading-journal-desktop.git"},
   "main": "src/main.js",
   "scripts": {
     "start": "npm run prepare:renderer && electron .",
     "package": "npm run prepare:renderer && electron-forge package",
     "make": "npm run prepare:renderer && electron-forge make",
     "check:js": "node --check src/main.js && node --check src/preload.js && node --check src/preload/page-bridge.js && node --check src/preload/update-hud.js && node --check src/app-updater.js && node --check src/bridge-server.js && node --check src/extension-manager.js && node --check src/renderer/desktop-performance.js && node --check src/renderer/workers/monte-carlo-worker.js && node --check src/renderer/ui/bootstrap.js && node --check src/renderer/ui/stability-runtime.js && node --check src/renderer/ui/shell.js && node --check src/renderer/ui/config.js && node --check src/renderer/ui/command-palette.js && node --check src/renderer/ui/layout-controller.js && node --check src/renderer/ui/inspector.js && node --check src/renderer/ui/update-center.js && node --check src/renderer/ui/lib/dom.js && node --check src/renderer/ui/workspaces/overview.js && node --check src/renderer/ui/workspaces/journal.js && node --check src/renderer/ui/workspaces/backtesting.js && node --check src/renderer/ui/workspaces/discipline.js && node --check scripts/reconstruct-renderer.js && node --check scripts/renderer-transform.js && node --check extension/fxreplay-v21-desktop/background.js && node --check extension/fxreplay-v21-desktop/fxreplay-content.js && node --check extension/fxreplay-v21-desktop/fxreplay-runtime-hook.js && node --check extension/fxreplay-v21-desktop/site-bridge.js && node --check extension/fxreplay-v21-desktop/popup.js",
-    "test": "node tests/bridge-server.test.js && node tests/renderer-transform.test.js && node tests/ui-architecture.test.js && node tests/ui-stability-runtime.test.js && node tests/update-center.test.js && node tests/final-polish.test.js && node tests/overview-polish.test.js && node tests/widget-polish.test.js && node tests/typography-polish.test.js && node tests/workspace-routing.test.js && node tests/journal-polish.test.js && node tests/journal-premium.test.js && node tests/backtest-premium.test.js && node tests/backtest-layout-v217.test.js && node tests/backtest-polish-v218.test.js",
-    "verify": "npm run check:js && node tests/bridge-server.test.js && node tests/extension-manager.test.js && node tests/renderer-transform.test.js && node tests/ui-architecture.test.js && node tests/ui-stability-runtime.test.js && node tests/update-center.test.js && node tests/final-polish.test.js && node tests/overview-polish.test.js && node tests/widget-polish.test.js && node tests/typography-polish.test.js && node tests/workspace-routing.test.js && node tests/journal-polish.test.js && node tests/journal-premium.test.js && node tests/backtest-premium.test.js && node tests/backtest-layout-v217.test.js && node tests/backtest-polish-v218.test.js",
+    "test": "node tests/bridge-server.test.js && node tests/renderer-transform.test.js && node tests/ui-architecture.test.js && node tests/ui-stability-runtime.test.js && node tests/update-center.test.js && node tests/final-polish.test.js && node tests/overview-polish.test.js && node tests/widget-polish.test.js && node tests/typography-polish.test.js && node tests/workspace-routing.test.js && node tests/journal-polish.test.js && node tests/journal-premium.test.js && node tests/backtest-premium.test.js && node tests/backtest-layout-v217.test.js && node tests/backtest-polish-v218.test.js && node tests/backtest-calendar-v219.test.js",
+    "verify": "npm run check:js && node tests/bridge-server.test.js && node tests/extension-manager.test.js && node tests/renderer-transform.test.js && node tests/ui-architecture.test.js && node tests/ui-stability-runtime.test.js && node tests/update-center.test.js && node tests/final-polish.test.js && node tests/overview-polish.test.js && node tests/widget-polish.test.js && node tests/typography-polish.test.js && node tests/workspace-routing.test.js && node tests/journal-polish.test.js && node tests/journal-premium.test.js && node tests/backtest-premium.test.js && node tests/backtest-layout-v217.test.js && node tests/backtest-polish-v218.test.js && node tests/backtest-calendar-v219.test.js",
     "prepare:renderer": "node scripts/reconstruct-renderer.js"
   },
-  "devDependencies": {
-    "@electron-forge/cli": "7.11.2",
-    "@electron-forge/maker-squirrel": "7.11.2",
-    "@electron-forge/maker-zip": "7.11.2",
-    "electron": "43.2.0"
-  },
-  "dependencies": {
-    "chart.js": "4.4.1",
-    "electron-squirrel-startup": "1.0.1"
-  }
+  "devDependencies": {"@electron-forge/cli":"7.11.2","@electron-forge/maker-squirrel":"7.11.2","@electron-forge/maker-zip":"7.11.2","electron":"43.2.0"},
+  "dependencies": {"chart.js":"4.4.1","electron-squirrel-startup":"1.0.1"}
 }
