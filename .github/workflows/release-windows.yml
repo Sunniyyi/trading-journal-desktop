@@ -73,10 +73,21 @@ jobs:
       - name: Build Windows packages
         if: steps.existing.outputs.exists != 'true'
         shell: pwsh
-        run: npm run make
+        run: |
+          npm run make 2>&1 | Tee-Object -FilePath build-output.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Upload build diagnostics
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build-diagnostics
+          path: build-output.log
+          if-no-files-found: ignore
+          retention-days: 2
 
       - name: Validate Squirrel.Windows artifacts
-        if: steps.existing.outputs.exists != 'true'
+        if: steps.existing.outputs.exists != 'true' && success()
         shell: pwsh
         run: |
           $releaseFile = Get-ChildItem -Path "out/make" -Recurse -File -Filter "RELEASES" | Select-Object -First 1
@@ -90,7 +101,7 @@ jobs:
           Write-Host "SETUP:   $($setup.FullName)"
 
       - name: Publish GitHub Release
-        if: steps.existing.outputs.exists != 'true'
+        if: steps.existing.outputs.exists != 'true' && success()
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
