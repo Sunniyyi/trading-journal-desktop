@@ -153,6 +153,7 @@ export function initDesktopShell(){
   $('#tjToolsButton')?.addEventListener('click',toggleTools);
   $('#tjFxrButton')?.addEventListener('click',()=>toggleFxr());$('#tjStatusFxrBtn')?.addEventListener('click',()=>toggleFxr());
   $('#tjUpdateButton')?.addEventListener('click',()=>updateCenter.open());
+  window.desktopApp?.onRequestUpdateCenter?.(()=>updateCenter.open());
   window.addEventListener('tj:update-ui-status',e=>syncUpdateButton(e.detail||{}));
   window.desktopApp?.getUpdateStatus?.().then(status=>{updateCenter.render(status||{});syncUpdateButton(status||{});}).catch(()=>{});
 
