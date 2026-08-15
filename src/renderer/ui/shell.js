@@ -7,6 +7,7 @@ import { enhanceBacktesting } from './workspaces/backtesting.js';
 import { createCommandPalette } from './command-palette.js';
 
 const state={active:'overview',legacySwitch:null,routing:false};
+const viewDisplay={viewTrading:'flex',viewBacktest:'flex',viewScan:'block',viewContext:'block',viewGate:'block'};
 
 function iconLabel(item){return `<span class="tj-nav-icon">${item.icon}</span><span class="tj-nav-label">${item.label}</span>`;}
 function setHeader(item){
@@ -17,7 +18,8 @@ function setHeader(item){
 function setActiveNav(id){document.querySelectorAll('.tj-nav-button').forEach(b=>b.classList.toggle('is-active',b.dataset.workspace===id));}
 function legacyViews(){return WORKSPACES.filter(x=>x.viewId).map(x=>document.getElementById(x.viewId)).filter(Boolean);}
 function hideCustom(){['tjOverviewView','tjDisciplineView'].forEach(id=>{const v=document.getElementById(id);if(v)v.hidden=true;});}
-function hideLegacy(){legacyViews().forEach(v=>{v.style.display='none';});document.body.classList.remove('bt-mode','scan-mode','context-mode','gate-mode');}
+function setLegacyVisibility(activeViewId=''){legacyViews().forEach(v=>v.style.setProperty('display',v.id===activeViewId?(viewDisplay[v.id]||'block'):'none','important'));}
+function hideLegacy(){setLegacyVisibility('');document.body.classList.remove('bt-mode','scan-mode','context-mode','gate-mode');}
 
 export function navigate(id,{fromLegacy=false}={}){
   const item=byId(id); if(!item)return;
@@ -27,8 +29,9 @@ export function navigate(id,{fromLegacy=false}={}){
   if(item.legacy){
     if(!fromLegacy && typeof state.legacySwitch==='function'){
       state.routing=true; try{state.legacySwitch(item.legacy);}finally{state.routing=false;}
+      setLegacyVisibility(item.viewId);
     }else{
-      hideLegacy(); const v=document.getElementById(item.viewId); if(v)v.style.display='';
+      setLegacyVisibility(item.viewId);
     }
   }else{
     hideLegacy();
@@ -52,7 +55,7 @@ function buildTopbar(shell){
   const top=el('header','tj-topbar');
   top.innerHTML=`<div class="tj-workspace-heading"><h1 id="tjWorkspaceTitle">Vue d’ensemble</h1><p id="tjWorkspaceSubtitle">Résumé de ta performance, de la session et des outils actifs.</p></div>
   <div class="tj-search" id="tjGlobalSearch" role="button" tabindex="0"><span class="tj-search-icon">⌕</span><span class="tj-search-placeholder">Rechercher une vue ou lancer une commande…</span><span class="tj-kbd">Ctrl K</span></div>
-  <div class="tj-top-actions"><button class="tj-top-button" id="tjFxrButton">↯ FX Replay</button><button class="tj-top-button" id="tjUpdateButton"><span class="tj-sync-dot"></span><span id="tjUpdateLabel">Synchronisé</span></button><button class="tj-top-button is-primary" id="tjNewTrade">＋ Nouveau trade</button></div>`;
+  <div class="tj-top-actions"><button class="tj-top-button" id="tjToolsButton">⚡ Outils</button><button class="tj-top-button" id="tjFxrButton">↯ FX Replay</button><button class="tj-top-button" id="tjUpdateButton"><span class="tj-sync-dot"></span><span id="tjUpdateLabel">Mises à jour</span></button><button class="tj-top-button is-primary" id="tjNewTrade">＋ Nouveau trade</button></div>`;
   shell.appendChild(top);
 }
 function buildStatusbar(shell){
@@ -75,6 +78,21 @@ function createFxrDrawer(){
   document.addEventListener('tj:toggle-fxr',()=>toggle());$('#tjFxrClose')?.addEventListener('click',()=>toggle(false));
   return toggle;
 }
+function createToolsMenu(){
+  const menu=el('div','tj-tools-menu',{id:'tjToolsMenu',hidden:'hidden'});
+  const item=(icon,label,fn)=>{const b=el('button','tj-tools-item',{type:'button'});b.innerHTML=`<span>${icon}</span><b>${label}</b>`;b.addEventListener('click',()=>{menu.hidden=true;fn();});return b;};
+  menu.append(
+    item('📡','Widget marché',()=>callLegacy('mwToggleEnabled')),
+    item('📰','Widget news',()=>callLegacy('nwToggleEnabled')),
+    item('🖼','Galerie',()=>callLegacy('openGallery',state.active==='backtesting'?'backtest':'journal')),
+    item('🎯','Objectifs',()=>callLegacy('openGoals')),
+    item('⚙','Paramètres',()=>callLegacy('openSettings'))
+  );
+  document.body.appendChild(menu);
+  const toggle=()=>{menu.hidden=!menu.hidden;};
+  document.addEventListener('mousedown',e=>{if(!menu.hidden&&!menu.contains(e.target)&&e.target!==document.getElementById('tjToolsButton'))menu.hidden=true;});
+  return toggle;
+}
 function syncStatus(){
   const target=$('#fxrTargetPage');
   $('#tjStatusPage').textContent=target?.selectedOptions?.[0]?.textContent?.trim()||'Aucune page';
@@ -88,7 +106,7 @@ function wireLegacyRouter(){
   if(typeof state.legacySwitch!=='function') return;
   window.switchTab=function(tab){
     const out=state.legacySwitch(tab);
-    if(!state.routing){const item=byLegacy(tab);if(item){state.active=item.id;setActiveNav(item.id);setHeader(item);hideCustom();}}
+    if(!state.routing){const item=byLegacy(tab);if(item){state.active=item.id;setActiveNav(item.id);setHeader(item);hideCustom();setLegacyVisibility(item.viewId);}}
     return out;
   };
 }
@@ -112,8 +130,10 @@ export function initDesktopShell(){
   wireLegacyRouter();
   const palette=createCommandPalette(navigate);
   const toggleFxr=createFxrDrawer();
+  const toggleTools=createToolsMenu();
   $('#tjGlobalSearch')?.addEventListener('click',palette.open);$('#tjGlobalSearch')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();palette.open();}});
   $('#tjNewTrade')?.addEventListener('click',()=>{navigate('journal');callLegacy('fabNewTrade');});
+  $('#tjToolsButton')?.addEventListener('click',toggleTools);
   $('#tjFxrButton')?.addEventListener('click',()=>toggleFxr());$('#tjStatusFxrBtn')?.addEventListener('click',()=>toggleFxr());
   $('#tjUpdateButton')?.addEventListener('click',()=>window.desktopApp?.openUpdateCenter?.());
 
