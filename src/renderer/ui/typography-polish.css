@@ -1,0 +1,124 @@
+/* Trading Journal Desktop v2.1.12 — robust typography pass
+   Goal: stronger legibility on dark glass surfaces without visually enlarging the app. */
+
+:root{
+  --tj-type-primary:#f2f6ff;
+  --tj-type-secondary:#c5d0e6;
+  --tj-type-muted:#94a4c3;
+  --tj-type-faint:#7888a8;
+  --tj-type-mono:#b5c5df;
+}
+
+body.tj-desktop-v2{
+  text-rendering:optimizeLegibility;
+  font-synthesis:none;
+}
+
+body.tj-desktop-v2,
+body.tj-desktop-v2 button,
+body.tj-desktop-v2 input,
+body.tj-desktop-v2 select,
+body.tj-desktop-v2 textarea{font-weight:560}
+
+body.tj-desktop-v2 p,
+body.tj-desktop-v2 li,
+body.tj-desktop-v2 .tj-panel-subtitle,
+body.tj-desktop-v2 .tj-kpi-sub,
+body.tj-desktop-v2 .tj-inspector-note,
+body.tj-desktop-v2 .mc-note,
+body.tj-desktop-v2 .mc-empty,
+body.tj-desktop-v2 .sim-conclusion,
+body.tj-desktop-v2 .ctx-hero p,
+body.tj-desktop-v2 .scan-hero p{color:var(--tj-type-secondary)!important;font-weight:560!important}
+
+body.tj-desktop-v2 small,
+body.tj-desktop-v2 .muted,
+body.tj-desktop-v2 .sub,
+body.tj-desktop-v2 .meta,
+body.tj-desktop-v2 .hint,
+body.tj-desktop-v2 .help,
+body.tj-desktop-v2 .tj-muted{color:var(--tj-type-muted)!important;font-weight:560!important}
+
+.tj-workspace-kicker,
+.tj-eyebrow,
+.tj-inspector-section-title,
+.tj-status-label,
+.tj-kpi-label,
+.tj-overview-label{color:#93a4c5!important;font-weight:780!important;letter-spacing:.105em!important}
+
+.tj-workspace-heading h1{color:#f7f9ff!important;font-weight:820!important}
+.tj-workspace-heading p{color:#a8b7d2!important;font-size:11px!important;font-weight:560!important}
+.tj-search-placeholder{color:#a9b8d2!important;font-size:11.7px!important;font-weight:570!important}
+.tj-kbd{color:#b4c0d8!important;font-weight:700!important}
+.tj-top-button,.tj-status-action,.tj-nav-button{font-weight:700!important}
+.tj-nav-button{color:#aebbd3!important}.tj-nav-button:hover,.tj-nav-button.is-active{color:#f5f8ff!important}
+.tj-brand-copy b,.tj-profile-copy b{font-weight:780!important}
+.tj-brand-copy small,.tj-profile-copy small{color:#98a8c5!important;font-weight:560!important}
+
+body.tj-desktop-v2 .card h2,.tj-panel-title,.tj-overview-title,.tj-inspector-head h2{color:var(--tj-type-primary)!important;font-weight:800!important}
+body.tj-desktop-v2 .stat .label,body.tj-desktop-v2 .stat .sub,body.tj-desktop-v2 .tj-kpi-label,body.tj-desktop-v2 .tj-kpi-sub{color:#a0afca!important}
+body.tj-desktop-v2 .stat .label,body.tj-desktop-v2 .tj-kpi-label{font-weight:780!important;letter-spacing:.105em!important}
+body.tj-desktop-v2 .stat .sub,body.tj-desktop-v2 .tj-kpi-sub{font-size:10.9px!important;font-weight:570!important}
+body.tj-desktop-v2 .stat .val,body.tj-desktop-v2 .tj-kpi-value{font-weight:820!important}
+
+body.tj-desktop-v2 button,body.tj-desktop-v2 .primary,body.tj-desktop-v2 .ghost,body.tj-desktop-v2 .mini,body.tj-desktop-v2 .tj-section-tab{font-weight:700!important}
+body.tj-desktop-v2 input,body.tj-desktop-v2 select,body.tj-desktop-v2 textarea{color:#e6ecf8!important;font-weight:600!important}
+body.tj-desktop-v2 input::placeholder,body.tj-desktop-v2 textarea::placeholder{color:#8797b6!important;opacity:1!important;font-weight:550!important}
+body.tj-desktop-v2 label,body.tj-desktop-v2 .field>label{color:#9faecc!important;font-weight:720!important}
+
+body.tj-desktop-v2 table{color:#d7e0f2!important;font-weight:560!important}
+body.tj-desktop-v2 th{color:#9babca!important;font-weight:800!important;letter-spacing:.095em!important}
+body.tj-desktop-v2 td{color:#d3ddef!important;font-weight:570!important}
+
+.tj-inspector-metric span{color:#91a2c1!important;font-size:9px!important;font-weight:650!important}
+.tj-inspector-metric b{color:#e5ebf8!important;font-size:11.8px!important;font-weight:760!important}
+.tj-inspector-link,.tj-inspector-tool,.tj-inspector-section button{font-weight:680!important}
+.tj-inspector-section p,.tj-inspector-section li{color:#bbc7dd!important;font-size:10.8px!important;line-height:1.5!important;font-weight:560!important}
+
+.tj-status-value{color:#e3eafa!important;font-weight:760!important}.tj-status-label{font-size:8.4px!important}
+
+body.tj-desktop-v2 .cal-head,body.tj-desktop-v2 .cal-weekday{color:#9dacc8!important;font-weight:780!important}
+body.tj-desktop-v2 .cal-day,body.tj-desktop-v2 .cal-date,body.tj-desktop-v2 .cal-num{color:#eef3ff!important;font-weight:780!important}
+body.tj-desktop-v2 .cal-pnl,body.tj-desktop-v2 .cal-cell .pos,body.tj-desktop-v2 .cal-cell .neg{font-weight:800!important}
+body.tj-desktop-v2 .cal-meta,body.tj-desktop-v2 .cal-note,body.tj-desktop-v2 .week-sub,body.tj-desktop-v2 .week-meta{color:#a9b8d2!important;font-weight:570!important}
+
+body.tj-desktop-v2 .mc-head h2,body.tj-desktop-v2 .sim-title,body.tj-desktop-v2 .bt-page-title,body.tj-desktop-v2 .perf-title{font-weight:800!important;color:#f0f4ff!important}
+body.tj-desktop-v2 .mc-help,body.tj-desktop-v2 .mc-note,body.tj-desktop-v2 .mc-empty,body.tj-desktop-v2 .sim-help{color:#b5c2da!important;font-weight:560!important}
+body.tj-desktop-v2 .mc-params label,body.tj-desktop-v2 .sim-param label{color:#9fafd0!important;font-weight:710!important}
+
+body.tj-desktop-v2 .scan-eyebrow,body.tj-desktop-v2 .scan-section-title,body.tj-desktop-v2 .ctx-label,body.tj-desktop-v2 .gate-label{color:#99a9ca!important;font-weight:800!important;letter-spacing:.095em!important}
+body.tj-desktop-v2 .scan-api-help,body.tj-desktop-v2 .scan-file-meta,body.tj-desktop-v2 .scan-empty small,body.tj-desktop-v2 .ctx-source-note,body.tj-desktop-v2 .gate-note{color:#9eafcc!important;font-weight:560!important}
+body.tj-desktop-v2 .scan-empty b,body.tj-desktop-v2 .ctx-card strong,body.tj-desktop-v2 .gate-card strong{font-weight:760!important}
+
+body.tj-desktop-v2 .mistake-kpis b,body.tj-desktop-v2 .mistake-summary-box strong,body.tj-desktop-v2 .mistake-card strong{font-weight:800!important}
+body.tj-desktop-v2 .mistake-kpis small,body.tj-desktop-v2 .mistake-summary-box p,body.tj-desktop-v2 .mistake-card p{color:#b8c5dc!important;font-weight:560!important}
+
+body.tj-desktop-v2 .mw-title,body.tj-desktop-v2 .nw-title,body.tj-desktop-v2 #mwTitle,body.tj-desktop-v2 #nwTitle{font-weight:800!important;color:#f2f6ff!important}
+body.tj-desktop-v2 .mw-meta,body.tj-desktop-v2 .nw-meta,body.tj-desktop-v2 #mwMeta,body.tj-desktop-v2 #nwMeta{color:#9fb0cc!important;font-weight:580!important}
+body.tj-desktop-v2 .mw-summary,body.tj-desktop-v2 .nw-summary,body.tj-desktop-v2 .nw-status{color:#c4cee2!important;font-size:12px!important;font-weight:570!important}
+body.tj-desktop-v2 .mw-summary-key{color:#9fb2d0!important;font-weight:820!important;letter-spacing:.045em!important}
+body.tj-desktop-v2 .mw-summary-text{color:#ced7e8!important;font-weight:570!important}
+body.tj-desktop-v2 .mw-summary-text strong{color:#f1f4fb!important;font-weight:800!important}
+body.tj-desktop-v2 .mw-q b,body.tj-desktop-v2 .mw-detail-metric b,body.tj-desktop-v2 .nw-count b,body.tj-desktop-v2 .nw-impact b{color:#9eaecc!important;font-weight:800!important;letter-spacing:.04em!important}
+body.tj-desktop-v2 .mw-q span,body.tj-desktop-v2 .mw-detail-metric span,body.tj-desktop-v2 .nw-count span,body.tj-desktop-v2 .nw-impact span{color:#e2e8f5!important;font-weight:720!important}
+body.tj-desktop-v2 .mw-status,body.tj-desktop-v2 .nw-status,body.tj-desktop-v2 .mw-signal,body.tj-desktop-v2 .nw-item{color:#b7c4db!important;font-weight:560!important}
+body.tj-desktop-v2 .mw-section-title,body.tj-desktop-v2 .nw-section-title{color:#9faecd!important;font-weight:800!important;letter-spacing:.075em!important}
+
+#tjFxrDrawer .tj-panel-title,#tjFxrDrawer .fxr-sync-title h2{font-weight:810!important}
+#tjFxrDrawer .tj-panel-subtitle,#tjFxrDrawer .fxr-sync-title p,#tjFxrDrawer .fxr-help,#tjFxrDrawer .fxr-sync-note,#tjFxrDrawer .fxr-import-progress-head small{color:#aab9d2!important;font-weight:570!important}
+#tjFxrDrawer .fxr-stat b,#tjFxrDrawer .fxr-sync-grid .field label,#tjFxrDrawer .fxr-network-line b{color:#9faecc!important;font-weight:800!important;letter-spacing:.055em!important}
+#tjFxrDrawer .fxr-stat span,#tjFxrDrawer .fxr-import-progress-head b{color:#edf2fc!important;font-weight:800!important}
+
+.tj-update-center,.tj-update-center button{font-weight:570}.tj-update-center-title,.tj-update-center h2,.tj-update-center strong{font-weight:800!important}
+.tj-update-center p,.tj-update-center small,.tj-update-center .tj-update-meta{color:#aebdd5!important;font-weight:560!important}
+
+body.tj-desktop-v2 code,body.tj-desktop-v2 .mono,body.tj-desktop-v2 [class*="-mono"],body.tj-desktop-v2 .mw-countdown,body.tj-desktop-v2 .fxr-status{color:var(--tj-type-mono)!important;font-weight:650!important}
+
+body.tj-density-compact .tj-kpi-sub,body.tj-density-compact .stat .sub,body.tj-density-compact .tj-panel-subtitle{font-size:10.5px!important}
+
+@media(max-width:1360px){.tj-workspace-heading p{font-size:10.7px!important}.tj-search-placeholder{font-size:11.3px!important}}
+
+@media(prefers-contrast:more){
+  :root{--tj-type-secondary:#d3dced;--tj-type-muted:#aebbd3;--tj-type-faint:#93a3bf}
+  body.tj-desktop-v2 .card,body.tj-desktop-v2 .stat,body.tj-desktop-v2 .tablecard,.tj-panel,.tj-kpi{border-color:rgba(151,178,236,.25)!important}
+}
