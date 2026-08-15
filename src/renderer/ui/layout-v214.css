@@ -1,0 +1,287 @@
+/* Trading Journal Desktop 2.1.4 — layout redesign
+   Loaded after the 2.1.3 hotfix. This file only changes presentation/geometry. */
+
+/* ========================================================================== 
+   Global readability / top bar
+   ========================================================================== */
+:root{--tj-topbar:68px}
+body.tj-desktop-v2 .tj-topbar{
+  grid-template-columns:minmax(220px,300px) minmax(320px,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:8px 14px!important;
+  overflow:visible!important;
+}
+body.tj-desktop-v2 .tj-workspace-heading{
+  display:grid!important;
+  grid-template-rows:auto auto!important;
+  gap:2px!important;
+  min-width:0!important;
+  overflow:visible!important;
+  align-content:center!important;
+}
+body.tj-desktop-v2 .tj-workspace-kicker{font-size:8px!important;line-height:1!important;margin:0!important}
+body.tj-desktop-v2 #tjWorkspaceTitle{
+  font-size:19px!important;
+  line-height:1.08!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.tj-desktop-v2 #tjWorkspaceSubtitle{display:none!important}
+body.tj-desktop-v2 .tj-search{width:min(100%,620px)!important;justify-self:center!important}
+body.tj-desktop-v2 .tj-top-actions{gap:6px!important;white-space:nowrap!important}
+body.tj-desktop-v2 .tj-top-button{height:36px!important;padding:0 10px!important}
+body.tj-desktop-v2 .tj-stage{padding-left:20px!important;padding-right:20px!important}
+
+/* Raise the smallest legacy copy without changing card geometry. */
+body.tj-desktop-v2 .tj-workspace .stat .label,
+body.tj-desktop-v2 .tj-workspace .scan-eyebrow,
+body.tj-desktop-v2 .tj-workspace .bt-filter-lbl,
+body.tj-desktop-v2 .tj-workspace .ctx-attn-top span,
+body.tj-desktop-v2 .tj-workspace .ctx-attn-top b{font-size:9px!important}
+body.tj-desktop-v2 #viewScan small,
+body.tj-desktop-v2 #viewContext small,
+body.tj-desktop-v2 #viewGate small,
+body.tj-desktop-v2 #tjDisciplineView small{font-size:9.5px!important;line-height:1.45!important}
+
+/* ========================================================================== 
+   Overview — content-sized dashboard instead of three full-height empty cards
+   ========================================================================== */
+#tjOverviewView{overflow:auto!important;padding-bottom:18px!important}
+#tjOverviewView .tj-overview-main{
+  flex:0 0 auto!important;
+  align-items:start!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(320px,.78fr) minmax(300px,.7fr)!important;
+}
+#tjOverviewView .tj-overview-activity{min-height:0!important;height:auto!important}
+#tjOverviewView .tj-overview-summary,
+#tjOverviewView .tj-overview-actions{align-self:start!important}
+#tjOverviewView .tj-panel{height:auto!important;min-height:0!important}
+#tjOverviewView .tj-activity-list{flex:0 0 auto!important}
+
+/* ========================================================================== 
+   Journal — calendar/table share the SAME main panel. No 400px empty box.
+   ========================================================================== */
+#viewTrading.tj-journal-workspace .tj-journal-grid{
+  grid-template-columns:minmax(0,1fr) minmax(320px,370px)!important;
+  gap:16px!important;
+}
+#viewTrading.tj-journal-workspace .tj-journal-main{gap:0!important}
+#viewTrading.tj-journal-workspace #tableSection{
+  min-height:0!important;
+  height:auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+  padding:12px!important;
+}
+#viewTrading.tj-journal-workspace #tableSection>.toolbar{
+  padding:0!important;
+  margin:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+#viewTrading.tj-journal-workspace #journalCalCard{
+  min-height:0!important;
+  margin:0!important;
+  padding:10px 0 0!important;
+  border:0!important;
+  border-top:1px solid rgba(120,148,208,.12)!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#viewTrading.tj-journal-workspace #journalCalCard .cal-nav{margin-bottom:12px!important}
+#viewTrading.tj-journal-workspace #journalCalCard .cal-body{
+  grid-template-columns:minmax(0,1fr) 136px!important;
+  gap:10px!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid{gap:7px!important}
+#viewTrading.tj-journal-workspace .cal-day{min-height:74px!important}
+#viewTrading.tj-journal-workspace #tableSection>.tablecard{min-height:0!important;max-height:560px!important}
+#viewTrading.tj-journal-workspace .tj-journal-side{top:8px!important}
+#viewTrading.tj-journal-workspace #chartCard .chart-box{height:270px!important}
+
+/* ========================================================================== 
+   Backtesting — respect V206 summary/detail visibility and remove false blanks
+   ========================================================================== */
+#viewBacktest.tj-backtest-workspace #btDetail{display:block!important}
+#viewBacktest.tj-backtest-workspace #btDetail[style*="display: none"],
+#viewBacktest.tj-backtest-workspace #btDetail[style*="display:none"]{display:none!important}
+#viewBacktest.tj-backtest-workspace #btSummary[style*="display: none"],
+#viewBacktest.tj-backtest-workspace #btSummary[style*="display:none"]{display:none!important}
+#viewBacktest.tj-backtest-workspace #btSummary{max-width:none!important}
+#viewBacktest.tj-backtest-workspace .sum-filters{gap:8px!important;flex-wrap:wrap!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-grid{
+  grid-template-columns:minmax(0,1.5fr) minmax(330px,.68fr)!important;
+  gap:16px!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-side{gap:14px!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-grid{
+  grid-template-columns:300px minmax(0,1fr)!important;
+  gap:16px!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-right #btMonthsCard,
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-right #btDayCalCard,
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-right>.tablecard{width:100%!important;box-sizing:border-box!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-sims-grid{max-width:1180px!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-sims-grid>.card{padding:18px!important}
+
+/* ========================================================================== 
+   Scan TA — one-screen workflow: controls, then 3 captures side by side.
+   ========================================================================== */
+#viewScan.tj-scan-workspace .scan-shell{
+  display:block!important;
+  min-height:0!important;
+  height:auto!important;
+}
+#viewScan.tj-scan-workspace .scan-hero{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:20px!important;
+  margin-bottom:14px!important;
+  padding:4px 2px!important;
+}
+#viewScan.tj-scan-workspace .scan-hero h1{
+  font-size:clamp(28px,2.6vw,42px)!important;
+  line-height:1.04!important;
+  max-width:760px!important;
+}
+#viewScan.tj-scan-workspace .scan-toolbar{
+  position:static!important;
+  width:100%!important;
+  max-height:none!important;
+  overflow:visible!important;
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:180px minmax(260px,340px) minmax(420px,1fr)!important;
+  gap:12px!important;
+  align-items:end!important;
+  padding:14px!important;
+  margin:0 0 14px!important;
+}
+#viewScan.tj-scan-workspace .scan-toolbar>.field{min-width:0!important;margin:0!important}
+#viewScan.tj-scan-workspace .scan-toolbar input,
+#viewScan.tj-scan-workspace .scan-toolbar select{width:100%!important;max-width:none!important;box-sizing:border-box!important}
+#viewScan.tj-scan-workspace .scan-toolbar .scan-key-field{min-width:0!important}
+#viewScan.tj-scan-workspace .scan-engine-row{display:flex!important;gap:8px!important;min-width:0!important}
+#viewScan.tj-scan-workspace .scan-engine-row>select:first-child{min-width:220px!important;flex:1 1 auto!important}
+#viewScan.tj-scan-workspace .scan-cross-toggle{grid-column:1/-1!important;margin:0!important;padding-top:2px!important}
+#viewScan.tj-scan-workspace #scanSlots{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+  overflow:visible!important;
+}
+#viewScan.tj-scan-workspace .scan-slot{
+  min-width:0!important;
+  min-height:258px!important;
+  padding:14px!important;
+}
+#viewScan.tj-scan-workspace .scan-slot-head{gap:10px!important}
+#viewScan.tj-scan-workspace .scan-slot-head>div:first-child{min-width:0!important}
+#viewScan.tj-scan-workspace .scan-slot-head h3{font-size:13px!important}
+#viewScan.tj-scan-workspace .scan-drop{min-height:165px!important;margin-top:10px!important}
+#viewScan.tj-scan-workspace .scan-runbar{
+  position:static!important;
+  width:100%!important;
+  box-sizing:border-box!important;
+  margin:12px 0 0!important;
+  padding:12px 14px!important;
+}
+#viewScan.tj-scan-workspace #scanResult{margin-top:14px!important}
+
+/* ========================================================================== 
+   Market context — one clear reading column; details expand BELOW the brief.
+   ========================================================================== */
+#viewContext.tj-context-workspace .ctx-shell{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:14px!important;
+  max-width:1320px!important;
+  margin:0 auto!important;
+}
+#viewContext.tj-context-workspace .ctx-hero,
+#viewContext.tj-context-workspace .ctx-provenance,
+#viewContext.tj-context-workspace .ctx-brief-card,
+#viewContext.tj-context-workspace .ctx-deep-details{grid-column:1!important;width:100%!important;box-sizing:border-box!important}
+#viewContext.tj-context-workspace .ctx-brief-card{min-height:0!important}
+#viewContext.tj-context-workspace .ctx-deep-details{position:static!important;max-height:none!important;overflow:visible!important}
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-attention-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-snapshot-list{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+#viewContext.tj-context-workspace .ctx-attention-card>strong{font-size:14px!important}
+
+/* ========================================================================== 
+   Decision Gate — compact rules so verdict is reached immediately.
+   ========================================================================== */
+#viewGate.tj-gate-workspace .gate-hero{padding-top:4px!important;padding-bottom:6px!important}
+#viewGate.tj-gate-workspace .gate-layout{
+  grid-template-columns:minmax(0,1.12fr) minmax(420px,.88fr)!important;
+  gap:16px!important;
+  align-items:start!important;
+}
+#viewGate.tj-gate-workspace .gate-plan-card,
+#viewGate.tj-gate-workspace .gate-rules-card{padding:18px!important}
+#viewGate.tj-gate-workspace .gate-rules-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+#viewGate.tj-gate-workspace .gate-rules-grid>.field{min-width:0!important}
+#viewGate.tj-gate-workspace .gate-rules-grid>.field input{width:100%!important;box-sizing:border-box!important}
+#viewGate.tj-gate-workspace .gate-rule-check{grid-column:1/-1!important}
+#viewGate.tj-gate-workspace .gate-rules-card>.mc-note{margin-top:12px!important}
+#viewGate.tj-gate-workspace #gateResultCard{margin-top:0!important}
+
+/* ========================================================================== 
+   Discipline — stacked analysis = no dead half-screen under performance.
+   ========================================================================== */
+#tjDisciplineView .tj-discipline-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+  gap:14px!important;
+}
+#tjDisciplineView .tj-discipline-grid>#perfCard,
+#tjDisciplineView .tj-discipline-grid>#mistakeAnalyticsCard{width:100%!important;box-sizing:border-box!important}
+#tjDisciplineView .tj-discipline-grid>#perfCard #perfBody{max-width:none!important}
+#tjDisciplineView .tj-discipline-grid .mistake-kpis{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+}
+#tjDisciplineView .tj-discipline-grid .mistake-kpis>div{min-height:90px!important}
+
+/* ========================================================================== 
+   Responsive collapse points
+   ========================================================================== */
+@media(max-width:1350px){
+  body.tj-desktop-v2 .tj-topbar{grid-template-columns:minmax(190px,250px) minmax(260px,1fr) auto!important}
+  body.tj-desktop-v2 .tj-top-button span{display:none}
+  #tjOverviewView .tj-overview-main{grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr)!important}
+  #tjOverviewView .tj-overview-actions{grid-column:1/-1!important}
+  #viewScan.tj-scan-workspace .scan-toolbar{grid-template-columns:160px minmax(230px,300px) minmax(320px,1fr)!important}
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:1120px){
+  #viewTrading.tj-journal-workspace .tj-journal-grid{grid-template-columns:1fr!important}
+  #viewTrading.tj-journal-workspace .tj-journal-side{position:static!important}
+  #viewScan.tj-scan-workspace .scan-toolbar{grid-template-columns:1fr 1fr!important}
+  #viewScan.tj-scan-workspace .scan-key-field{grid-column:1/-1!important}
+  #viewScan.tj-scan-workspace #scanSlots{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #viewGate.tj-gate-workspace .gate-layout{grid-template-columns:1fr!important}
+  #tjDisciplineView .tj-discipline-grid .mistake-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:820px){
+  #viewScan.tj-scan-workspace .scan-toolbar,
+  #viewScan.tj-scan-workspace #scanSlots{grid-template-columns:1fr!important}
+  #viewScan.tj-scan-workspace .scan-key-field{grid-column:auto!important}
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-attention-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-snapshot-list{grid-template-columns:1fr!important}
+  #viewGate.tj-gate-workspace .gate-rules-grid{grid-template-columns:1fr!important}
+  #viewGate.tj-gate-workspace .gate-rule-check{grid-column:auto!important}
+}
