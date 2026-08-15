@@ -1,0 +1,317 @@
+/* Trading Journal Desktop 2.1.17 — Backtesting layout correction
+   Fixes the double-scroll regression introduced by the 2.1.16 premium pass
+   and rebalances overview/simulations without touching V206 logic. */
+
+/* ========================================================================== 
+   1. ONE SCROLL OWNER — the workspace scrolls, inner columns do not
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest.tj-backtest-workspace{
+  height:100%!important;
+  min-height:0!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+  scrollbar-gutter:stable!important;
+  padding-right:7px!important;
+  padding-bottom:28px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest>.bt-layout{
+  min-height:max-content!important;
+  align-items:start!important;
+  overflow:visible!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-main,
+body[data-workspace="backtesting"] #viewBacktest #btSummary,
+body[data-workspace="backtesting"] #viewBacktest #btDetail,
+body[data-workspace="backtesting"] #viewBacktest .bt-detail-layout,
+body[data-workspace="backtesting"] #viewBacktest .bt-main-col,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-panel-group,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+  min-height:0!important;
+  overflow:visible!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-main{
+  display:block!important;
+  padding:0 3px 0 0!important;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .notes-pages{
+  top:8px!important;
+  max-height:calc(100vh - 184px)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-tree{
+  max-height:calc(100vh - 270px)!important;
+  overflow-y:auto!important;
+  overscroll-behavior:contain!important;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row{
+  top:-1px!important;
+  margin-bottom:12px!important;
+  padding:7px 0 10px!important;
+  backdrop-filter:blur(12px)!important;
+}
+
+/* ========================================================================== 
+   2. PAGE HEADER — less chrome, clearer hierarchy
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest #btDetail>.bt-context{
+  display:grid!important;
+  grid-template-columns:minmax(230px,.72fr) minmax(0,1.28fr)!important;
+  gap:10px 18px!important;
+  align-items:end!important;
+  padding:13px 15px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPageTitle{
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  align-self:center!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDetail>.bt-context .bt-context-row{
+  min-width:0!important;
+  justify-content:flex-end!important;
+  gap:6px 8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btScope{
+  flex-basis:100%!important;
+  margin-left:0!important;
+  text-align:right!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTodayCount{
+  margin-left:auto!important;
+}
+
+/* ========================================================================== 
+   3. KPI STRIP — readable without eating the whole first screen
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest #btStats{
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats>.stat{
+  grid-column:span 2!important;
+  min-height:88px!important;
+  padding:12px 13px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats>.stat:nth-child(-n+3){
+  background:
+    radial-gradient(circle at 100% 0,rgba(81,143,255,.06),transparent 45%),
+    linear-gradient(150deg,rgba(22,39,73,.88),rgba(10,22,44,.94))!important;
+}
+
+/* ========================================================================== 
+   4. OVERVIEW — chart + performance, notes naturally below the chart
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.55fr) minmax(330px,.72fr)!important;
+  grid-template-areas:
+    "chart performance"
+    "comment performance"!important;
+  gap:11px!important;
+  align-items:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-main,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-side{
+  display:contents!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btChartCard{
+  grid-area:chart!important;
+  min-height:390px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btChartCard .chart-box{
+  height:316px!important;
+  min-height:316px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard{
+  grid-area:performance!important;
+  align-self:start!important;
+  min-width:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card{
+  grid-area:comment!important;
+  min-height:148px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card textarea{
+  min-height:94px!important;
+  max-height:180px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+
+/* ========================================================================== 
+   5. TRADES — narrower filter rail, wider data canvas
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+  grid-template-columns:228px minmax(0,1fr)!important;
+  gap:12px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-left{
+  top:58px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card{
+  padding:11px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{
+  grid-template-columns:1fr!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-check{
+  min-height:30px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-time{
+  display:inline!important;
+  margin-left:4px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMonthsCard,
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard{
+  width:100%!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-months-grid{
+  grid-template-columns:repeat(auto-fit,minmax(168px,1fr))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard{
+  max-height:none!important;
+  min-height:320px!important;
+  overflow-x:auto!important;
+  overflow-y:visible!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard thead{
+  position:sticky!important;
+  top:48px!important;
+}
+
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard .cal-body{
+  grid-template-columns:minmax(0,1fr) 116px!important;
+  gap:7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid .cal-cell,
+body[data-workspace="backtesting"] #viewBacktest #btDayCalWeeks .cal-week{
+  min-height:78px!important;
+  height:78px!important;
+}
+
+/* ========================================================================== 
+   6. SIMULATIONS — MC + DSR first, WFA full-width below
+   ========================================================================== */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.45fr) minmax(320px,.55fr)!important;
+  grid-template-areas:
+    "mc dsr"
+    "wf wf"!important;
+  gap:11px!important;
+  align-items:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard{grid-area:mc!important}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard{grid-area:dsr!important}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard{grid-area:wf!important}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-params{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:end!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-params label{
+  min-width:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-stats{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(150px,210px)) auto!important;
+  justify-content:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params label{
+  min-width:0!important;
+}
+
+/* ========================================================================== 
+   7. RESPONSIVE — collapse layout, never reintroduce nested page scrolling
+   ========================================================================== */
+@container tj-backtest (max-width:1260px){
+  body[data-workspace="backtesting"] #viewBacktest #btDetail>.bt-context{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btDetail>.bt-context .bt-context-row{
+    justify-content:flex-start!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btScope{
+    text-align:left!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+    grid-template-columns:minmax(0,1.3fr) minmax(300px,.7fr)!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+    grid-template-columns:212px minmax(0,1fr)!important;
+  }
+}
+
+@container tj-backtest (max-width:1080px){
+  body[data-workspace="backtesting"] #viewBacktest #btStats{
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btStats>.stat{
+    grid-column:span 2!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:
+      "chart"
+      "performance"
+      "comment"!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"mc" "dsr" "wf"!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params{
+    grid-template-columns:repeat(3,minmax(130px,1fr)) auto!important;
+  }
+}
+
+@container tj-backtest (max-width:1020px){
+  body[data-workspace="backtesting"] #viewBacktest .notes-pages{
+    position:static!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-tree{
+    max-height:220px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-left{
+    position:static!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+
+@container tj-backtest (max-width:760px){
+  body[data-workspace="backtesting"] #viewBacktest #btStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btStats>.stat{
+    grid-column:auto!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params,
+  body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-params{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard thead{
+    top:0!important;
+  }
+}
