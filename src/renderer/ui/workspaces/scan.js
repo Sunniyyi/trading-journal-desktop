@@ -109,9 +109,15 @@ export function enhanceScan(){
     const img=$(id,view);if(img)observer.observe(img,{attributes:true,attributeFilter:['src','style']});
   });
   if(result)observer.observe(result,{attributes:true,attributeFilter:['style']});
-  $('#scanReadyText',view)&&observer.observe($('#scanReadyText',view),{childList:true,characterData:true,subtree:true});
+  const readyText=$('#scanReadyText',view);if(readyText)observer.observe(readyText,{childList:true,characterData:true,subtree:true});
   $('#scanAsset',view)?.addEventListener('input',sync);
   $('#scanProfile',view)?.addEventListener('change',sync);
   sync();
   afterPaint(()=>window.dispatchEvent(new Event('resize')));
 }
+
+function start(){
+  try{enhanceScan();}
+  catch(error){console.error('[Desktop UI] Scan TA enhancement failed',error);}
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',start,{once:true});else start();
