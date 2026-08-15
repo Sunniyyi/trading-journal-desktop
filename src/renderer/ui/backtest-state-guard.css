@@ -1,0 +1,7 @@
+/* Trading Journal Desktop 2.1.16 — Backtesting state guard
+   V206 controls several Backtesting subviews through inline display states.
+   Keep those states authoritative even when presentation layers use !important. */
+body[data-workspace="backtesting"] #viewBacktest [style*="display:none"],
+body[data-workspace="backtesting"] #viewBacktest [style*="display: none"]{
+  display:none!important;
+}
