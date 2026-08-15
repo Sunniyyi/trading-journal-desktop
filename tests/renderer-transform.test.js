@@ -1,5 +1,6 @@
 'use strict';
 
+// Release 2.1.3 gate: the visual hotfix must be present in every generated renderer.
 const assert = require('node:assert/strict');
 const { reconstructBaseline, verifyBaseline } = require('../scripts/reconstruct-renderer');
 const { transformRenderer, CHART_CDN, CHART_LOCAL } = require('../scripts/renderer-transform');
