@@ -39,6 +39,8 @@ function hardenToolsMenu(){
   const trigger=document.querySelector('#tjToolsButton');
   const menu=document.querySelector('#tjToolsMenu');
   if(!trigger||!menu)return false;
+  if(trigger.dataset.tjStabilityTools==='1')return true;
+  trigger.dataset.tjStabilityTools='1';
   trigger.addEventListener('mousedown',event=>event.stopPropagation());
   trigger.addEventListener('click',()=>requestAnimationFrame(positionToolsMenu));
   window.addEventListener('resize',positionToolsMenu,{passive:true});
@@ -52,6 +54,8 @@ function hardenCommandPalette(){
   const input=document.querySelector('.tj-command-input');
   const list=document.querySelector('.tj-command-list');
   if(!backdrop||!input||!list)return false;
+  if(input.dataset.tjStabilityPalette==='1')return true;
+  input.dataset.tjStabilityPalette='1';
   const reveal=()=>requestAnimationFrame(()=>list.querySelector('.tj-command-item.is-selected')?.scrollIntoView({block:'nearest'}));
   const resetSelection=()=>{
     if(backdrop.hidden)return;
@@ -78,6 +82,8 @@ function isVisible(element){
 function hardenBackupSpacing(){
   const warning=document.querySelector('#autoBackupWarning');
   if(!warning)return false;
+  if(warning.dataset.tjStabilityBackup==='1')return true;
+  warning.dataset.tjStabilityBackup='1';
   let frame=0;
   const update=()=>{
     cancelAnimationFrame(frame);
