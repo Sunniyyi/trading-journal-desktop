@@ -1,0 +1,290 @@
+/* Trading Journal Desktop 2.1.18 — Backtesting visual polish
+   Presentation only. Fixes the remaining layout defects seen in 2.1.17. */
+
+/* --------------------------------------------------------------------------
+   TABS — one clean segmented control, no double borders
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row{
+  padding:4px 0 11px!important;
+  background:linear-gradient(180deg,rgba(6,15,32,.96) 72%,rgba(6,15,32,0))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tabs{
+  display:grid!important;
+  grid-template-columns:repeat(3,max-content)!important;
+  width:max-content!important;
+  gap:2px!important;
+  padding:3px!important;
+  border:1px solid rgba(130,159,219,.13)!important;
+  border-radius:12px!important;
+  background:rgba(7,17,36,.78)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tab{
+  min-height:34px!important;
+  padding:0 13px!important;
+  border:0!important;
+  border-radius:9px!important;
+  background:transparent!important;
+  color:#91a1bf!important;
+  box-shadow:none!important;
+  font-size:10px!important;
+  font-weight:700!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tab:hover{
+  background:rgba(75,102,166,.09)!important;
+  color:#e8efff!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tab.is-active{
+  background:linear-gradient(135deg,rgba(42,153,215,.20),rgba(91,73,218,.24))!important;
+  color:#f7f9ff!important;
+  box-shadow:inset 0 0 0 1px rgba(75,200,248,.46)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row>.tj-badge{
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.018)!important;
+  border:1px solid rgba(132,159,214,.09)!important;
+  color:#7f8daa!important;
+}
+
+/* --------------------------------------------------------------------------
+   OVERVIEW — chart + performance first, comment becomes a full-width note
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+  grid-template-columns:minmax(0,1.52fr) minmax(330px,.62fr)!important;
+  grid-template-areas:
+    "chart performance"
+    "comment comment"!important;
+  gap:12px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-main,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-side{
+  display:contents!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btChartCard{grid-area:chart!important}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard{grid-area:performance!important}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card{
+  grid-area:comment!important;
+  width:100%!important;
+  min-height:0!important;
+  padding:13px 14px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card textarea{
+  width:100%!important;
+  min-height:92px!important;
+  max-height:170px!important;
+  resize:vertical!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard{
+  align-self:start!important;
+}
+
+/* --------------------------------------------------------------------------
+   TRADES TABLE — clear ledger, proper capture previews, compact actions
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard{
+  border:1px solid rgba(132,160,218,.13)!important;
+  border-radius:15px!important;
+  background:rgba(7,17,35,.62)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard table{
+  width:100%!important;
+  min-width:940px!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard th{
+  height:42px!important;
+  padding:0 12px!important;
+  border-bottom:1px solid rgba(132,160,218,.13)!important;
+  background:rgba(8,18,38,.98)!important;
+  color:#8f9fbd!important;
+  font-size:8.8px!important;
+  font-weight:760!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard td{
+  min-height:58px!important;
+  padding:10px 12px!important;
+  border-bottom:1px solid rgba(129,154,211,.07)!important;
+  vertical-align:middle!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard tbody tr:last-child td{border-bottom:0!important}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard tbody tr:hover td{
+  background:rgba(67,103,175,.075)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTbody td:nth-child(7){
+  display:table-cell!important;
+  width:78px!important;
+  max-width:78px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTbody .trade-thumb.sm{
+  display:inline-flex!important;
+  width:52px!important;
+  height:36px!important;
+  margin:0 2px!important;
+  border-radius:8px!important;
+  border:1px solid rgba(132,160,218,.18)!important;
+  background:#081329!important;
+  vertical-align:middle!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTbody .trade-thumb.sm img{
+  width:52px!important;
+  height:36px!important;
+  object-fit:cover!important;
+  border-radius:7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTbody td:last-child{
+  width:88px!important;
+  text-align:right!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTbody .mini-btn{
+  width:34px!important;
+  height:34px!important;
+  min-width:34px!important;
+  min-height:34px!important;
+  padding:0!important;
+  margin-left:4px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  border-radius:9px!important;
+  font-size:12px!important;
+}
+
+/* --------------------------------------------------------------------------
+   FILTER RAIL — checkboxes are checkboxes, sessions stay readable
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+  grid-template-columns:242px minmax(0,1fr)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:6px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-check{
+  display:grid!important;
+  grid-template-columns:18px minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-height:38px!important;
+  padding:7px 9px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(132,159,214,.09)!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.012)!important;
+  color:#c3cee2!important;
+  font-size:9.8px!important;
+  line-height:1.2!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-check:hover{
+  background:rgba(69,99,164,.075)!important;
+  border-color:rgba(92,176,240,.20)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-check input[type="checkbox"]{
+  appearance:auto!important;
+  width:15px!important;
+  height:15px!important;
+  min-width:15px!important;
+  min-height:15px!important;
+  margin:0!important;
+  padding:0!important;
+  accent-color:#6f77f4!important;
+  justify-self:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-time{
+  display:inline!important;
+  margin:0!important;
+  color:#7788a9!important;
+  font-size:8.5px!important;
+  white-space:nowrap!important;
+  text-align:right!important;
+}
+
+/* --------------------------------------------------------------------------
+   SIMULATIONS — better balance and readable DSR header
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+  grid-template-columns:minmax(0,1.28fr) minmax(390px,.72fr)!important;
+  grid-template-areas:
+    "mc dsr"
+    "wf wf"!important;
+  gap:12px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid>.card{
+  border-color:rgba(132,161,220,.14)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.022)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard{grid-area:mc!important}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard{grid-area:dsr!important}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard{grid-area:wf!important}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-head{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:start!important;
+  gap:10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-head h2{
+  min-width:0!important;
+  max-width:290px!important;
+  font-size:12.3px!important;
+  line-height:1.18!important;
+  text-wrap:balance!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-head button,
+body[data-workspace="backtesting"] #viewBacktest #btMcCard .mc-head button,
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-head button{
+  min-height:32px!important;
+  padding-inline:10px!important;
+  white-space:nowrap!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-params{
+  grid-template-columns:minmax(160px,1fr) auto!important;
+  gap:9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params{
+  grid-template-columns:repeat(3,minmax(160px,210px)) auto!important;
+  gap:9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-empty{
+  min-height:0!important;
+  margin-top:10px!important;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE
+   -------------------------------------------------------------------------- */
+@container tj-backtest (max-width:1180px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"mc" "dsr" "wf"!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"chart" "performance" "comment"!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+@container tj-backtest (max-width:1020px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{grid-template-columns:1fr!important}
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{grid-template-columns:1fr 1fr!important}
+}
+@container tj-backtest (max-width:760px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-section-tabs{
+    width:100%!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-section-tab{
+    padding-inline:8px!important;
+    white-space:normal!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{grid-template-columns:1fr!important}
+  body[data-workspace="backtesting"] #viewBacktest #btWfCard .mc-params,
+  body[data-workspace="backtesting"] #viewBacktest #btDsrCard .mc-params{grid-template-columns:1fr!important}
+}
