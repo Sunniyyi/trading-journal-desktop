@@ -8,7 +8,14 @@ const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session } = require('e
 if (require('electron-squirrel-startup')) process.exit(0);
 const { BridgeServer } = require('./bridge-server');
 const { syncManagedExtension, managedExtensionDir } = require('./extension-manager');
-const { initUpdater, checkForUpdates, openUpdaterConfig, getUpdaterStatus } = require('./app-updater');
+const {
+  initUpdater,
+  checkForUpdates,
+  showUpdateCenter,
+  installDownloadedUpdate,
+  openUpdaterConfig,
+  getUpdaterStatus
+} = require('./app-updater');
 
 const BRIDGE_PORT = 17841;
 let mainWindow = null;
@@ -56,10 +63,28 @@ function createMenu() {
         { label: 'Ouvrir FX Replay dans Chrome', click: () => shell.openExternal('https://app.fxreplay.com/') },
         { label: 'Ouvrir le dossier de l’extension FXReplay', click: () => shell.openPath(managedExtensionDir()) },
         { type: 'separator' },
-        { label: 'Vérifier les mises à jour', click: () => checkForUpdates({ manual: true }) },
-        { label: 'Configurer les mises à jour…', click: () => openUpdaterConfig() },
-        { type: 'separator' },
         { role: 'quit', label: 'Quitter' }
+      ]
+    },
+    {
+      label: 'Mises à jour',
+      submenu: [
+        {
+          label: 'Centre de mise à jour…',
+          accelerator: 'CmdOrCtrl+U',
+          click: () => showUpdateCenter()
+        },
+        {
+          label: 'Vérifier maintenant',
+          click: () => checkForUpdates({ manual: true })
+        },
+        {
+          label: 'Installer la mise à jour téléchargée',
+          click: () => installDownloadedUpdate()
+        },
+        { type: 'separator' },
+        { label: `Version actuelle : ${app.getVersion()}`, enabled: false },
+        { label: 'Configurer les mises à jour…', click: () => openUpdaterConfig() }
       ]
     },
     { label: 'Affichage', submenu: [{ role: 'reload' }, { role: 'togglefullscreen' }, { role: 'toggleDevTools' }] }
