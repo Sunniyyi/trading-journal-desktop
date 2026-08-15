@@ -30,6 +30,7 @@ assert(output.includes('./ui/typography-polish.css'), 'Desktop 2.1.12 typography
 assert(output.includes('./ui/journal-polish.css'), 'Desktop 2.1.14 journal polish stylesheet is missing.');
 assert(output.includes('./ui/journal-premium.css'), 'Desktop 2.1.15 journal premium stylesheet is missing.');
 assert(output.includes('./ui/backtest-premium.css'), 'Desktop 2.1.16 Backtesting premium stylesheet is missing.');
+assert(output.includes('./ui/backtest-layout-v217.css'), 'Desktop 2.1.17 Backtesting layout correction is missing.');
 assert(output.includes('./ui/backtest-state-guard.css'), 'Desktop 2.1.16 Backtesting state guard is missing.');
 assert(output.includes('./ui/workspace-routing-fix.css'), 'Desktop 2.1.13 workspace routing guard is missing.');
 assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
@@ -40,7 +41,8 @@ assert(output.indexOf('./ui/widget-polish.css') < output.indexOf('./ui/typograph
 assert(output.indexOf('./ui/typography-polish.css') < output.indexOf('./ui/journal-polish.css'), 'Journal polish must load after global typography so page-specific readability wins.');
 assert(output.indexOf('./ui/journal-polish.css') < output.indexOf('./ui/journal-premium.css'), 'Journal premium must load after the 2.1.14 Journal foundation.');
 assert(output.indexOf('./ui/journal-premium.css') < output.indexOf('./ui/backtest-premium.css'), 'Backtesting premium must load after Journal-specific layers.');
-assert(output.indexOf('./ui/backtest-premium.css') < output.indexOf('./ui/backtest-state-guard.css'), 'Backtesting visibility state guard must load after Backtesting presentation.');
+assert(output.indexOf('./ui/backtest-premium.css') < output.indexOf('./ui/backtest-layout-v217.css'), 'Backtesting 2.1.17 correction must override the 2.1.16 premium layout.');
+assert(output.indexOf('./ui/backtest-layout-v217.css') < output.indexOf('./ui/backtest-state-guard.css'), 'Backtesting visibility state guard must load after the 2.1.17 layout correction.');
 assert(output.indexOf('./ui/backtest-state-guard.css') < output.indexOf('./ui/workspace-routing-fix.css'), 'Workspace visibility guard must remain the final stylesheet.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
