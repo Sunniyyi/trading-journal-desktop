@@ -9,12 +9,22 @@ export function enhanceJournal(){
   const stats=$('#stats',view);
   const chart=$('#chartCard',view);
   const table=$('#tableSection',view);
+  const calendar=$('#journalCalCard',view);
   const dash=$('.dash-duo',view);
+
   if(stats && chart && table){
     const grid=el('div','tj-journal-grid');
-    grid.append(table,chart);
+    const main=el('div','tj-journal-main');
+    const side=el('aside','tj-journal-side');
+
+    main.appendChild(table);
+    if(calendar) main.appendChild(calendar);
+    side.appendChild(chart);
+    grid.append(main,side);
     stats.after(grid);
+
     if(dash && !dash.children.length) dash.remove();
   }
+
   afterPaint(()=>window.dispatchEvent(new Event('resize')));
 }
