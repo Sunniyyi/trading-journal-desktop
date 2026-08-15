@@ -1,0 +1,940 @@
+/* Trading Journal Desktop 2.1.16 — Backtesting premium pass
+   Presentation only. Scoped to the Backtesting workspace. */
+
+body[data-workspace="backtesting"] #viewBacktest.tj-backtest-workspace{
+  container-type:inline-size;
+  container-name:tj-backtest;
+  gap:11px!important;
+  overflow:hidden!important;
+}
+
+/* --------------------------------------------------------------------------
+   MAIN FRAME — stable navigation + analytical canvas
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest>.bt-layout{
+  grid-template-columns:236px minmax(0,1fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+  min-height:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-main{
+  min-width:0!important;
+  min-height:0!important;
+  overflow:auto!important;
+  padding:0 6px 18px 0!important;
+}
+
+/* --------------------------------------------------------------------------
+   PAGE NAVIGATION — compact strategy library, not a generic sidebar
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .notes-pages{
+  position:sticky!important;
+  top:0!important;
+  align-self:start!important;
+  max-height:calc(100vh - 188px)!important;
+  padding:11px!important;
+  overflow:hidden!important;
+  border-radius:16px!important;
+  background:
+    radial-gradient(circle at 0 0,rgba(68,149,255,.055),transparent 38%),
+    linear-gradient(180deg,rgba(17,31,60,.94),rgba(9,20,41,.97))!important;
+  border-color:rgba(132,163,225,.17)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 16px 34px rgba(0,0,0,.13)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .notes-pages-head{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-height:42px!important;
+  padding:2px 2px 10px!important;
+  margin:0 0 8px!important;
+  border-bottom:1px solid rgba(132,160,217,.11)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .notes-pages-head>span{
+  font-size:9px!important;
+  font-weight:760!important;
+  letter-spacing:.13em!important;
+  text-transform:uppercase!important;
+  color:#9babca!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .notes-pages-head button{
+  min-height:32px!important;
+  height:32px!important;
+  padding-inline:10px!important;
+  border-radius:9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-tree{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  max-height:calc(100vh - 260px)!important;
+  overflow:auto!important;
+  padding-right:2px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-row,
+body[data-workspace="backtesting"] #viewBacktest .bt-month-row{
+  position:relative!important;
+  min-height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  padding:8px 9px!important;
+  border:1px solid transparent!important;
+  border-radius:11px!important;
+  background:transparent!important;
+  color:#c3cee2!important;
+  transition:background .14s ease,border-color .14s ease,color .14s ease!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-row{
+  min-height:36px!important;
+  padding-left:24px!important;
+  font-size:10.5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-row:hover,
+body[data-workspace="backtesting"] #viewBacktest .bt-month-row:hover{
+  background:rgba(65,93,153,.10)!important;
+  border-color:rgba(133,164,224,.13)!important;
+  color:#edf3ff!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-row.on,
+body[data-workspace="backtesting"] #viewBacktest .bt-month-row.on{
+  background:linear-gradient(90deg,rgba(37,166,224,.16),rgba(82,91,219,.13))!important;
+  border-color:rgba(66,195,244,.52)!important;
+  color:#f5f9ff!important;
+  box-shadow:inset 3px 0 0 #56d4ff,0 8px 20px rgba(0,0,0,.09)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-row .nm,
+body[data-workspace="backtesting"] #viewBacktest .bt-month-row .nm{
+  min-width:0!important;
+  font-size:11px!important;
+  font-weight:680!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-summary-row .nm{font-weight:790!important}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-count{
+  min-width:28px!important;
+  padding:3px 7px!important;
+  border-radius:999px!important;
+  background:rgba(120,146,205,.10)!important;
+  border:1px solid rgba(132,159,214,.09)!important;
+  color:#9eacc6!important;
+  font-size:9px!important;
+  font-weight:720!important;
+  text-align:center!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-page-row.on .bt-page-count{
+  background:rgba(53,191,235,.12)!important;
+  color:#bfefff!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-add-month{
+  min-height:34px!important;
+  padding:8px 9px 8px 24px!important;
+  color:#70cdf6!important;
+  border-radius:9px!important;
+}
+
+/* --------------------------------------------------------------------------
+   SUMMARY — portfolio-level overview before diving into a page
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest #btSummary{
+  max-width:1320px!important;
+  margin:0 auto!important;
+  padding-bottom:18px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.bt-context{
+  position:relative!important;
+  margin:0 0 9px!important;
+  padding:14px 15px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 92% 0,rgba(100,92,255,.08),transparent 32%),
+    linear-gradient(180deg,rgba(20,35,67,.88),rgba(12,25,50,.93))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.bt-context::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:16px!important;
+  width:54px!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#59d7ff,#8b82ff)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .notes-title-input{
+  min-height:30px!important;
+  height:30px!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  color:#f4f7ff!important;
+  font-size:15px!important;
+  font-weight:790!important;
+  letter-spacing:-.015em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .bt-scope{
+  font-size:10px!important;
+  color:#9eadc7!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .sum-filters{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:7px!important;
+  margin:0 0 10px!important;
+  padding:8px!important;
+  border:1px solid rgba(132,161,220,.12)!important;
+  border-radius:13px!important;
+  background:rgba(7,17,35,.54)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .sum-dd-btn{
+  min-height:36px!important;
+  padding:8px 11px!important;
+  gap:8px!important;
+  border-radius:10px!important;
+  border-color:rgba(137,165,223,.16)!important;
+  background:rgba(14,27,53,.72)!important;
+  color:#cbd5e8!important;
+  font-size:10px!important;
+  font-weight:680!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .sum-dd-btn:hover{
+  border-color:rgba(87,197,255,.34)!important;
+  color:#f2f6ff!important;
+  box-shadow:none!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .sum-dd-menu{
+  margin-top:2px!important;
+  padding:7px!important;
+  border-radius:11px!important;
+  border-color:rgba(126,160,226,.22)!important;
+  background:rgba(8,18,38,.98)!important;
+  box-shadow:0 20px 46px rgba(0,0,0,.42)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary .sum-check,
+body[data-workspace="backtesting"] #viewBacktest #btSummary .session-check{
+  min-height:34px!important;
+  padding:7px 8px!important;
+  border-radius:8px!important;
+  font-size:10.5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.stats{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,220px))!important;
+  gap:9px!important;
+  margin:0 0 10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.stats>.stat{
+  min-height:88px!important;
+  padding:12px 14px!important;
+  border-radius:14px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.stats .val{
+  margin-top:6px!important;
+  font-size:22px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.card{
+  margin:0!important;
+  padding:16px!important;
+  border-radius:16px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btSummary>.card h2{
+  margin:0 0 13px!important;
+  font-size:13px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown{
+  gap:8px!important;
+  margin:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-row{
+  display:grid!important;
+  grid-template-columns:minmax(150px,220px) minmax(120px,1fr) auto!important;
+  gap:12px!important;
+  align-items:center!important;
+  min-height:36px!important;
+  padding:5px 2px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-name{
+  min-width:0!important;
+  font-size:10.8px!important;
+  font-weight:650!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-bar{
+  height:7px!important;
+  border-radius:999px!important;
+  overflow:hidden!important;
+  background:rgba(117,143,200,.10)!important;
+  border-color:rgba(132,158,214,.08)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-fill{border-radius:inherit!important}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-val{
+  min-width:116px!important;
+  font-size:10px!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-n{font-size:9px!important}
+
+/* --------------------------------------------------------------------------
+   PAGE CONTEXT — name + configuration should feel like a strategy header
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest #btDetail>.bt-context{
+  position:relative!important;
+  margin:0 0 9px!important;
+  padding:12px 14px!important;
+  border-radius:15px!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(80,111,255,.055),transparent 34%),
+    linear-gradient(180deg,rgba(18,33,64,.91),rgba(11,24,48,.94))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPageTitle{
+  width:min(100%,520px)!important;
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 2px!important;
+  margin-bottom:8px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:15px!important;
+  font-weight:790!important;
+  letter-spacing:-.015em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-context-row{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:7px 9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-capital-label{
+  margin-left:0!important;
+  font-size:8.5px!important;
+  font-weight:760!important;
+  letter-spacing:.09em!important;
+  text-transform:uppercase!important;
+  color:#91a1bf!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-capital-input{
+  width:auto!important;
+  min-width:108px!important;
+  max-width:190px!important;
+  height:36px!important;
+  min-height:36px!important;
+  padding:7px 10px!important;
+  border-radius:9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPageSetup{min-width:170px!important;flex:0 1 230px!important}
+body[data-workspace="backtesting"] #viewBacktest #btScope{
+  margin-left:auto!important;
+  font-size:9.5px!important;
+  color:#9aaac7!important;
+  white-space:normal!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btTodayCount{
+  flex-basis:100%!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin-top:2px!important;
+  padding:5px 9px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(63,204,243,.26)!important;
+  background:rgba(38,171,215,.07)!important;
+  color:#72dfff!important;
+  font-size:9.5px!important;
+}
+
+/* --------------------------------------------------------------------------
+   DETAIL TABS — clear hierarchy between analysis, trades and simulations
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row{
+  position:sticky!important;
+  top:0!important;
+  z-index:16!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin:0 0 10px!important;
+  padding:6px 0 9px!important;
+  background:linear-gradient(180deg,rgba(6,15,32,.97) 72%,rgba(6,15,32,0))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tabs{
+  padding:3px!important;
+  gap:3px!important;
+  border:1px solid rgba(131,158,216,.12)!important;
+  border-radius:12px!important;
+  background:rgba(9,20,42,.70)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tab{
+  min-height:34px!important;
+  padding:8px 12px!important;
+  border-radius:9px!important;
+  color:#aebbd2!important;
+  font-size:10px!important;
+  font-weight:700!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-section-tab.is-active{
+  background:linear-gradient(135deg,rgba(56,189,235,.22),rgba(99,79,225,.28))!important;
+  color:#f5f8ff!important;
+  box-shadow:inset 0 0 0 1px rgba(81,204,255,.42)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row>.tj-badge{
+  opacity:.72!important;
+  font-size:8.5px!important;
+}
+
+/* --------------------------------------------------------------------------
+   PAGE KPI RIBBON — six fast diagnostics, never six bulky cards
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest #btStats{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats>.stat{
+  min-height:82px!important;
+  padding:11px 12px!important;
+  border-radius:13px!important;
+  background:linear-gradient(150deg,rgba(21,37,70,.79),rgba(10,22,44,.92))!important;
+  border-color:rgba(134,162,220,.13)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats .label{
+  font-size:8.4px!important;
+  letter-spacing:.07em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats .val{
+  margin-top:6px!important;
+  font-size:18px!important;
+  font-weight:790!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btStats .sub{
+  margin-top:4px!important;
+  font-size:9px!important;
+  line-height:1.25!important;
+}
+
+/* --------------------------------------------------------------------------
+   OVERVIEW — equity dominates, notes/performance support it
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-panel-group.is-visible{gap:10px!important}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+  grid-template-columns:minmax(0,1.55fr) minmax(320px,.62fr)!important;
+  gap:11px!important;
+  align-items:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-main>#btChartCard{
+  position:relative!important;
+  min-height:410px!important;
+  margin:0!important;
+  padding:14px!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 85% 0,rgba(82,107,255,.07),transparent 36%),
+    linear-gradient(180deg,rgba(19,34,66,.92),rgba(10,22,45,.96))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-main>#btChartCard::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:15px!important;
+  width:48px!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#58dfbe,#5fcfff,#8a83ff)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btChartCard h2{
+  font-size:13px!important;
+  margin:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btChartCard .chart-box{
+  height:338px!important;
+  min-height:338px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-side{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card{
+  margin:0!important;
+  padding:14px!important;
+  min-height:180px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-head{
+  min-height:28px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  margin-bottom:7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btCommentLabel{
+  font-size:9px!important;
+  font-weight:770!important;
+  letter-spacing:.10em!important;
+  text-transform:uppercase!important;
+  color:#aebbd2!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-comment-card textarea{
+  min-height:126px!important;
+  max-height:210px!important;
+  resize:vertical!important;
+  background:rgba(6,15,32,.58)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard{
+  margin:0!important;
+  padding:14px!important;
+  border-radius:16px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard h2{
+  margin:0 0 11px!important;
+  font-size:12.5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-stat{
+  min-height:78px!important;
+  padding:10px!important;
+  border-radius:11px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-stat-lbl{font-size:8.2px!important}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .report-stat-val{font-size:16px!important}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .streaks{gap:5px!important;margin-top:9px!important}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .streak-chip{font-size:9px!important;padding:4px 8px!important}
+body[data-workspace="backtesting"] #viewBacktest #btPerfCard .perf-details{margin-top:9px!important}
+
+/* --------------------------------------------------------------------------
+   TRADES & CALENDAR — filters are a tool rail, data owns the canvas
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+  grid-template-columns:264px minmax(0,1fr)!important;
+  gap:11px!important;
+  align-items:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-left{
+  position:sticky!important;
+  top:50px!important;
+  align-self:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card{
+  padding:12px!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,rgba(17,31,61,.91),rgba(9,20,41,.95))!important;
+  border-color:rgba(132,163,224,.16)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-title{
+  margin:0 0 9px!important;
+  padding:0 0 9px!important;
+  font-size:9px!important;
+  letter-spacing:.13em!important;
+  border-bottom:1px solid rgba(132,159,216,.10)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-title::before{
+  width:5px!important;
+  height:5px!important;
+  border-radius:50%!important;
+  background:#59d7ff!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-hint{
+  margin:0 0 9px!important;
+  padding:8px 9px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.35!important;
+  color:#a6b5ce!important;
+  background:rgba(85,105,177,.07)!important;
+  border:1px solid rgba(132,159,214,.08)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filter-lbl{
+  margin:10px 0 5px!important;
+  font-size:8.2px!important;
+  letter-spacing:.09em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card input,
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card select,
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card>button{
+  width:100%!important;
+  min-height:35px!important;
+  height:35px!important;
+  font-size:10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-presets{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:4px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-preset{
+  min-width:0!important;
+  min-height:29px!important;
+  height:29px!important;
+  padding:0 3px!important;
+  border-radius:7px!important;
+  font-size:8.5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-minmax{
+  display:grid!important;
+  grid-template-columns:1fr auto 1fr!important;
+  gap:5px!important;
+  align-items:center!important;
+  margin-top:6px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-minmax input{min-width:0!important}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-check{
+  min-height:33px!important;
+  padding:6px 7px!important;
+  border-radius:8px!important;
+  border:1px solid rgba(132,159,214,.08)!important;
+  background:rgba(255,255,255,.012)!important;
+  font-size:9px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-time{
+  display:block!important;
+  font-size:7.8px!important;
+  color:#7f8fac!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:9px!important;
+}
+
+/* Month library */
+body[data-workspace="backtesting"] #viewBacktest #btMonthsCard{
+  margin:0!important;
+  padding:14px!important;
+  border-radius:16px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-months-head{
+  min-height:38px!important;
+  margin:0 0 10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-months-head h2{
+  font-size:13px!important;
+  margin:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-months-grid{
+  grid-template-columns:repeat(auto-fill,minmax(155px,1fr))!important;
+  gap:8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card{
+  min-height:100px!important;
+  padding:11px 12px!important;
+  border-radius:11px!important;
+  border-width:1px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  transition:border-color .14s ease,transform .14s ease,box-shadow .14s ease!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card:hover{
+  transform:translateY(-1px)!important;
+  border-color:rgba(83,196,255,.34)!important;
+  box-shadow:0 10px 24px rgba(0,0,0,.13)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card-name{font-size:10.5px!important}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card-pnl{
+  font-size:17px!important;
+  font-weight:790!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card-n,
+body[data-workspace="backtesting"] #viewBacktest .bt-month-card-wr{font-size:9px!important}
+
+/* Month detail calendar */
+body[data-workspace="backtesting"] #viewBacktest #btBackBar{
+  min-height:38px!important;
+  margin:0!important;
+  padding:4px 0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard{
+  margin:0!important;
+  padding:13px!important;
+  border-radius:16px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard .cal-body{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 126px!important;
+  gap:8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid{
+  gap:6px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid .cal-cell{
+  min-height:86px!important;
+  height:86px!important;
+  padding:8px!important;
+  border-radius:10px!important;
+  border-color:rgba(134,161,217,.10)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid .cal-cell:hover{
+  border-color:rgba(85,198,255,.34)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalWeeks .cal-week{
+  min-height:86px!important;
+  height:86px!important;
+  padding:9px!important;
+  border-radius:10px!important;
+}
+
+/* Table = the working ledger */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard{
+  min-height:340px!important;
+  max-height:590px!important;
+  overflow:auto!important;
+  border-radius:13px!important;
+  background:rgba(7,17,35,.60)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard table{min-width:880px!important}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard thead{
+  position:sticky!important;
+  top:0!important;
+  z-index:5!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard th{
+  background:rgba(8,18,38,.98)!important;
+  letter-spacing:.07em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard tbody tr:nth-child(even) td{
+  background:rgba(255,255,255,.007)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right>.tablecard tbody tr:hover td{
+  background:rgba(70,108,183,.09)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPagination{
+  min-height:40px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin:0!important;
+  padding:5px 2px 0!important;
+  border-top:1px solid rgba(132,159,216,.08)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btPageInfo,
+body[data-workspace="backtesting"] #viewBacktest #btPageCur{font-size:9.5px!important}
+
+/* --------------------------------------------------------------------------
+   SIMULATIONS — each tool is a focused research module
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid>.card{
+  position:relative!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:15px!important;
+  border-radius:16px!important;
+  overflow:hidden!important;
+  background:
+    radial-gradient(circle at 100% 0,rgba(88,99,255,.045),transparent 31%),
+    linear-gradient(180deg,rgba(18,33,64,.92),rgba(10,22,45,.95))!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid>.card::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:15px!important;
+  width:42px!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#59d7ff,#8b82ff)!important;
+  opacity:.8!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-head{
+  min-height:36px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin-bottom:10px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-head h2{
+  font-size:13px!important;
+  line-height:1.25!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-head button{min-height:32px!important}
+body[data-workspace="backtesting"] #viewBacktest .mc-params{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:end!important;
+  gap:8px!important;
+  padding:10px!important;
+  border-radius:11px!important;
+  border:1px solid rgba(132,159,216,.09)!important;
+  background:rgba(6,15,32,.40)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-params label{
+  flex:0 1 190px!important;
+  min-width:145px!important;
+  margin:0!important;
+  font-size:8.7px!important;
+  font-weight:690!important;
+  color:#9eadc7!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-params input,
+body[data-workspace="backtesting"] #viewBacktest .mc-params select{
+  width:100%!important;
+  min-height:36px!important;
+  height:36px!important;
+  margin-top:5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-params .primary{
+  min-height:36px!important;
+  height:36px!important;
+  align-self:end!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-help{
+  max-height:360px!important;
+  overflow:auto!important;
+  margin:0 0 10px!important;
+  padding:12px!important;
+  border-radius:11px!important;
+  background:rgba(5,14,30,.56)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-help p{
+  font-size:10.5px!important;
+  line-height:1.55!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-empty{
+  margin-top:9px!important;
+  padding:9px 10px!important;
+  border-radius:10px!important;
+  background:rgba(71,92,151,.06)!important;
+  border:1px solid rgba(132,159,216,.08)!important;
+  color:#9dacC6!important;
+  font-size:9.5px!important;
+  line-height:1.45!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-stats{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fit,minmax(150px,1fr))!important;
+  gap:8px!important;
+  margin:10px 0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .mc-stats>.stat{
+  min-height:82px!important;
+  padding:11px!important;
+  border-radius:11px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #mcResults .chart-box,
+body[data-workspace="backtesting"] #viewBacktest #wfResults .chart-box{
+  border-radius:11px!important;
+  background:rgba(5,14,30,.42)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .wf-tablewrap{
+  max-height:320px!important;
+  overflow:auto!important;
+  margin-top:10px!important;
+  border-radius:11px!important;
+  border:1px solid rgba(132,159,216,.10)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .sim-conclusion{
+  margin-top:10px!important;
+  padding:11px 12px!important;
+  border-radius:11px!important;
+  font-size:10.5px!important;
+  line-height:1.5!important;
+}
+
+/* --------------------------------------------------------------------------
+   CONTAINER RESPONSIVE — react to actual Backtesting width
+   -------------------------------------------------------------------------- */
+@container tj-backtest (max-width:1240px){
+  body[data-workspace="backtesting"] #viewBacktest>.bt-layout{
+    grid-template-columns:210px minmax(0,1fr)!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid{
+    grid-template-columns:minmax(0,1.35fr) minmax(290px,.65fr)!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btStats{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+}
+
+@container tj-backtest (max-width:1020px){
+  body[data-workspace="backtesting"] #viewBacktest>.bt-layout{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .notes-pages{
+    position:static!important;
+    max-height:none!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-tree{
+    max-height:220px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-dashboard-grid,
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-grid{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-left{
+    position:static!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:7px 9px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-title,
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-hint{
+    grid-column:1/-1!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filter-lbl{margin-top:0!important}
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .session-checks,
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-presets,
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card .rr-minmax{
+    grid-column:auto!important;
+  }
+}
+
+@container tj-backtest (max-width:760px){
+  body[data-workspace="backtesting"] #viewBacktest #btStats{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btSummary>.stats{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-row{
+    grid-template-columns:minmax(110px,1fr) minmax(90px,1fr)!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #sumPageBreakdown .sum-val{
+    grid-column:1/-1!important;
+    text-align:left!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-filters-card{
+    grid-template-columns:1fr 1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-tabs-row{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-section-tabs{
+    width:100%!important;
+    overflow:auto!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  body[data-workspace="backtesting"] #viewBacktest .bt-page-row,
+  body[data-workspace="backtesting"] #viewBacktest .bt-month-row,
+  body[data-workspace="backtesting"] #viewBacktest .bt-month-card{
+    transition:none!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .bt-month-card:hover{
+    transform:none!important;
+  }
+}
