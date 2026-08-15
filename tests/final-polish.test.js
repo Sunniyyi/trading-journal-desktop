@@ -11,6 +11,7 @@ const css = fs.readFileSync(full, 'utf8');
 const size = fs.statSync(full).size;
 assert(size > 5000, 'Final polish stylesheet is unexpectedly small.');
 assert(size < 40000, `Final polish stylesheet is too large (${size} bytes). Split it before it becomes a monolith.`);
+assert.equal((css.match(/\{/g) || []).length, (css.match(/\}/g) || []).length, 'Final polish stylesheet has unbalanced braces.');
 
 for (const marker of [
   ':root{',
@@ -33,5 +34,8 @@ for (const marker of [
 assert(css.includes('font-size:12px!important'), 'Readable 12px content scale must be present.');
 assert(css.includes('min-height:40px!important'), 'Interactive controls must keep a usable minimum height.');
 assert(css.includes('grid-template-columns:repeat(3,minmax(0,1fr))!important'), 'Three-column analytical layouts must remain supported on wide desktop screens.');
+assert(!/#tjOverviewView\s*\{[^}]*display:none/i.test(css), 'Final polish must not hide the overview workspace.');
+assert(!/#viewTrading[^\{]*\{[^}]*display:none/i.test(css), 'Final polish must not hide the journal workspace.');
+assert(!/#viewBacktest[^\{]*\{[^}]*display:none/i.test(css), 'Final polish must not hide the backtesting workspace.');
 
 console.log('final polish OK');
