@@ -12,6 +12,7 @@ const files = [
   'src/renderer/ui/command-palette.js',
   'src/renderer/ui/layout-controller.js',
   'src/renderer/ui/inspector.js',
+  'src/renderer/ui/update-center.js',
   'src/renderer/ui/lib/dom.js',
   'src/renderer/ui/workspaces/overview.js',
   'src/renderer/ui/workspaces/journal.js',
@@ -24,7 +25,8 @@ const files = [
   'src/renderer/ui/stability.css',
   'src/renderer/ui/visual-hotfix.css',
   'src/renderer/ui/layout-v214.css',
-  'src/renderer/ui/layout-v215.css'
+  'src/renderer/ui/layout-v215.css',
+  'src/renderer/ui/update-center.css'
 ];
 for (const rel of files) {
   const full = path.join(root, rel);
@@ -38,6 +40,8 @@ assert(shell.includes("navigate('overview')"), 'Overview must remain the default
 assert(shell.includes('WORKSPACES'), 'Navigation must be driven by central workspace configuration.');
 assert(shell.includes('createInspector'), 'Contextual inspector must stay isolated from the shell implementation.');
 assert(shell.includes('initLayoutController'), 'Workbench layout state must stay isolated from the shell implementation.');
+assert(shell.includes('createUpdateCenter'), 'The desktop shell must restore the integrated update center.');
+assert(shell.includes("$('#tjUpdateButton')?.addEventListener('click',()=>updateCenter.open())"), 'Top-bar update button must open the in-app update center.');
 const layout = fs.readFileSync(path.join(root, 'src/renderer/ui/layout-controller.js'), 'utf8');
 for (const capability of ['toggleSidebar','toggleInspector','toggleFocus','toggleDensity']) {
   assert(layout.includes(capability), `Workbench capability missing: ${capability}`);
@@ -92,6 +96,14 @@ for (const marker of [
 ]) {
   assert(v215.includes(marker), `2.1.5 visual regression guard missing: ${marker}`);
 }
+const updateCenter = fs.readFileSync(path.join(root, 'src/renderer/ui/update-center.js'), 'utf8');
+for (const marker of ['Centre de mise à jour','checkForUpdates','startUpdate','restartForUpdate','onUpdateStatus']) {
+  assert(updateCenter.includes(marker), `Update center capability missing: ${marker}`);
+}
+const updateCenterCss = fs.readFileSync(path.join(root, 'src/renderer/ui/update-center.css'), 'utf8');
+for (const marker of ['.tj-update-overlay','.tj-update-center','.tj-update-progress','.tj-update-metrics','.tj-update-btn-primary']) {
+  assert(updateCenterCss.includes(marker), `Update center visual guard missing: ${marker}`);
+}
 const journal = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/journal.js'), 'utf8');
 assert(journal.includes("$('#journalCalCard',view)"), 'Journal desktop layout must explicitly keep the calendar.');
 assert(journal.includes("toolbar.after(calendar)"), 'Journal calendar must live inside the execution surface after its toolbar.');
@@ -103,4 +115,7 @@ for (const capability of ['installChartReuseGuard','positionToolsMenu','hardenCo
   assert(stabilityRuntime.includes(capability), `Visual stability runtime capability missing: ${capability}`);
 }
 assert(stabilityRuntime.includes("existing.destroy()"), 'Chart reuse guard must destroy an existing chart before the canvas is reused.');
+const preload = fs.readFileSync(path.join(root, 'src/preload.js'), 'utf8');
+assert(preload.includes('onUpdateStatus'), 'Preload must expose safe update status subscriptions to the renderer.');
+assert(preload.includes("ipcRenderer.removeListener('desktop:update-status'"), 'Update subscription must be removable.');
 console.log('ui architecture OK');
