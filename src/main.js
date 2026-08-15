@@ -4,19 +4,12 @@ const path = require('node:path');
 const fs = require('node:fs/promises');
 const { app, BrowserWindow, Menu, dialog, ipcMain, shell, session } = require('electron');
 
-// Handle Squirrel.Windows install/update/uninstall events before normal startup.
 if (require('electron-squirrel-startup')) process.exit(0);
 const { BridgeServer } = require('./bridge-server');
 const { syncManagedExtension, managedExtensionDir } = require('./extension-manager');
 const {
-  initUpdater,
-  checkForUpdates,
-  startAvailableUpdate,
-  showUpdateCenter,
-  installDownloadedUpdate,
-  openUpdaterConfig,
-  getUpdaterStatus,
-  setUpdaterStatusSink
+  initUpdater,checkForUpdates,startAvailableUpdate,showUpdateCenter,installDownloadedUpdate,
+  openUpdaterConfig,getUpdaterStatus,setUpdaterStatusSink
 } = require('./app-updater');
 
 const BRIDGE_PORT = 17841;
@@ -33,12 +26,13 @@ function sendUpdaterStatus(status = getUpdaterStatus()) {
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
-    width: 1720,
-    height: 1040,
+    width: 1740,
+    height: 1060,
     minWidth: 1100,
     minHeight: 720,
     show: false,
-    backgroundColor: '#090d1c',
+    autoHideMenuBar: true,
+    backgroundColor: '#060e1d',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       partition: 'persist:trading-journal-desktop',
@@ -53,7 +47,7 @@ function createMainWindow() {
   mainWindow.loadFile(path.join(__dirname, 'renderer', 'trade-journal.html'));
 
   mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.setTitle('Trading Journal — Desktop V1');
+    mainWindow.setTitle(`Trading Journal ${app.getVersion()}`);
     sendUpdaterStatus();
   });
 
@@ -77,23 +71,10 @@ function createMenu() {
     {
       label: 'Mises à jour',
       submenu: [
-        {
-          label: 'Centre de mise à jour…',
-          accelerator: 'CmdOrCtrl+U',
-          click: () => showUpdateCenter()
-        },
-        {
-          label: 'Vérifier maintenant',
-          click: () => checkForUpdates({ manual: true })
-        },
-        {
-          label: 'Télécharger la mise à jour disponible',
-          click: () => startAvailableUpdate({ manual: true })
-        },
-        {
-          label: 'Redémarrer sur la mise à jour prête',
-          click: () => installDownloadedUpdate()
-        },
+        { label: 'Centre de mise à jour…', accelerator: 'CmdOrCtrl+U', click: () => showUpdateCenter() },
+        { label: 'Vérifier maintenant', click: () => checkForUpdates({ manual: true }) },
+        { label: 'Télécharger la mise à jour disponible', click: () => startAvailableUpdate({ manual: true }) },
+        { label: 'Redémarrer sur la mise à jour prête', click: () => installDownloadedUpdate() },
         { type: 'separator' },
         { label: `Version actuelle : ${app.getVersion()}`, enabled: false },
         { label: 'Configurer les mises à jour…', click: () => openUpdaterConfig() }
@@ -124,14 +105,7 @@ function waitForRendererImport(item) {
       pendingImports.delete(item.id);
       resolve({ ok: false, error: 'Le renderer n’a pas confirmé l’import sous 12 s.' });
     }, 12000);
-
-    pendingImports.set(item.id, {
-      resolve: result => {
-        clearTimeout(timeout);
-        pendingImports.delete(item.id);
-        resolve(result);
-      }
-    });
+    pendingImports.set(item.id, { resolve: result => { clearTimeout(timeout);pendingImports.delete(item.id);resolve(result); } });
     mainWindow?.webContents.send('fxr:import', item);
   });
 }
@@ -145,23 +119,12 @@ function installIpc() {
       siteSeenAt: Date.now()
     };
   });
-
-  ipcMain.on('renderer:import-ack', (_event, result) => {
-    pendingImports.get(result?.id)?.resolve({ ok: true, sourceId: result?.sourceId || '', kind: result?.kind || 'trade' });
-  });
-
-  ipcMain.on('renderer:import-fail', (_event, result) => {
-    pendingImports.get(result?.id)?.resolve({ ok: false, error: result?.error || 'Import refusé', kind: result?.kind || 'trade' });
-  });
-
-  ipcMain.on('renderer:retry-queue', () => {
-    // The Chrome extension polls the local bridge continuously, so no explicit action is required.
-  });
-
+  ipcMain.on('renderer:import-ack', (_event, result) => pendingImports.get(result?.id)?.resolve({ ok: true, sourceId: result?.sourceId || '', kind: result?.kind || 'trade' }));
+  ipcMain.on('renderer:import-fail', (_event, result) => pendingImports.get(result?.id)?.resolve({ ok: false, error: result?.error || 'Import refusé', kind: result?.kind || 'trade' }));
+  ipcMain.on('renderer:retry-queue', () => {});
   ipcMain.handle('desktop:open-fxreplay', () => shell.openExternal('https://app.fxreplay.com/'));
   ipcMain.handle('desktop:open-data-folder', () => shell.openPath(app.getPath('userData')));
   ipcMain.handle('desktop:choose-backup', chooseBackup);
-
   ipcMain.handle('desktop:get-update-status', () => getUpdaterStatus());
   ipcMain.handle('desktop:check-update', () => checkForUpdates({ manual: false }));
   ipcMain.handle('desktop:start-update', () => startAvailableUpdate({ manual: false }));
@@ -171,19 +134,13 @@ function installIpc() {
 
 async function startBridge() {
   bridgeServer = new BridgeServer({
-    host: '127.0.0.1',
-    port: BRIDGE_PORT,
+    host: '127.0.0.1',port: BRIDGE_PORT,
     getConfig: async () => ({ ...siteConfig, siteSeenAt: siteConfig.siteSeenAt || Date.now() }),
     getExtensionInfo: async () => ({
-      version: managedExtensionInfo.version || '',
-      path: managedExtensionInfo.path || managedExtensionDir(),
-      filesReady: managedExtensionInfo.filesReady === true,
-      syncedAt: managedExtensionInfo.syncedAt || 0,
-      channel: managedExtensionInfo.channel || 'desktop-managed-v1'
+      version: managedExtensionInfo.version || '',path: managedExtensionInfo.path || managedExtensionDir(),filesReady: managedExtensionInfo.filesReady === true,
+      syncedAt: managedExtensionInfo.syncedAt || 0,channel: managedExtensionInfo.channel || 'desktop-managed-v1'
     }),
-    onStatus: async status => {
-      mainWindow?.webContents.send('fxr:status', status || {});
-    },
+    onStatus: async status => { mainWindow?.webContents.send('fxr:status', status || {}); },
     onImport: async item => {
       if (!mainWindow || mainWindow.isDestroyed()) return { ok: false, error: 'Trading Journal n’est pas ouvert.' };
       return waitForRendererImport(item);
@@ -194,42 +151,16 @@ async function startBridge() {
 
 app.whenReady().then(async () => {
   app.setAppUserModelId('com.squirrel.TradingJournal.TradingJournal');
-  // Persistent session guarantees IndexedDB/localStorage survive restarts.
   session.fromPartition('persist:trading-journal-desktop');
-
-  // Copy the bundled V21 bridge into one stable folder. Chrome only needs this
-  // folder to be loaded once; later application updates replace its files.
-  try {
-    managedExtensionInfo = await syncManagedExtension();
-  } catch (err) {
-    managedExtensionInfo = { ok: false, version: '', path: managedExtensionDir(), filesReady: false, syncedAt: Date.now(), error: err.message || String(err), channel: 'desktop-managed-v1' };
-  }
-
-  installIpc();
-  setUpdaterStatusSink(sendUpdaterStatus);
-  createMainWindow();
-  createMenu();
-  try {
-    await startBridge();
-  } catch (err) {
-    dialog.showErrorBox('Bridge FXReplay indisponible', `Le port local ${BRIDGE_PORT} n’a pas pu être ouvert.\n\n${err.message || err}`);
-  }
-
-  try {
-    await initUpdater();
-  } catch (err) {
-    console.error('[Updater] init failed:', err);
-  }
-
-  app.on('activate', () => {
-    if (BrowserWindow.getAllWindows().length === 0) createMainWindow();
-  });
+  try { managedExtensionInfo = await syncManagedExtension(); }
+  catch (err) { managedExtensionInfo = { ok: false, version: '', path: managedExtensionDir(), filesReady: false, syncedAt: Date.now(), error: err.message || String(err), channel: 'desktop-managed-v1' }; }
+  installIpc();setUpdaterStatusSink(sendUpdaterStatus);createMainWindow();createMenu();
+  try { await startBridge(); }
+  catch (err) { dialog.showErrorBox('Bridge FXReplay indisponible', `Le port local ${BRIDGE_PORT} n’a pas pu être ouvert.\n\n${err.message || err}`); }
+  try { await initUpdater(); }
+  catch (err) { console.error('[Updater] init failed:', err); }
+  app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createMainWindow(); });
 });
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
-
-app.on('before-quit', () => {
-  bridgeServer?.stop().catch(() => {});
-});
+app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
+app.on('before-quit', () => { bridgeServer?.stop().catch(() => {}); });
