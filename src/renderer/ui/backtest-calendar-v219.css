@@ -1,0 +1,291 @@
+/* Trading Journal 2.1.19 — Backtesting calendar-first UX */
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-right{
+  min-width:0;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  border:1px solid rgba(111,145,211,.22);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(17,34,67,.88),rgba(11,26,52,.82));
+  box-shadow:0 14px 32px rgba(0,0,0,.14);
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-copy,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-intro-copy{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-eyebrow{
+  color:#7f98bc;
+  font-size:10px;
+  font-weight:800;
+  letter-spacing:.11em;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-title,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-title{
+  color:#f4f7ff;
+  font-size:16px;
+  font-weight:800;
+  letter-spacing:-.015em;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-sub{
+  color:#aab8d1;
+  font-size:11px;
+  font-weight:560;
+  line-height:1.45;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-switch{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  flex:0 0 auto;
+  padding:4px;
+  border:1px solid rgba(105,137,199,.28);
+  border-radius:12px;
+  background:rgba(5,16,36,.64);
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-btn{
+  min-height:34px;
+  padding:0 13px;
+  border:1px solid transparent;
+  border-radius:9px;
+  background:transparent;
+  color:#9eafca;
+  font-size:11px;
+  font-weight:750;
+  cursor:pointer;
+  transition:background .16s ease,border-color .16s ease,color .16s ease,box-shadow .16s ease;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-btn:hover{
+  color:#e9efff;
+  background:rgba(91,117,181,.13);
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-btn.is-active{
+  color:#06132b;
+  border-color:rgba(125,239,238,.65);
+  background:linear-gradient(135deg,#72d8ff 0%,#8b7eff 55%,#66e2c6 100%);
+  box-shadow:0 7px 18px rgba(89,142,255,.18);
+}
+
+/* Calendar is the primary visual mode. Legacy V206 still renders the table,
+   but the Desktop layer keeps it hidden until explicitly requested. */
+body[data-workspace="backtesting"] #viewBacktest [data-bt-group="trades"][data-bt-trades-mode="calendar"] .tj-bt-trades-table,
+body[data-workspace="backtesting"] #viewBacktest [data-bt-group="trades"][data-bt-trades-mode="calendar"] #btPagination{
+  display:none!important;
+}
+
+/* Table mode works both on the whole backtest page and inside one month. */
+body[data-workspace="backtesting"] #viewBacktest [data-bt-group="trades"][data-bt-trades-mode="table"] #btMonthsCard,
+body[data-workspace="backtesting"] #viewBacktest [data-bt-group="trades"][data-bt-trades-mode="table"] #btDayCalCard{
+  display:none!important;
+}
+body[data-workspace="backtesting"] #viewBacktest [data-bt-group="trades"][data-bt-trades-mode="table"] .tj-bt-trades-table{
+  display:block!important;
+}
+
+/* The old Gallery button remains functional but the new switch is the primary entry. */
+body[data-workspace="backtesting"] #viewBacktest .bt-filters-card button[onclick*="openGallery('backtest')"]{
+  display:none!important;
+}
+
+/* Calendar gets the visual priority. */
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard{
+  padding:18px!important;
+  border-color:rgba(74,205,255,.23)!important;
+  background:linear-gradient(155deg,rgba(17,35,69,.94),rgba(11,25,51,.92))!important;
+  box-shadow:0 18px 44px rgba(0,0,0,.16)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalCard .bt-months-head{
+  padding-bottom:13px;
+  margin-bottom:12px;
+  border-bottom:1px solid rgba(105,139,201,.19);
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalTitle{
+  font-size:18px!important;
+  font-weight:850!important;
+  letter-spacing:-.02em;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid{
+  gap:8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid .cal-cell{
+  min-height:100px!important;
+  border-color:rgba(102,132,190,.18)!important;
+  background:linear-gradient(160deg,rgba(29,48,83,.78),rgba(18,34,65,.78))!important;
+  transition:transform .14s ease,border-color .14s ease,box-shadow .14s ease;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalGrid .cal-cell:hover{
+  transform:translateY(-1px);
+  border-color:rgba(90,210,255,.42)!important;
+  box-shadow:0 10px 22px rgba(0,0,0,.18);
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalWeeks{
+  gap:8px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDayCalWeeks .week-card{
+  border-color:rgba(102,132,190,.2)!important;
+  background:rgba(20,38,72,.74)!important;
+}
+
+/* Table becomes an audit tool instead of the page's default visual mass. */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table{
+  overflow:auto!important;
+  border:1px solid rgba(100,133,196,.22)!important;
+  border-radius:15px!important;
+  background:rgba(9,23,48,.86)!important;
+  box-shadow:0 16px 34px rgba(0,0,0,.13)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table table{
+  border-collapse:separate!important;
+  border-spacing:0 5px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table thead th{
+  position:sticky;
+  top:0;
+  z-index:2;
+  height:40px;
+  background:#0b1b38!important;
+  color:#9cadca!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  letter-spacing:.06em;
+  border-bottom:1px solid rgba(104,137,198,.24)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table tbody tr{
+  background:rgba(20,38,70,.68)!important;
+  box-shadow:inset 0 0 0 1px rgba(104,137,198,.13);
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table tbody tr:hover{
+  background:rgba(27,50,89,.86)!important;
+  box-shadow:inset 3px 0 0 #57d6ff,inset 0 0 0 1px rgba(87,214,255,.2);
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table tbody td{
+  height:54px!important;
+  padding:8px 11px!important;
+  border-top:1px solid rgba(93,123,181,.12)!important;
+  border-bottom:1px solid rgba(93,123,181,.12)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table tbody td:first-child{
+  border-radius:10px 0 0 10px;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-table tbody td:last-child{
+  border-radius:0 10px 10px 0;
+}
+
+/* Simulation lab: explicit hierarchy instead of three unrelated cards. */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-intro{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding:16px 18px;
+  margin-bottom:12px;
+  border:1px solid rgba(105,137,199,.2);
+  border-radius:16px;
+  background:linear-gradient(135deg,rgba(17,34,67,.8),rgba(10,25,51,.74));
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-note{
+  flex:0 0 auto;
+  color:#8da1c1;
+  font-size:10px;
+  font-weight:750;
+  letter-spacing:.035em;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.55fr) minmax(360px,.75fr)!important;
+  grid-template-areas:
+    "mc dsr"
+    "wf wf"!important;
+  gap:14px!important;
+  align-items:start;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard{grid-area:mc!important;}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard{grid-area:dsr!important;}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard{grid-area:wf!important;}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard,
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard,
+body[data-workspace="backtesting"] #viewBacktest #btWfCard{
+  border-color:rgba(93,128,194,.23)!important;
+  background:linear-gradient(155deg,rgba(18,36,70,.92),rgba(12,27,54,.9))!important;
+  box-shadow:0 14px 30px rgba(0,0,0,.12)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard::before,
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard::before,
+body[data-workspace="backtesting"] #viewBacktest #btWfCard::before{
+  content:"";
+  position:absolute;
+  inset:0 auto auto 16px;
+  width:34px;
+  height:2px;
+  border-radius:2px;
+  background:linear-gradient(90deg,#56d7ff,#8479ff);
+  opacity:.9;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard,
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard,
+body[data-workspace="backtesting"] #viewBacktest #btWfCard{
+  position:relative;
+  overflow:hidden;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard .sim-grid,
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .sim-grid,
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .sim-grid{
+  align-items:end!important;
+  gap:12px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard button:not(.help-btn),
+body[data-workspace="backtesting"] #viewBacktest #btWfCard button:not(.help-btn),
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard button:not(.help-btn){
+  min-height:36px!important;
+}
+
+@container tj-backtest (max-width:1120px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-head,
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-intro{
+    align-items:flex-start;
+    flex-direction:column;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-switch{
+    width:100%;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-btn{
+    flex:1 1 0;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"mc" "dsr" "wf"!important;
+  }
+}
+
+@container tj-backtest (max-width:760px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-switch{
+    flex-wrap:wrap;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-view-btn{
+    min-width:110px;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-trades-head,
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-intro{
+    padding:13px;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btDayCalCard{
+    padding:13px!important;
+  }
+}
