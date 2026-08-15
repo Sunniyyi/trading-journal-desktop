@@ -1,0 +1,560 @@
+/* Trading Journal Desktop 2.1.9 — final visual system
+   Loaded last. Presentation only: V206 data/business logic and FXReplay remain untouched. */
+
+/* ========================================================================== 
+   1. Final tokens — readability first
+   ========================================================================== */
+:root{
+  --tj-topbar:82px;
+  --tj-statusbar:54px;
+  --tj-sidebar:188px;
+  --tj-radius-sm:10px;
+  --tj-radius-md:13px;
+  --tj-radius-lg:17px;
+  --tj-radius-xl:22px;
+  --tj-line:rgba(145,171,230,.17);
+  --tj-line-strong:rgba(116,177,255,.34);
+  --tj-text:#f5f8ff;
+  --tj-text-2:#d5def0;
+  --tj-muted:#95a4c2;
+  --tj-surface:rgba(17,30,59,.88);
+  --tj-surface-strong:rgba(20,34,66,.96);
+  --tj-surface-soft:rgba(24,39,74,.62);
+}
+
+body.tj-desktop-v2{
+  font-size:13px!important;
+  line-height:1.45!important;
+  text-rendering:optimizeLegibility;
+  -webkit-font-smoothing:antialiased;
+}
+body.tj-desktop-v2 *,body.tj-desktop-v2 *::before,body.tj-desktop-v2 *::after{box-sizing:border-box}
+body.tj-desktop-v2 [hidden]{display:none!important}
+body.tj-desktop-v2 :focus-visible{outline:2px solid rgba(88,201,255,.72)!important;outline-offset:2px!important}
+body.tj-desktop-v2 ::selection{background:rgba(104,118,255,.36);color:white}
+
+/* One consistent scrollbar language. */
+body.tj-desktop-v2 *{scrollbar-color:rgba(125,151,210,.30) transparent;scrollbar-width:thin}
+body.tj-desktop-v2 *::-webkit-scrollbar{width:9px;height:9px}
+body.tj-desktop-v2 *::-webkit-scrollbar-track{background:transparent}
+body.tj-desktop-v2 *::-webkit-scrollbar-thumb{background:rgba(125,151,210,.26);border:2px solid transparent;background-clip:padding-box;border-radius:999px}
+body.tj-desktop-v2 *::-webkit-scrollbar-thumb:hover{background:rgba(125,166,235,.42);border:2px solid transparent;background-clip:padding-box}
+
+/* ========================================================================== 
+   2. Shell — calm, clear, no cramped chrome
+   ========================================================================== */
+body.tj-desktop-v2 .tj-topbar{
+  min-height:var(--tj-topbar)!important;
+  grid-template-columns:minmax(245px,315px) minmax(300px,1fr) auto!important;
+  gap:16px!important;
+  padding:10px 16px!important;
+  background:linear-gradient(180deg,rgba(8,18,38,.98),rgba(8,18,38,.90))!important;
+  border-bottom-color:rgba(137,165,224,.16)!important;
+}
+body.tj-desktop-v2 .tj-workspace-heading{gap:5px!important;padding:0!important;overflow:hidden!important}
+body.tj-desktop-v2 .tj-workspace-kicker{font-size:8.5px!important;color:#8ea0c1!important;letter-spacing:.14em!important}
+body.tj-desktop-v2 #tjWorkspaceTitle{
+  font-size:20px!important;
+  line-height:1.15!important;
+  font-weight:780!important;
+  letter-spacing:-.02em!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+body.tj-desktop-v2 .tj-search{
+  width:min(100%,640px)!important;
+  height:42px!important;
+  justify-self:center!important;
+  border-radius:12px!important;
+  background:rgba(16,29,57,.72)!important;
+}
+body.tj-desktop-v2 .tj-search-placeholder{font-size:11.5px!important;color:#9aa9c6!important}
+body.tj-desktop-v2 .tj-top-actions{gap:7px!important}
+body.tj-desktop-v2 .tj-top-button{
+  min-width:0!important;
+  height:38px!important;
+  padding:0 10px!important;
+  border-radius:11px!important;
+  font-size:10.5px!important;
+}
+body.tj-desktop-v2 .tj-top-button:hover{transform:none!important}
+body.tj-desktop-v2 .tj-stage{padding:18px 20px 16px!important}
+body.tj-desktop-v2 .tj-workspace{padding-right:7px!important;padding-bottom:14px!important;scroll-behavior:auto!important}
+
+body.tj-desktop-v2 .tj-sidebar{padding:16px 12px 13px!important}
+body.tj-desktop-v2 .tj-brand{height:58px!important;margin-bottom:12px!important}
+body.tj-desktop-v2 .tj-nav{gap:5px!important}
+body.tj-desktop-v2 .tj-nav-button{
+  min-height:48px!important;
+  padding:9px 11px!important;
+  font-size:12px!important;
+  border-radius:13px!important;
+}
+body.tj-desktop-v2 .tj-nav-icon{font-size:15px!important}
+body.tj-desktop-v2 .tj-profile-copy b{font-size:10.5px!important}
+body.tj-desktop-v2 .tj-profile-copy small{font-size:9px!important}
+
+/* Backup warning is important but should not dominate every page. */
+body.tj-desktop-v2 .tj-backup-slot{top:10px!important;left:20px!important;right:20px!important}
+body.tj-desktop-v2 #autoBackupWarning{
+  min-height:40px!important;
+  padding:9px 14px!important;
+  border-radius:13px!important;
+  font-size:11.5px!important;
+  line-height:1.3!important;
+}
+body.tj-desktop-v2 .tj-workspace{padding-top:max(var(--tj-backup-offset,0px),52px)!important}
+
+/* Status bar stays useful but visually secondary. */
+body.tj-desktop-v2 .tj-statusbar{min-height:var(--tj-statusbar)!important;background:rgba(7,16,34,.96)!important}
+body.tj-desktop-v2 .tj-status-label{font-size:7.8px!important;letter-spacing:.11em!important;color:#7888a8!important}
+body.tj-desktop-v2 .tj-status-value{font-size:10.5px!important}
+body.tj-desktop-v2 .tj-status-action{min-height:32px!important}
+
+/* ========================================================================== 
+   3. Shared content language — typography, cards, controls, data
+   ========================================================================== */
+body.tj-desktop-v2 .card,
+body.tj-desktop-v2 .stat,
+body.tj-desktop-v2 .tablecard,
+body.tj-desktop-v2 .bt-filters-card,
+body.tj-desktop-v2 .notes-pages,
+body.tj-desktop-v2 .tj-panel,
+body.tj-desktop-v2 .tj-kpi{
+  background:linear-gradient(180deg,rgba(21,35,67,.88),rgba(13,25,51,.92))!important;
+  border-color:var(--tj-line)!important;
+  border-radius:var(--tj-radius-lg)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035),0 14px 34px rgba(0,0,0,.16)!important;
+}
+body.tj-desktop-v2 .card{padding:18px!important}
+body.tj-desktop-v2 .card h1,body.tj-desktop-v2 .card h2,body.tj-desktop-v2 .card h3{overflow-wrap:anywhere}
+body.tj-desktop-v2 .card h2{font-size:15px!important;line-height:1.25!important;margin-bottom:14px!important}
+body.tj-desktop-v2 .card h3{font-size:13px!important;line-height:1.3!important}
+body.tj-desktop-v2 .card p,body.tj-desktop-v2 .card li{font-size:12px!important;line-height:1.55!important;color:var(--tj-text-2)!important}
+body.tj-desktop-v2 small{font-size:10px;line-height:1.4}
+body.tj-desktop-v2 label{color:#aebad2}
+
+/* Do not shrink semantic copy into unreadable microtext. */
+body.tj-desktop-v2 .label,
+body.tj-desktop-v2 .bt-filter-lbl,
+body.tj-desktop-v2 .scan-eyebrow,
+body.tj-desktop-v2 .ctx-eyebrow,
+body.tj-desktop-v2 .gate-eyebrow,
+body.tj-desktop-v2 .tj-eyebrow{
+  font-size:9px!important;
+  line-height:1.3!important;
+  letter-spacing:.11em!important;
+}
+
+body.tj-desktop-v2 input,
+body.tj-desktop-v2 select,
+body.tj-desktop-v2 textarea{
+  min-height:40px!important;
+  padding:9px 11px!important;
+  font-size:12px!important;
+  line-height:1.35!important;
+  border-radius:10px!important;
+  color:#eef3ff!important;
+  background:rgba(7,16,34,.72)!important;
+  border-color:rgba(137,164,221,.20)!important;
+}
+body.tj-desktop-v2 textarea{min-height:96px!important;resize:vertical!important}
+body.tj-desktop-v2 input::placeholder,body.tj-desktop-v2 textarea::placeholder{color:#7182a3!important;opacity:1!important}
+body.tj-desktop-v2 input:disabled,body.tj-desktop-v2 select:disabled,body.tj-desktop-v2 textarea:disabled{opacity:.62!important;cursor:not-allowed!important}
+
+body.tj-desktop-v2 button{
+  font-size:11px!important;
+  line-height:1.2!important;
+}
+body.tj-desktop-v2 button:hover{transform:none!important}
+body.tj-desktop-v2 .primary{min-height:40px!important;padding:0 14px!important}
+body.tj-desktop-v2 .ghost{min-height:38px!important;padding:0 12px!important}
+body.tj-desktop-v2 .mini{min-height:32px!important;padding-inline:9px!important}
+
+body.tj-desktop-v2 .toolbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:8px!important;
+  padding:10px!important;
+}
+body.tj-desktop-v2 .toolbar input[type="search"],body.tj-desktop-v2 .toolbar input:not([type]){min-width:220px}
+body.tj-desktop-v2 .toolbar select{min-width:125px}
+
+body.tj-desktop-v2 .stats,body.tj-desktop-v2 .tj-kpi-grid{gap:12px!important}
+body.tj-desktop-v2 .stat,body.tj-desktop-v2 .tj-kpi{
+  min-height:112px!important;
+  padding:16px!important;
+}
+body.tj-desktop-v2 .stat .label,body.tj-desktop-v2 .tj-kpi-label{font-size:9px!important;color:#a5b2cc!important}
+body.tj-desktop-v2 .stat .val,body.tj-desktop-v2 .tj-kpi-value{font-size:23px!important;line-height:1.15!important;margin-top:10px!important}
+body.tj-desktop-v2 .stat .sub,body.tj-desktop-v2 .tj-kpi-sub{font-size:10.5px!important;line-height:1.4!important;margin-top:7px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important}
+
+body.tj-desktop-v2 table{font-size:12px!important;line-height:1.35!important}
+body.tj-desktop-v2 th{
+  min-height:42px!important;
+  padding:11px 12px!important;
+  font-size:8.5px!important;
+  color:#95a4c2!important;
+  background:rgba(11,22,45,.98)!important;
+}
+body.tj-desktop-v2 td{padding:11px 12px!important;color:#d5dff0!important}
+body.tj-desktop-v2 tbody tr:last-child td{border-bottom:0!important}
+body.tj-desktop-v2 .tablecard{border-radius:14px!important}
+
+/* Pills/tabs/badges stay readable and distinct. */
+body.tj-desktop-v2 .tj-section-tabs{gap:3px!important;padding:3px!important}
+body.tj-desktop-v2 .tj-section-tab{min-height:34px!important;padding:8px 12px!important;font-size:10.5px!important}
+body.tj-desktop-v2 .tj-badge{font-size:9px!important;min-height:25px!important;padding:5px 8px!important}
+
+/* ========================================================================== 
+   4. Overview — quick comprehension in one glance
+   ========================================================================== */
+#tjOverviewView{gap:12px!important}
+#tjOverviewView .tj-kpi-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+#tjOverviewView .tj-overview-main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(310px,.72fr) minmax(300px,.68fr)!important;
+  gap:12px!important;
+  align-items:start!important;
+}
+#tjOverviewView .tj-panel{padding:16px!important}
+#tjOverviewView .tj-activity-row{min-height:54px!important;padding:10px 3px!important}
+#tjOverviewView .tj-activity-row b{font-size:11px!important}
+#tjOverviewView .tj-activity-row small{font-size:10px!important}
+#tjOverviewView .tj-activity-value{font-size:9.5px!important}
+#tjOverviewView .tj-summary-line{font-size:10.5px!important;padding:6px 0!important}
+#tjOverviewView .tj-action-card{min-height:64px!important;padding:11px 12px!important;font-size:10.5px!important}
+#tjOverviewView .tj-action-card strong{font-size:13px!important}
+
+/* ========================================================================== 
+   5. Journal — controls -> calendar/table -> analysis, no clipping
+   ========================================================================== */
+#viewTrading.tj-journal-workspace{gap:12px!important;overflow:auto!important}
+#viewTrading.tj-journal-workspace>.stats{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+#viewTrading.tj-journal-workspace .tj-journal-grid{
+  grid-template-columns:minmax(0,1fr) minmax(330px,370px)!important;
+  gap:14px!important;
+  align-items:start!important;
+}
+#viewTrading.tj-journal-workspace .tj-journal-main{min-width:0!important}
+#viewTrading.tj-journal-workspace .tj-journal-side{position:sticky!important;top:0!important;gap:12px!important}
+#viewTrading.tj-journal-workspace #tableSection{
+  padding:12px!important;
+  gap:10px!important;
+  min-height:0!important;
+  background:rgba(13,26,51,.90)!important;
+  overflow:visible!important;
+}
+#viewTrading.tj-journal-workspace #tableSection>.toolbar{
+  display:grid!important;
+  grid-template-columns:minmax(210px,1fr) repeat(6,max-content)!important;
+  gap:8px!important;
+  padding:0 0 10px!important;
+  border-bottom:1px solid rgba(132,160,220,.12)!important;
+}
+#viewTrading.tj-journal-workspace #tableSection>.toolbar>#search{min-width:0!important;width:100%!important}
+#viewTrading.tj-journal-workspace #tableSection>.toolbar button,#viewTrading.tj-journal-workspace #tableSection>.toolbar select{min-height:38px!important}
+#viewTrading.tj-journal-workspace #journalCalCard{padding:8px 0 0!important}
+#viewTrading.tj-journal-workspace #journalCalCard .cal-nav{min-height:44px!important;margin-bottom:10px!important}
+#viewTrading.tj-journal-workspace #journalCalCard .cal-nav h2{font-size:18px!important;margin:0!important}
+#viewTrading.tj-journal-workspace #journalCalCard .cal-body{
+  --cal-row:104px!important;
+  --cal-gap:8px!important;
+  grid-template-columns:minmax(0,1fr) 138px!important;
+  gap:10px!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid{grid-auto-rows:var(--cal-row)!important;gap:var(--cal-gap)!important}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-cell{
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+  padding:9px 10px!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  background:rgba(18,31,59,.86)!important;
+  border:1px solid rgba(134,160,217,.11)!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-cell:hover{border-color:rgba(88,201,255,.34)!important;background:rgba(23,39,73,.94)!important}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-day{font-size:11px!important;line-height:1.15!important}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-pnl{font-size:13px!important;line-height:1.15!important;font-weight:780!important}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-meta{font-size:9.5px!important;line-height:1.25!important;white-space:normal!important}
+#viewTrading.tj-journal-workspace #journalCalWeeks .cal-week{
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+  padding:10px!important;
+  border-radius:12px!important;
+}
+#viewTrading.tj-journal-workspace #journalCalWeeks .cal-week b{font-size:11px!important}
+#viewTrading.tj-journal-workspace #journalCalWeeks .cal-week span,#viewTrading.tj-journal-workspace #journalCalWeeks .cal-week small{font-size:9.5px!important;line-height:1.35!important}
+#viewTrading.tj-journal-workspace #chartCard{min-height:330px!important}
+#viewTrading.tj-journal-workspace #chartCard .chart-box{height:280px!important}
+#viewTrading.tj-journal-workspace #pagination{min-height:38px!important}
+
+/* ========================================================================== 
+   6. Backtesting — navigation left, working canvas right, no dead space
+   ========================================================================== */
+#viewBacktest.tj-backtest-workspace{gap:12px!important;overflow:hidden!important}
+#viewBacktest.tj-backtest-workspace>.bt-layout{
+  grid-template-columns:220px minmax(0,1fr)!important;
+  gap:14px!important;
+}
+#viewBacktest.tj-backtest-workspace .notes-pages{padding:12px!important;border-radius:16px!important}
+#viewBacktest.tj-backtest-workspace .bt-tree{font-size:11px!important}
+#viewBacktest.tj-backtest-workspace .bt-main{overflow:auto!important;padding-right:5px!important}
+#viewBacktest.tj-backtest-workspace .bt-context{padding:12px 14px!important;margin-bottom:10px!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-tabs-row{position:sticky;top:0;z-index:12;padding:4px 0 8px;background:linear-gradient(180deg,var(--tj-bg-0) 70%,transparent)}
+
+/* Summary */
+#viewBacktest.tj-backtest-workspace #btSummary{padding-bottom:12px!important}
+#viewBacktest.tj-backtest-workspace .sum-filters{gap:7px!important}
+#viewBacktest.tj-backtest-workspace .sum-filters button,#viewBacktest.tj-backtest-workspace .sum-filters select{min-height:36px!important}
+
+/* Detail dashboard: chart content-sized; right rail determines its own height. */
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-grid{
+  grid-template-columns:minmax(0,1.45fr) minmax(330px,.68fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main{display:block!important;min-height:0!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard{
+  min-height:430px!important;
+  height:auto!important;
+  margin:0!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard .chart-box{
+  height:350px!important;
+  min-height:350px!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-side{gap:12px!important;align-self:start!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-side .bt-comment-card textarea{min-height:170px!important;max-height:260px!important}
+#viewBacktest.tj-backtest-workspace #btPerfCard{padding:16px!important}
+
+/* Trades/calendar */
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-grid{
+  grid-template-columns:285px minmax(0,1fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+}
+#viewBacktest.tj-backtest-workspace .bt-filters-card{padding:14px!important}
+#viewBacktest.tj-backtest-workspace .bt-filters-card .field{margin-bottom:10px!important}
+#viewBacktest.tj-backtest-workspace .bt-filters-card label{font-size:9px!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-right{gap:10px!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-trades-right>.tablecard{min-height:320px!important;max-height:560px!important}
+#viewBacktest.tj-backtest-workspace #btPagination{min-height:42px!important}
+
+/* Simulations are reading tools, never tiny tiles. */
+#viewBacktest.tj-backtest-workspace .tj-bt-sims-grid{display:flex!important;flex-direction:column!important;gap:12px!important;max-width:none!important}
+#viewBacktest.tj-backtest-workspace .tj-bt-sims-grid>.card{min-height:0!important;padding:18px!important}
+#viewBacktest.tj-backtest-workspace .mc-params{display:flex!important;flex-wrap:wrap!important;align-items:end!important;gap:10px!important}
+#viewBacktest.tj-backtest-workspace .mc-params .field{min-width:150px!important;flex:0 1 210px!important}
+#viewBacktest.tj-backtest-workspace .mc-note{font-size:10.5px!important;line-height:1.5!important}
+
+/* ========================================================================== 
+   7. Scan TA — simple three-step workflow
+   ========================================================================== */
+#viewScan.tj-scan-workspace{height:100%!important;overflow:auto!important}
+#viewScan.tj-scan-workspace .scan-shell{display:block!important;max-width:1460px!important;margin:0 auto!important}
+#viewScan.tj-scan-workspace .scan-hero{margin:0 0 12px!important;padding:4px 2px 6px!important}
+#viewScan.tj-scan-workspace .scan-hero h1{font-size:clamp(28px,2.4vw,38px)!important;line-height:1.05!important;max-width:720px!important;margin-bottom:8px!important}
+#viewScan.tj-scan-workspace .scan-hero p{font-size:12px!important;line-height:1.55!important;max-width:900px!important;color:#b7c3d9!important}
+#viewScan.tj-scan-workspace .scan-toolbar{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:180px 200px minmax(280px,1fr)!important;
+  gap:12px!important;
+  align-items:end!important;
+  padding:14px!important;
+  margin:0 0 12px!important;
+  border-radius:15px!important;
+}
+#viewScan.tj-scan-workspace .scan-toolbar .field{min-width:0!important;margin:0!important}
+#viewScan.tj-scan-workspace .scan-toolbar label{display:block!important;margin-bottom:6px!important;font-size:9px!important}
+#viewScan.tj-scan-workspace #scanSlots{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+#viewScan.tj-scan-workspace .scan-slot{
+  min-height:245px!important;
+  padding:14px!important;
+  border-radius:16px!important;
+}
+#viewScan.tj-scan-workspace .scan-slot-head h3{font-size:13.5px!important;line-height:1.25!important}
+#viewScan.tj-scan-workspace .scan-slot-head p{font-size:10.5px!important;line-height:1.4!important}
+#viewScan.tj-scan-workspace .scan-slot select{min-width:82px!important}
+#viewScan.tj-scan-workspace .scan-drop{
+  min-height:155px!important;
+  margin-top:10px!important;
+  display:grid!important;
+  place-items:center!important;
+  padding:16px!important;
+}
+#viewScan.tj-scan-workspace .scan-drop strong{font-size:11.5px!important}
+#viewScan.tj-scan-workspace .scan-drop small{font-size:9.5px!important}
+#viewScan.tj-scan-workspace .scan-runbar{
+  position:static!important;
+  margin:12px 0 0!important;
+  padding:12px 14px!important;
+  border-radius:15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+}
+#viewScan.tj-scan-workspace .scan-runbar>div:first-child{min-width:0!important}
+#viewScan.tj-scan-workspace .scan-runbar b{font-size:11.5px!important}
+#viewScan.tj-scan-workspace .scan-runbar small{font-size:9.5px!important}
+#viewScan.tj-scan-workspace #scanResult{margin:12px 0 0!important;overflow:visible!important}
+
+/* ========================================================================== 
+   8. Market context — reading page, not a wall of micro-cards
+   ========================================================================== */
+#viewContext.tj-context-workspace{height:100%!important;overflow:auto!important}
+#viewContext.tj-context-workspace .ctx-shell{max-width:1380px!important;margin:0 auto!important;gap:12px!important}
+#viewContext.tj-context-workspace .ctx-hero{padding:8px 4px 10px!important}
+#viewContext.tj-context-workspace .ctx-hero h1{font-size:clamp(26px,2.2vw,36px)!important;line-height:1.08!important}
+#viewContext.tj-context-workspace .ctx-hero p{font-size:11.5px!important;line-height:1.55!important;max-width:920px!important}
+#viewContext.tj-context-workspace .ctx-provenance{padding:12px 14px!important}
+#viewContext.tj-context-workspace .ctx-brief-card{padding:18px!important}
+#viewContext.tj-context-workspace .ctx-brief-metrics{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#viewContext.tj-context-workspace .ctx-brief-metrics>div{min-height:86px!important;padding:12px!important}
+#viewContext.tj-context-workspace .ctx-brief-metrics strong{font-size:13px!important}
+#viewContext.tj-context-workspace .ctx-brief-metrics small{font-size:9.5px!important}
+#viewContext.tj-context-workspace .ctx-deep-details{padding:14px!important;border-radius:16px!important}
+#viewContext.tj-context-workspace .ctx-deep-details summary{min-height:38px!important;font-size:10.5px!important;cursor:pointer!important}
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-attention-grid,
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid,
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid,
+#viewContext.tj-context-workspace .ctx-deep-details .ctx-snapshot-list{gap:10px!important}
+#viewContext.tj-context-workspace .ctx-attention-card{padding:12px!important;min-height:110px!important}
+#viewContext.tj-context-workspace .ctx-attention-card>strong{font-size:13px!important;line-height:1.25!important;word-break:normal!important;overflow-wrap:anywhere!important}
+#viewContext.tj-context-workspace .ctx-attention-card p,#viewContext.tj-context-workspace .ctx-attention-card small{font-size:9.5px!important;line-height:1.45!important}
+
+/* ========================================================================== 
+   9. Decision Gate — form first, verdict immediately after
+   ========================================================================== */
+#viewGate.tj-gate-workspace{height:100%!important;overflow:auto!important}
+#viewGate.tj-gate-workspace .gate-shell{max-width:1420px!important;margin:0 auto!important;gap:12px!important}
+#viewGate.tj-gate-workspace .gate-hero{padding:6px 4px 10px!important}
+#viewGate.tj-gate-workspace .gate-hero h1{font-size:clamp(27px,2.2vw,36px)!important;line-height:1.08!important}
+#viewGate.tj-gate-workspace .gate-hero p{font-size:11.5px!important;line-height:1.5!important;max-width:900px!important}
+#viewGate.tj-gate-workspace .gate-layout{
+  grid-template-columns:minmax(0,1.08fr) minmax(390px,.92fr)!important;
+  gap:14px!important;
+  align-items:start!important;
+  overflow:visible!important;
+}
+#viewGate.tj-gate-workspace .gate-plan-card,#viewGate.tj-gate-workspace .gate-rules-card{padding:17px!important}
+#viewGate.tj-gate-workspace .gate-layout label{font-size:9px!important;line-height:1.3!important}
+#viewGate.tj-gate-workspace .gate-rules-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+#viewGate.tj-gate-workspace .gate-rule-check{grid-column:1/-1!important;min-height:42px!important}
+#viewGate.tj-gate-workspace .gate-checklist{gap:8px!important}
+#viewGate.tj-gate-workspace .gate-checklist label{min-height:42px!important;padding:9px 10px!important;border-radius:10px!important}
+#viewGate.tj-gate-workspace #gateResultCard{position:static!important;max-height:none!important;overflow:visible!important;margin-top:12px!important}
+#viewGate.tj-gate-workspace .gate-findings{max-height:none!important;overflow:visible!important}
+
+/* ========================================================================== 
+   10. Discipline & analysis — analytics before decoration
+   ========================================================================== */
+#tjDisciplineView{gap:12px!important;overflow:auto!important}
+#tjDisciplineView .tj-discipline-header-cards{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#tjDisciplineView .tj-discipline-card{min-height:82px!important;padding:13px!important}
+#tjDisciplineView .tj-discipline-card span{font-size:8.5px!important}
+#tjDisciplineView .tj-discipline-card b{font-size:18px!important;margin-top:8px!important}
+#tjDisciplineView .tj-discipline-grid{grid-template-columns:1fr!important;gap:12px!important}
+#tjDisciplineView .tj-discipline-grid>#perfCard,#tjDisciplineView .tj-discipline-grid>#mistakeAnalyticsCard{padding:17px!important}
+#tjDisciplineView .tj-discipline-grid .mistake-kpis{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#tjDisciplineView .tj-discipline-grid .mistake-kpis>div{min-height:96px!important;padding:13px!important}
+#tjDisciplineView .tj-discipline-grid .mistake-kpis span{font-size:18px!important}
+#tjDisciplineView .mistake-help{font-size:10.5px!important;line-height:1.5!important}
+#tjDisciplineView .mistake-table-wrap{max-height:440px!important}
+
+/* ========================================================================== 
+   11. Inspector, drawers and updater
+   ========================================================================== */
+body.tj-desktop-v2 .tj-inspector-head{height:70px!important;padding:12px 15px!important}
+body.tj-desktop-v2 .tj-inspector-head h2{font-size:14px!important}
+body.tj-desktop-v2 .tj-inspector-scroll{height:calc(100% - 70px)!important;padding:13px!important}
+body.tj-desktop-v2 .tj-inspector-section{padding:13px!important}
+body.tj-desktop-v2 .tj-inspector-section-title{font-size:8.5px!important}
+body.tj-desktop-v2 .tj-inspector-metric span{font-size:8.5px!important}
+body.tj-desktop-v2 .tj-inspector-metric b{font-size:11.5px!important}
+
+#tjFxrDrawer{width:min(380px,calc(100vw - 32px))!important;padding:15px!important;border-radius:18px!important}
+#tjFxrDrawer .tj-panel-title{font-size:14px!important}
+#tjFxrDrawer .tj-panel-subtitle{font-size:10.5px!important}
+
+.tj-update-center{width:min(780px,calc(100vw - 36px))!important}
+.tj-update-center-head{padding:22px 24px 18px!important}
+.tj-update-center-head h2{font-size:21px!important}
+.tj-update-center-head p{font-size:11px!important}
+.tj-update-center-body{padding:20px 24px!important}
+.tj-update-hero{padding:18px!important}
+.tj-update-hero h3{font-size:18px!important}
+.tj-update-hero p{font-size:11px!important}
+.tj-update-metric span{font-size:8.5px!important}
+.tj-update-metric strong{font-size:12px!important}
+.tj-update-center-foot{padding:14px 24px 18px!important}
+.tj-update-btn{min-height:38px!important;font-size:10.5px!important}
+
+/* ========================================================================== 
+   12. Responsive desktop states
+   ========================================================================== */
+@media(max-width:1540px){
+  body.tj-desktop-v2 .tj-topbar{grid-template-columns:minmax(210px,270px) minmax(260px,1fr) auto!important;gap:10px!important}
+  body.tj-desktop-v2 .tj-top-button{padding-inline:8px!important}
+  #tjOverviewView .tj-overview-main{grid-template-columns:minmax(0,1.25fr) minmax(300px,.75fr)!important}
+  #tjOverviewView .tj-overview-actions{grid-column:1/-1!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #viewTrading.tj-journal-workspace #tableSection>.toolbar{grid-template-columns:minmax(200px,1fr) repeat(3,max-content)!important}
+  #viewTrading.tj-journal-workspace #tableSection>.toolbar>*{min-width:0!important}
+}
+
+@media(max-width:1360px){
+  :root{--tj-sidebar:176px}
+  body.tj-desktop-v2 .tj-top-button span{display:none!important}
+  body.tj-desktop-v2 .stats,body.tj-desktop-v2 #btStats,body.tj-desktop-v2 .tj-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #tjOverviewView .tj-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #viewTrading.tj-journal-workspace>.stats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #viewTrading.tj-journal-workspace .tj-journal-grid{grid-template-columns:minmax(0,1fr) 330px!important}
+  #viewScan.tj-scan-workspace #scanSlots{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #viewScan.tj-scan-workspace .scan-slot:last-child{grid-column:1/-1!important}
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-attention-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-snapshot-list{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(max-width:1160px){
+  body.tj-desktop-v2 .tj-topbar{grid-template-columns:minmax(190px,230px) minmax(220px,1fr) auto!important}
+  body.tj-desktop-v2 .tj-search{height:38px!important}
+  #tjOverviewView .tj-overview-main{grid-template-columns:1fr!important}
+  #tjOverviewView .tj-overview-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #viewTrading.tj-journal-workspace .tj-journal-grid{grid-template-columns:1fr!important}
+  #viewTrading.tj-journal-workspace .tj-journal-side{position:static!important;display:grid!important;grid-template-columns:1fr!important}
+  #viewBacktest.tj-backtest-workspace>.bt-layout{grid-template-columns:200px minmax(0,1fr)!important}
+  #viewBacktest.tj-backtest-workspace .tj-bt-dashboard-grid,#viewBacktest.tj-backtest-workspace .tj-bt-trades-grid{grid-template-columns:1fr!important}
+  #viewBacktest.tj-backtest-workspace .tj-bt-trades-left{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #viewBacktest.tj-backtest-workspace .tj-bt-trades-left>.bt-side-col{grid-column:1/-1!important}
+  #viewScan.tj-scan-workspace .scan-toolbar{grid-template-columns:1fr 1fr!important}
+  #viewScan.tj-scan-workspace .scan-key-field{grid-column:1/-1!important}
+  #viewGate.tj-gate-workspace .gate-layout{grid-template-columns:1fr!important}
+  #tjDisciplineView .tj-discipline-grid .mistake-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(max-width:900px){
+  #viewTrading.tj-journal-workspace #journalCalCard .cal-body{grid-template-columns:1fr!important}
+  #viewTrading.tj-journal-workspace #journalCalWeeks{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  #viewScan.tj-scan-workspace .scan-toolbar,#viewScan.tj-scan-workspace #scanSlots{grid-template-columns:1fr!important}
+  #viewScan.tj-scan-workspace .scan-slot:last-child{grid-column:auto!important}
+  #viewContext.tj-context-workspace .ctx-brief-metrics,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-attention-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-main-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-source-grid,
+  #viewContext.tj-context-workspace .ctx-deep-details .ctx-snapshot-list{grid-template-columns:1fr!important}
+  #tjDisciplineView .tj-discipline-header-cards{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body.tj-desktop-v2 *,body.tj-desktop-v2 *::before,body.tj-desktop-v2 *::after{scroll-behavior:auto!important;transition-duration:.001ms!important;animation-duration:.001ms!important;animation-iteration-count:1!important}
+}
