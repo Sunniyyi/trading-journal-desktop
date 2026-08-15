@@ -22,7 +22,8 @@ const files = [
   'src/renderer/ui/components.css',
   'src/renderer/ui/workspaces.css',
   'src/renderer/ui/stability.css',
-  'src/renderer/ui/visual-hotfix.css'
+  'src/renderer/ui/visual-hotfix.css',
+  'src/renderer/ui/layout-v214.css'
 ];
 for (const rel of files) {
   const full = path.join(root, rel);
@@ -68,9 +69,20 @@ for (const marker of [
 ]) {
   assert(hotfix.includes(marker), `2.1.3 visual regression guard missing: ${marker}`);
 }
+const v214 = fs.readFileSync(path.join(root, 'src/renderer/ui/layout-v214.css'), 'utf8');
+for (const marker of [
+  '#btDetail[style*="display: none"]',
+  '#viewScan.tj-scan-workspace #scanSlots',
+  'grid-template-columns:repeat(3,minmax(0,1fr))',
+  '#viewContext.tj-context-workspace .ctx-shell',
+  '#viewGate.tj-gate-workspace .gate-rules-grid',
+  '#tjDisciplineView .tj-discipline-grid'
+]) {
+  assert(v214.includes(marker), `2.1.4 layout regression guard missing: ${marker}`);
+}
 const journal = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/journal.js'), 'utf8');
-assert(journal.includes("$('#journalCalCard',view)"), 'Journal desktop layout must explicitly keep the calendar in the main column.');
-assert(journal.includes("el('div','tj-journal-main')"), 'Journal main column wrapper is missing.');
+assert(journal.includes("$('#journalCalCard',view)"), 'Journal desktop layout must explicitly keep the calendar.');
+assert(journal.includes("toolbar.after(calendar)"), 'Journal calendar must live inside the execution surface after its toolbar.');
 const backtesting = fs.readFileSync(path.join(root, 'src/renderer/ui/workspaces/backtesting.js'), 'utf8');
 assert(backtesting.includes("$('#btTbody',main)"), 'Backtesting trade table must be anchored from #btTbody, not the first generic tablecard.');
 assert(backtesting.includes("[back,months,cal,table,pagination]"), 'Backtesting content rail order guard is missing.');
