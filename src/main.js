@@ -11,10 +11,12 @@ const { syncManagedExtension, managedExtensionDir } = require('./extension-manag
 const {
   initUpdater,
   checkForUpdates,
+  startAvailableUpdate,
   showUpdateCenter,
   installDownloadedUpdate,
   openUpdaterConfig,
-  getUpdaterStatus
+  getUpdaterStatus,
+  setUpdaterStatusSink
 } = require('./app-updater');
 
 const BRIDGE_PORT = 17841;
@@ -23,6 +25,11 @@ let bridgeServer = null;
 let siteConfig = { pages: [], targetPageId: '', version: 'v206', siteSeenAt: 0 };
 let managedExtensionInfo = { ok: false, version: '', path: '', filesReady: false, syncedAt: 0, channel: 'desktop-managed-v1' };
 const pendingImports = new Map();
+
+function sendUpdaterStatus(status = getUpdaterStatus()) {
+  if (!mainWindow || mainWindow.isDestroyed()) return;
+  mainWindow.webContents.send('desktop:update-status', status || {});
+}
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -47,6 +54,7 @@ function createMainWindow() {
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.setTitle('Trading Journal — Desktop V1');
+    sendUpdaterStatus();
   });
 
   mainWindow.on('closed', () => { mainWindow = null; });
@@ -79,7 +87,11 @@ function createMenu() {
           click: () => checkForUpdates({ manual: true })
         },
         {
-          label: 'Installer la mise à jour téléchargée',
+          label: 'Télécharger la mise à jour disponible',
+          click: () => startAvailableUpdate({ manual: true })
+        },
+        {
+          label: 'Redémarrer sur la mise à jour prête',
           click: () => installDownloadedUpdate()
         },
         { type: 'separator' },
@@ -149,6 +161,12 @@ function installIpc() {
   ipcMain.handle('desktop:open-fxreplay', () => shell.openExternal('https://app.fxreplay.com/'));
   ipcMain.handle('desktop:open-data-folder', () => shell.openPath(app.getPath('userData')));
   ipcMain.handle('desktop:choose-backup', chooseBackup);
+
+  ipcMain.handle('desktop:get-update-status', () => getUpdaterStatus());
+  ipcMain.handle('desktop:check-update', () => checkForUpdates({ manual: false }));
+  ipcMain.handle('desktop:start-update', () => startAvailableUpdate({ manual: false }));
+  ipcMain.handle('desktop:restart-update', () => installDownloadedUpdate());
+  ipcMain.handle('desktop:open-update-center', () => showUpdateCenter());
 }
 
 async function startBridge() {
@@ -188,6 +206,7 @@ app.whenReady().then(async () => {
   }
 
   installIpc();
+  setUpdaterStatusSink(sendUpdaterStatus);
   createMainWindow();
   createMenu();
   try {
