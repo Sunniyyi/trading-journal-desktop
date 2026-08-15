@@ -125,11 +125,13 @@ function installIpc() {
   ipcMain.handle('desktop:open-fxreplay', () => shell.openExternal('https://app.fxreplay.com/'));
   ipcMain.handle('desktop:open-data-folder', () => shell.openPath(app.getPath('userData')));
   ipcMain.handle('desktop:choose-backup', chooseBackup);
+  ipcMain.handle('desktop:get-app-version', () => app.getVersion());
   ipcMain.handle('desktop:get-update-status', () => getUpdaterStatus());
   ipcMain.handle('desktop:check-update', () => checkForUpdates({ manual: false }));
   ipcMain.handle('desktop:start-update', () => startAvailableUpdate({ manual: false }));
   ipcMain.handle('desktop:restart-update', () => installDownloadedUpdate());
   ipcMain.handle('desktop:open-update-center', () => showUpdateCenter());
+  ipcMain.handle('desktop:open-update-config', () => openUpdaterConfig());
 }
 
 async function startBridge() {
