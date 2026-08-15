@@ -93,7 +93,8 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/shell.css">',
     '<link rel="stylesheet" href="./ui/components.css">',
     '<link rel="stylesheet" href="./ui/workspaces.css">',
-    '<link rel="stylesheet" href="./ui/stability.css">'
+    '<link rel="stylesheet" href="./ui/stability.css">',
+    '<link rel="stylesheet" href="./ui/visual-hotfix.css">'
   ].join('\n');
   if (!source.includes(marker)) throw new Error('Renderer transform: </head> introuvable.');
   return source.replace(marker, links + '\n' + marker);
