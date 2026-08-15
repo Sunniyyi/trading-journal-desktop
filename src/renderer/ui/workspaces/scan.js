@@ -60,6 +60,7 @@ export function enhanceScan(){
     if(head&&select&&!$('.tj-scan-slot-controls',head)){
       const controls=el('div','tj-scan-slot-controls');
       const weight=el('span','tj-scan-weight',{text:`Poids ${role.weight}`,title:`${role.label} contribue à ${role.weight} du score visuel avant normalisation.`});
+      controls.addEventListener('click',event=>event.stopPropagation());
       select.before(controls);controls.append(weight,select);
     }
     slot.dataset.scanWeight=role.weight;
