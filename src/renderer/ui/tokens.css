@@ -1,16 +1,16 @@
 :root{
-  --tj-bg-0:#071020;
-  --tj-bg-1:#0a1327;
+  --tj-bg-0:#060e1d;
+  --tj-bg-1:#091326;
   --tj-bg-2:#101a35;
   --tj-surface:rgba(17,29,57,.82);
   --tj-surface-strong:rgba(20,32,64,.94);
   --tj-surface-soft:rgba(24,38,72,.58);
   --tj-surface-hover:rgba(31,49,91,.78);
-  --tj-line:rgba(138,163,226,.16);
-  --tj-line-strong:rgba(139,174,255,.29);
-  --tj-text:#f2f6ff;
-  --tj-text-2:#c8d2ea;
-  --tj-muted:#8390ae;
+  --tj-line:rgba(138,163,226,.15);
+  --tj-line-strong:rgba(139,174,255,.30);
+  --tj-text:#f4f7ff;
+  --tj-text-2:#cbd5ea;
+  --tj-muted:#8794b2;
   --tj-cyan:#58c9ff;
   --tj-teal:#4ce0ba;
   --tj-violet:#7b72ff;
@@ -29,11 +29,14 @@
   --tj-space-5:20px;
   --tj-space-6:24px;
   --tj-space-7:32px;
-  --tj-shadow:0 18px 50px rgba(0,0,0,.24);
-  --tj-shadow-soft:0 10px 26px rgba(0,0,0,.18);
+  --tj-shadow:0 20px 58px rgba(0,0,0,.27);
+  --tj-shadow-soft:0 11px 30px rgba(0,0,0,.19);
   --tj-font:Inter,"Segoe UI",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
-  --tj-sidebar:164px;
-  --tj-topbar:76px;
-  --tj-statusbar:58px;
+  --tj-sidebar:176px;
+  --tj-sidebar-collapsed:76px;
+  --tj-topbar:84px;
+  --tj-statusbar:56px;
+  --tj-inspector-width:0px;
+  --tj-inspector-open-width:340px;
   --tj-ease:cubic-bezier(.2,.75,.25,1);
 }
