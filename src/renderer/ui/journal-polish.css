@@ -1,0 +1,397 @@
+/* Trading Journal Desktop 2.1.14 — Journal polish
+   Dedicated journal presentation layer. No business/data logic changes. */
+
+/* Scope every rule to the active Journal workspace so this layer cannot leak. */
+body[data-workspace="journal"].tj-desktop-v2 #viewTrading.tj-journal-workspace{
+  gap:13px!important;
+  padding-bottom:22px!important;
+  overflow:auto!important;
+}
+
+/* --------------------------------------------------------------------------
+   KPI STRIP — useful context, visually secondary to the actual journal
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:10px!important;
+  margin:0!important;
+}
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats>.stat{
+  position:relative!important;
+  min-height:96px!important;
+  padding:14px 15px 13px!important;
+  overflow:hidden!important;
+  border-radius:15px!important;
+  background:linear-gradient(180deg,rgba(20,35,68,.84),rgba(12,24,49,.92))!important;
+  border-color:rgba(139,166,225,.15)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 10px 26px rgba(0,0,0,.12)!important;
+}
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats>.stat::before{
+  content:""!important;
+  position:absolute!important;
+  top:0!important;
+  left:14px!important;
+  right:calc(100% - 40px)!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,var(--tj-cyan),var(--tj-violet))!important;
+  opacity:.72!important;
+}
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats .label{
+  margin-top:3px!important;
+  font-size:9px!important;
+  font-weight:720!important;
+  color:#9eacc7!important;
+  letter-spacing:.08em!important;
+}
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats .val{
+  margin-top:8px!important;
+  font-size:22px!important;
+  line-height:1.05!important;
+  font-weight:790!important;
+  letter-spacing:-.02em!important;
+}
+body[data-workspace="journal"] #viewTrading.tj-journal-workspace>.stats .sub{
+  margin-top:7px!important;
+  font-size:10px!important;
+  line-height:1.28!important;
+  color:#96a5c1!important;
+}
+
+/* --------------------------------------------------------------------------
+   MAIN COMPOSITION — execution first, analysis second
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading .tj-journal-grid{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(320px,350px)!important;
+  gap:13px!important;
+  align-items:start!important;
+  min-height:0!important;
+}
+body[data-workspace="journal"] #viewTrading .tj-journal-main{
+  min-width:0!important;
+  min-height:0!important;
+}
+body[data-workspace="journal"] #viewTrading .tj-journal-side{
+  position:sticky!important;
+  top:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:12px!important;
+  min-width:0!important;
+}
+
+/* Execution surface should read as one cohesive application panel. */
+body[data-workspace="journal"] #viewTrading #tableSection{
+  min-height:0!important;
+  margin:0!important;
+  padding:13px!important;
+  gap:11px!important;
+  overflow:visible!important;
+  border-radius:18px!important;
+  background:linear-gradient(180deg,rgba(17,31,61,.94),rgba(10,21,43,.96))!important;
+  border:1px solid rgba(135,164,224,.17)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.034),0 16px 38px rgba(0,0,0,.15)!important;
+}
+
+/* --------------------------------------------------------------------------
+   TOOLBAR — search/filter row that wraps naturally instead of feeling crowded
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:8px!important;
+  margin:0!important;
+  padding:0 0 11px!important;
+  background:transparent!important;
+  border-bottom:1px solid rgba(137,164,221,.13)!important;
+  box-shadow:none!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar>*{
+  flex:0 0 auto!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar input[type="search"],
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar #search{
+  flex:1 1 260px!important;
+  min-width:220px!important;
+  max-width:none!important;
+  height:40px!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar select{
+  min-width:112px!important;
+  max-width:155px!important;
+  height:40px!important;
+  padding-right:28px!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar button{
+  min-height:40px!important;
+  border-radius:11px!important;
+  padding-inline:12px!important;
+  font-weight:690!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar .primary,
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar button:last-child{
+  margin-left:auto!important;
+}
+
+/* Table/calendar mode controls stay visually grouped without dominating filters. */
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar .view-toggle,
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar .seg,
+body[data-workspace="journal"] #viewTrading #tableSection>.toolbar .tabs{
+  border-radius:11px!important;
+  background:rgba(8,18,38,.55)!important;
+  border:1px solid rgba(134,161,218,.12)!important;
+  padding:3px!important;
+}
+
+/* --------------------------------------------------------------------------
+   CALENDAR — strong visual rhythm, readable cells, week summaries as a rail
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading #journalCalCard{
+  margin:0!important;
+  padding:2px 0 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-nav{
+  min-height:52px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  margin:0 0 10px!important;
+  padding:0 2px 9px!important;
+  border-bottom:1px solid rgba(135,162,219,.10)!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-nav h2{
+  margin:0!important;
+  font-size:19px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+  color:#f5f8ff!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-nav button{
+  width:36px!important;
+  min-width:36px!important;
+  height:36px!important;
+  min-height:36px!important;
+  padding:0!important;
+  border-radius:10px!important;
+  background:rgba(21,36,69,.62)!important;
+  border-color:rgba(138,165,223,.15)!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-nav button:hover{
+  background:rgba(35,54,96,.78)!important;
+  border-color:rgba(89,191,255,.32)!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-body{
+  --cal-row:108px!important;
+  --cal-gap:8px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 136px!important;
+  gap:10px!important;
+  min-width:0!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid{
+  grid-auto-rows:var(--cal-row)!important;
+  gap:var(--cal-gap)!important;
+  min-width:0!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-cell{
+  position:relative!important;
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+  padding:10px 11px!important;
+  gap:4px!important;
+  border-radius:13px!important;
+  overflow:hidden!important;
+  background:linear-gradient(180deg,rgba(28,43,78,.70),rgba(17,31,59,.82))!important;
+  border:1px solid rgba(137,164,220,.12)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+  transition:border-color .14s ease,background .14s ease,box-shadow .14s ease!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-cell:hover{
+  background:linear-gradient(180deg,rgba(34,52,92,.82),rgba(20,36,67,.92))!important;
+  border-color:rgba(93,188,255,.35)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.04),0 8px 20px rgba(0,0,0,.14)!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-day{
+  min-height:0!important;
+  height:auto!important;
+  flex:0 0 auto!important;
+  font-size:11px!important;
+  line-height:1.05!important;
+  font-weight:760!important;
+  color:#dfe7f7!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-pnl{
+  margin-top:auto!important;
+  font-size:14px!important;
+  line-height:1.08!important;
+  font-weight:800!important;
+  letter-spacing:-.015em!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-meta{
+  font-size:9.8px!important;
+  line-height:1.22!important;
+  font-weight:580!important;
+  color:#a9b5cb!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalGrid .cal-cell:empty{
+  opacity:.48!important;
+  background:rgba(13,25,49,.44)!important;
+}
+
+body[data-workspace="journal"] #viewTrading #journalCalWeeks{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:var(--cal-gap)!important;
+  min-width:0!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalWeeks .cal-week{
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+  padding:12px 11px!important;
+  border-radius:13px!important;
+  background:linear-gradient(180deg,rgba(25,40,74,.82),rgba(14,27,53,.90))!important;
+  border:1px solid rgba(136,163,220,.14)!important;
+  box-shadow:inset 3px 0 0 rgba(96,189,255,.12)!important;
+}
+body[data-workspace="journal"] #viewTrading #journalCalWeeks .cal-week>*{
+  max-width:100%!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Day-of-week header should be visible but quiet. */
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-head,
+body[data-workspace="journal"] #viewTrading #journalCalCard .cal-weekdays{
+  min-height:30px!important;
+  margin-bottom:6px!important;
+  color:#8495b6!important;
+  font-size:9px!important;
+  font-weight:700!important;
+  letter-spacing:.12em!important;
+}
+
+/* Monthly notes read as part of the journal, not an unrelated textarea. */
+body[data-workspace="journal"] #viewTrading #journalCalCard textarea,
+body[data-workspace="journal"] #viewTrading #journalMonthNote,
+body[data-workspace="journal"] #viewTrading .month-note textarea{
+  min-height:110px!important;
+  margin-top:10px!important;
+  padding:12px 13px!important;
+  border-radius:12px!important;
+  background:rgba(7,16,34,.68)!important;
+  border-color:rgba(137,163,220,.15)!important;
+}
+
+/* --------------------------------------------------------------------------
+   TABLE MODE — dense enough for work, never cramped
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading #tableSection>.tablecard{
+  max-height:560px!important;
+  min-height:220px!important;
+  overflow:auto!important;
+  border-radius:13px!important;
+  border-color:rgba(137,164,221,.14)!important;
+  box-shadow:none!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.tablecard table{
+  min-width:920px!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.tablecard thead{
+  position:sticky!important;
+  top:0!important;
+  z-index:4!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.tablecard th{
+  background:rgba(10,21,43,.98)!important;
+}
+body[data-workspace="journal"] #viewTrading #tableSection>.tablecard tbody tr:hover td{
+  background:rgba(68,92,149,.08)!important;
+}
+body[data-workspace="journal"] #viewTrading #pagination{
+  min-height:38px!important;
+  margin:0!important;
+  padding:4px 2px 0!important;
+  border-top:1px solid rgba(137,163,220,.08)!important;
+}
+
+/* --------------------------------------------------------------------------
+   CAPITAL CURVE — supportive side panel, not a competing dashboard
+   -------------------------------------------------------------------------- */
+body[data-workspace="journal"] #viewTrading #chartCard{
+  min-height:0!important;
+  margin:0!important;
+  padding:14px!important;
+  border-radius:17px!important;
+  background:linear-gradient(180deg,rgba(20,35,67,.92),rgba(11,23,47,.95))!important;
+  border-color:rgba(139,166,224,.16)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 14px 32px rgba(0,0,0,.14)!important;
+}
+body[data-workspace="journal"] #viewTrading #chartCard h2,
+body[data-workspace="journal"] #viewTrading #chartCard h3{
+  margin-bottom:10px!important;
+  font-size:13px!important;
+  line-height:1.25!important;
+}
+body[data-workspace="journal"] #viewTrading #chartCard .chart-box{
+  height:300px!important;
+  min-height:300px!important;
+}
+body[data-workspace="journal"] #viewTrading #chartCard canvas{
+  width:100%!important;
+  height:100%!important;
+}
+
+/* --------------------------------------------------------------------------
+   INSPECTOR / COMPACT MODE — preserve readability instead of squeezing
+   -------------------------------------------------------------------------- */
+body.tj-inspector-open[data-workspace="journal"] #viewTrading .tj-journal-grid{
+  grid-template-columns:1fr!important;
+}
+body.tj-inspector-open[data-workspace="journal"] #viewTrading .tj-journal-side{
+  position:static!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr)!important;
+}
+body.tj-inspector-open[data-workspace="journal"] #viewTrading #chartCard .chart-box{
+  height:280px!important;
+  min-height:280px!important;
+}
+body.tj-inspector-open[data-workspace="journal"] #viewTrading #tableSection>.toolbar .primary,
+body.tj-inspector-open[data-workspace="journal"] #viewTrading #tableSection>.toolbar button:last-child{
+  margin-left:0!important;
+}
+
+body.tj-density-compact[data-workspace="journal"] #viewTrading #journalCalCard .cal-body{
+  --cal-row:94px!important;
+  --cal-gap:6px!important;
+}
+body.tj-density-compact[data-workspace="journal"] #viewTrading>.stats>.stat{
+  min-height:84px!important;
+  padding:11px 13px!important;
+}
+
+@media(max-width:1450px){
+  body[data-workspace="journal"] #viewTrading .tj-journal-grid{grid-template-columns:1fr!important}
+  body[data-workspace="journal"] #viewTrading .tj-journal-side{position:static!important}
+  body[data-workspace="journal"] #viewTrading #chartCard .chart-box{height:280px!important;min-height:280px!important}
+}
+@media(max-width:1200px){
+  body[data-workspace="journal"] #viewTrading>.stats{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  body[data-workspace="journal"] #viewTrading #journalCalCard{overflow-x:auto!important;padding-bottom:4px!important}
+  body[data-workspace="journal"] #viewTrading #journalCalCard .cal-body{min-width:900px!important}
+}
+@media(max-width:900px){
+  body[data-workspace="journal"] #viewTrading>.stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body[data-workspace="journal"] #viewTrading #tableSection>.toolbar>*{flex:1 1 140px!important}
+  body[data-workspace="journal"] #viewTrading #tableSection>.toolbar input[type="search"],
+  body[data-workspace="journal"] #viewTrading #tableSection>.toolbar #search{flex-basis:100%!important}
+}
