@@ -1,0 +1,97 @@
+name: Build and publish Windows release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+      - 'forge.config.js'
+      - 'src/**'
+      - 'extension/**'
+      - 'scripts/**'
+      - 'tests/**'
+      - '.github/workflows/release-windows.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: trading-journal-release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: ${{ hashFiles('package.json') != '' }}
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Install dependencies
+        shell: pwsh
+        run: npm install --no-audit --no-fund
+
+      - name: Verify application
+        shell: pwsh
+        run: npm run verify
+
+      - name: Read package version
+        id: version
+        shell: pwsh
+        run: |
+          $version = node -p "require('./package.json').version"
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version" >> $env:GITHUB_OUTPUT
+
+      - name: Check whether release already exists
+        id: existing
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view "${{ steps.version.outputs.tag }}" --repo "${{ github.repository }}" *> $null
+          if ($LASTEXITCODE -eq 0) {
+            "exists=true" >> $env:GITHUB_OUTPUT
+          } else {
+            "exists=false" >> $env:GITHUB_OUTPUT
+          }
+          exit 0
+
+      - name: Build Windows packages
+        if: steps.existing.outputs.exists != 'true'
+        shell: pwsh
+        run: npm run make
+
+      - name: Validate Squirrel.Windows artifacts
+        if: steps.existing.outputs.exists != 'true'
+        shell: pwsh
+        run: |
+          $releaseFile = Get-ChildItem -Path "out/make" -Recurse -File -Filter "RELEASES" | Select-Object -First 1
+          $nupkg = Get-ChildItem -Path "out/make" -Recurse -File -Filter "*-full.nupkg" | Select-Object -First 1
+          $setup = Get-ChildItem -Path "out/make" -Recurse -File -Filter "*Setup.exe" | Select-Object -First 1
+          if (-not $releaseFile) { throw 'RELEASES manquant.' }
+          if (-not $nupkg) { throw 'Package *-full.nupkg manquant.' }
+          if (-not $setup) { throw 'Setup.exe manquant.' }
+          Write-Host "RELEASES: $($releaseFile.FullName)"
+          Write-Host "NUPKG:   $($nupkg.FullName)"
+          Write-Host "SETUP:   $($setup.FullName)"
+
+      - name: Publish GitHub Release
+        if: steps.existing.outputs.exists != 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $tag = "${{ steps.version.outputs.tag }}"
+          $files = Get-ChildItem -Path "out/make" -Recurse -File | Where-Object {
+            $_.Extension -in '.exe','.nupkg','.zip' -or $_.Name -eq 'RELEASES'
+          } | ForEach-Object { $_.FullName }
+          if (-not $files) { throw 'Aucun artefact de release trouve.' }
+          gh release create $tag @files --repo "${{ github.repository }}" --target "${{ github.sha }}" --title "Trading Journal $tag" --notes "Mise a jour automatique Trading Journal Desktop $tag. Base V206 + moteur FXReplay V21."
