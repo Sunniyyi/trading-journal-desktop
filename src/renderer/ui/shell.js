@@ -7,6 +7,7 @@ import { enhanceBacktesting } from './workspaces/backtesting.js';
 import { createCommandPalette } from './command-palette.js';
 import { createInspector } from './inspector.js';
 import { initLayoutController } from './layout-controller.js';
+import { createUpdateCenter } from './update-center.js';
 
 const state={active:'overview',legacySwitch:null,routing:false,inspector:null,layout:null};
 const viewDisplay={viewTrading:'flex',viewBacktest:'flex',viewScan:'block',viewContext:'block',viewGate:'block'};
@@ -57,7 +58,7 @@ function buildTopbar(shell){
   const top=el('header','tj-topbar');
   top.innerHTML=`<div class="tj-workspace-heading"><div class="tj-workspace-kicker"><span class="tj-workspace-pulse"></span><span id="tjWorkspaceCrumb">Accueil</span></div><h1 id="tjWorkspaceTitle">Vue d’ensemble</h1><p id="tjWorkspaceSubtitle">Résumé de ta performance, de la session et des outils actifs.</p></div>
   <div class="tj-search" id="tjGlobalSearch" role="button" tabindex="0"><span class="tj-search-icon">⌕</span><span class="tj-search-placeholder">Rechercher une vue, une commande, une action…</span><span class="tj-kbd">Ctrl K</span></div>
-  <div class="tj-top-actions"><button class="tj-top-button" id="tjToolsButton" type="button">⚡ <span>Outils</span></button><button class="tj-top-button" id="tjFxrButton" type="button">↯ <span>FX Replay</span></button><button class="tj-top-button" id="tjInspectorToggle" type="button" title="Inspecteur · Ctrl+Shift+E">◫ <span>Inspecteur</span></button><button class="tj-top-button" id="tjFocusToggle" type="button" title="Mode Focus · Ctrl+Shift+F">Mode Focus</button><button class="tj-top-button tj-update-button" id="tjUpdateButton" type="button"><span class="tj-sync-dot"></span><span id="tjUpdateLabel">À jour</span></button><button class="tj-top-button is-primary" id="tjNewTrade" type="button">＋ Nouveau trade</button></div>`;
+  <div class="tj-top-actions"><button class="tj-top-button" id="tjToolsButton" type="button">⚡ <span>Outils</span></button><button class="tj-top-button" id="tjFxrButton" type="button">↯ <span>FX Replay</span></button><button class="tj-top-button" id="tjInspectorToggle" type="button" title="Inspecteur · Ctrl+Shift+E">◫ <span>Inspecteur</span></button><button class="tj-top-button" id="tjFocusToggle" type="button" title="Mode Focus · Ctrl+Shift+F">Mode Focus</button><button class="tj-top-button tj-update-button" id="tjUpdateButton" type="button" title="Centre de mise à jour"><span class="tj-sync-dot"></span><span id="tjUpdateLabel">À jour</span></button><button class="tj-top-button is-primary" id="tjNewTrade" type="button">＋ Nouveau trade</button></div>`;
   shell.appendChild(top);
 }
 function buildStatusbar(shell){
@@ -104,6 +105,19 @@ function syncStatus(){
   $('#tjStatusFxr').textContent=text('#fxrProgressPhase','Prêt');
   state.inspector?.refresh();
 }
+function syncUpdateButton(raw={}){
+  const button=$('#tjUpdateButton'),label=$('#tjUpdateLabel');if(!button||!label)return;
+  const updateState=String(raw.state||'idle');
+  const progress=Math.max(0,Math.min(100,Number(raw.progress)||0));
+  const version=raw.availableVersion||raw.downloadedVersion||'';
+  button.dataset.updateState=updateState;
+  if(updateState==='checking')label.textContent='Vérification';
+  else if(updateState==='available')label.textContent=version?`MAJ ${version}`:'Mise à jour';
+  else if(updateState==='downloading')label.textContent=progress>0?`${Math.round(progress)}%`:'Téléchargement';
+  else if(updateState==='ready')label.textContent='Redémarrer';
+  else if(updateState==='error')label.textContent='Erreur MAJ';
+  else label.textContent='À jour';
+}
 function wireLegacyRouter(){
   state.legacySwitch=window.switchTab;
   if(typeof state.legacySwitch!=='function')return;
@@ -133,12 +147,14 @@ export function initDesktopShell(){
   wireLegacyRouter();
   state.layout=initLayoutController({inspector:state.inspector.element,onLayoutChange:()=>state.inspector?.refresh()});
   const palette=createCommandPalette(navigate,state.layout);
-  const toggleFxr=createFxrDrawer(),toggleTools=createToolsMenu();
+  const toggleFxr=createFxrDrawer(),toggleTools=createToolsMenu(),updateCenter=createUpdateCenter();
   $('#tjGlobalSearch')?.addEventListener('click',palette.open);$('#tjGlobalSearch')?.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();palette.open();}});
   $('#tjNewTrade')?.addEventListener('click',()=>{navigate('journal');callLegacy('fabNewTrade');});
   $('#tjToolsButton')?.addEventListener('click',toggleTools);
   $('#tjFxrButton')?.addEventListener('click',()=>toggleFxr());$('#tjStatusFxrBtn')?.addEventListener('click',()=>toggleFxr());
-  $('#tjUpdateButton')?.addEventListener('click',()=>window.desktopApp?.openUpdateCenter?.());
+  $('#tjUpdateButton')?.addEventListener('click',()=>updateCenter.open());
+  window.addEventListener('tj:update-ui-status',e=>syncUpdateButton(e.detail||{}));
+  window.desktopApp?.getUpdateStatus?.().then(status=>{updateCenter.render(status||{});syncUpdateButton(status||{});}).catch(()=>{});
 
   const watched=[$('#fxrTargetPage'),$('#fxrRiskAmount'),$('#fxrPendingCount'),$('#fxrLastImport'),$('#fxrProgressPhase')].filter(Boolean);observeText(watched,syncStatus);$('#fxrTargetPage')?.addEventListener('change',syncStatus);$('#fxrRiskAmount')?.addEventListener('input',syncStatus);syncStatus();
   navigate('overview');
