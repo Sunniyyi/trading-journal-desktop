@@ -9,6 +9,8 @@ const files = [
   'src/renderer/ui/shell.js',
   'src/renderer/ui/config.js',
   'src/renderer/ui/command-palette.js',
+  'src/renderer/ui/layout-controller.js',
+  'src/renderer/ui/inspector.js',
   'src/renderer/ui/lib/dom.js',
   'src/renderer/ui/workspaces/overview.js',
   'src/renderer/ui/workspaces/journal.js',
@@ -29,6 +31,12 @@ for (const rel of files) {
 const shell = fs.readFileSync(path.join(root, 'src/renderer/ui/shell.js'), 'utf8');
 assert(shell.includes("navigate('overview')"), 'Overview must remain the default desktop workspace.');
 assert(shell.includes('WORKSPACES'), 'Navigation must be driven by central workspace configuration.');
+assert(shell.includes('createInspector'), 'Contextual inspector must stay isolated from the shell implementation.');
+assert(shell.includes('initLayoutController'), 'Workbench layout state must stay isolated from the shell implementation.');
+const layout = fs.readFileSync(path.join(root, 'src/renderer/ui/layout-controller.js'), 'utf8');
+for (const capability of ['toggleSidebar','toggleInspector','toggleFocus','toggleDensity']) {
+  assert(layout.includes(capability), `Workbench capability missing: ${capability}`);
+}
 const config = fs.readFileSync(path.join(root, 'src/renderer/ui/config.js'), 'utf8');
 for (const id of ['overview','journal','backtesting','scan','context','gate','discipline','settings']) {
   assert(config.includes(`id:'${id}'`), `Workspace missing from config: ${id}`);
