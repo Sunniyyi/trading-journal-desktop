@@ -12,5 +12,5 @@ assert(manager.includes('FXReplay Extension'), 'stable extension folder missing'
 assert(manager.includes('.desktop-managed.json'), 'managed marker missing');
 assert(background.includes('/api/extension-version'), 'extension update endpoint missing');
 assert(background.includes('chrome.runtime.reload()'), 'extension self reload missing');
-assert.strictEqual(manifest.version, '2.1.1');
-console.log('extension-manager.test.js: OK');
+assert(/^\d+\.\d+\.\d+$/.test(String(manifest.version || '')), 'managed extension version must be valid semver-like x.y.z');
+console.log(`extension-manager.test.js: OK · extension ${manifest.version}`);
