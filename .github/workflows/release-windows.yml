@@ -18,7 +18,7 @@ permissions:
 
 concurrency:
   group: trading-journal-release
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   release:
