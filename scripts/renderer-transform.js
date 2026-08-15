@@ -97,7 +97,8 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/visual-hotfix.css">',
     '<link rel="stylesheet" href="./ui/layout-v214.css">',
     '<link rel="stylesheet" href="./ui/layout-v215.css">',
-    '<link rel="stylesheet" href="./ui/update-center.css">'
+    '<link rel="stylesheet" href="./ui/update-center.css">',
+    '<link rel="stylesheet" href="./ui/final-polish.css">'
   ].join('\n');
   if (!source.includes(marker)) throw new Error('Renderer transform: </head> introuvable.');
   return source.replace(marker, links + '\n' + marker);
