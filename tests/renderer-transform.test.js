@@ -1,6 +1,6 @@
 'use strict';
 
-// Release 2.1.5 gate: every generated renderer must contain the final polish layer.
+// Release 2.1.6 gate: every generated renderer must contain the update-center layer.
 const assert = require('node:assert/strict');
 const { reconstructBaseline, verifyBaseline } = require('../scripts/reconstruct-renderer');
 const { transformRenderer, CHART_CDN, CHART_LOCAL } = require('../scripts/renderer-transform');
@@ -23,7 +23,8 @@ assert(output.includes('./ui/stability.css'), 'Desktop stability stylesheet is m
 assert(output.includes('./ui/visual-hotfix.css'), 'Desktop 2.1.3 visual hotfix stylesheet is missing.');
 assert(output.includes('./ui/layout-v214.css'), 'Desktop 2.1.4 layout stylesheet is missing.');
 assert(output.includes('./ui/layout-v215.css'), 'Desktop 2.1.5 polish stylesheet is missing.');
-assert(output.indexOf('./ui/layout-v214.css') < output.indexOf('./ui/layout-v215.css'), '2.1.5 polish must load after 2.1.4 layout.');
+assert(output.includes('./ui/update-center.css'), 'Desktop integrated update-center stylesheet is missing.');
+assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
 
