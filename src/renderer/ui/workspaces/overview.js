@@ -38,11 +38,18 @@ function update(view){
   view.querySelectorAll('[data-overview="vol"]').forEach(node=>{node.textContent=vol;});
   view.querySelectorAll('[data-overview="news"]').forEach(node=>{node.textContent=news;});
   view.querySelectorAll('[data-overview="attention"]').forEach(node=>{node.textContent=attention;});
-  const target=$('#fxrTargetPage'); const risk=$('#fxrRiskAmount');
-  const page=view.querySelector('[data-overview="target-page"]'); if(page) page.textContent=target?.selectedOptions?.[0]?.textContent?.trim()||'Aucune page';
-  const riskNode=view.querySelector('[data-overview="risk"]'); if(riskNode) riskNode.textContent=risk?.value?`${risk.value} €`:'—';
-  const pending=view.querySelector('[data-overview="pending"]'); if(pending) pending.textContent=text('#fxrPendingCount','0');
-  const last=view.querySelector('[data-overview="last-import"]'); if(last) last.textContent=text('#fxrLastImport','—');
+
+  const target=$('#fxrTargetPage');
+  const risk=$('#fxrRiskAmount');
+  const pageText=target?.selectedOptions?.[0]?.textContent?.trim()||'Aucune page';
+  const riskText=risk?.value?`${risk.value} €`:'—';
+  const pendingText=text('#fxrPendingCount','0');
+  const lastText=text('#fxrLastImport','—');
+  view.querySelectorAll('[data-overview="target-page"]').forEach(node=>{node.textContent=pageText;});
+  view.querySelectorAll('[data-overview="risk"]').forEach(node=>{node.textContent=riskText;});
+  view.querySelectorAll('[data-overview="pending"]').forEach(node=>{node.textContent=pendingText;});
+  view.querySelectorAll('[data-overview="last-import"]').forEach(node=>{node.textContent=lastText;});
+
   const phase=view.querySelector('[data-overview="fxr-phase"]'); if(phase) phase.textContent=text('#fxrProgressPhase','Prêt');
   const pctRaw=text('#fxrProgressPct','0%'); const pct=Math.max(0,Math.min(100,parseFloat(pctRaw)||0));
   const bar=view.querySelector('.tj-session-progress>i'); if(bar) bar.style.width=`${pct}%`;
