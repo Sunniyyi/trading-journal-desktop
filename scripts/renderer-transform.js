@@ -77,8 +77,24 @@ boot();`;
 
 function injectDesktopRuntime(source) {
   const marker = '<script type="module" id="localVlmBridgeModule">';
-  const injection = '<script src="./desktop-performance.js"></script>\n' + marker;
-  return replaceOnce(source, marker, injection, 'desktop-performance injection');
+  const injection = [
+    '<script src="./desktop-performance.js"></script>',
+    '<script type="module" src="./ui/bootstrap.js"></script>',
+    marker
+  ].join('\n');
+  return replaceOnce(source, marker, injection, 'desktop runtime injection');
+}
+
+function injectDesktopStyles(source) {
+  const marker = '</head>';
+  const links = [
+    '<link rel="stylesheet" href="./ui/tokens.css">',
+    '<link rel="stylesheet" href="./ui/shell.css">',
+    '<link rel="stylesheet" href="./ui/components.css">',
+    '<link rel="stylesheet" href="./ui/workspaces.css">'
+  ].join('\n');
+  if (!source.includes(marker)) throw new Error('Renderer transform: </head> introuvable.');
+  return source.replace(marker, links + '\n' + marker);
 }
 
 function transformRenderer(html) {
@@ -86,6 +102,7 @@ function transformRenderer(html) {
   out = replaceOnce(out, CHART_CDN, CHART_LOCAL, 'Chart.js local');
   out = patchJournalView(out);
   out = patchBoot(out);
+  out = injectDesktopStyles(out);
   out = injectDesktopRuntime(out);
   return out;
 }
