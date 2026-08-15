@@ -39,7 +39,7 @@ export function initLayoutController({inspector,onLayoutChange}={}){
   document.querySelector('#tjSidebarToggle')?.addEventListener('click',toggleSidebar);
   document.querySelector('#tjInspectorToggle')?.addEventListener('click',()=>toggleInspector());
   document.querySelector('#tjFocusToggle')?.addEventListener('click',()=>toggleFocus());
-  document.querySelector('#tjDensityToggle')?.addEventListener('click',toggleDensity);
+  document.querySelector('[data-inspector-action="density"]')?.addEventListener('click',toggleDensity);
   document.querySelector('#tjInspectorClose')?.addEventListener('click',()=>toggleInspector(false));
 
   const handle=inspector?.querySelector('.tj-inspector-resizer');
