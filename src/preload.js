@@ -15,7 +15,7 @@ ipcRenderer.on('desktop:update-status', (_event, status) => renderUpdateHud(stat
 contextBridge.exposeInMainWorld('desktopApp', {
   isDesktop: true,
   platform: process.platform,
-  version: '1.1.0',
+  version: '1.2.0',
   openFxReplay: () => ipcRenderer.invoke('desktop:open-fxreplay'),
   openDataFolder: () => ipcRenderer.invoke('desktop:open-data-folder'),
   importBackup: () => ipcRenderer.invoke('desktop:choose-backup'),
@@ -23,5 +23,11 @@ contextBridge.exposeInMainWorld('desktopApp', {
   checkForUpdates: () => ipcRenderer.invoke('desktop:check-update'),
   startUpdate: () => ipcRenderer.invoke('desktop:start-update'),
   restartForUpdate: () => ipcRenderer.invoke('desktop:restart-update'),
-  openUpdateCenter: () => ipcRenderer.invoke('desktop:open-update-center')
+  openUpdateCenter: () => ipcRenderer.invoke('desktop:open-update-center'),
+  onUpdateStatus: (callback) => {
+    if (typeof callback !== 'function') return () => {};
+    const listener = (_event, status) => callback(status || {});
+    ipcRenderer.on('desktop:update-status', listener);
+    return () => ipcRenderer.removeListener('desktop:update-status', listener);
+  }
 });
