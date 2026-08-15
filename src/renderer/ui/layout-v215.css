@@ -1,0 +1,134 @@
+/* Trading Journal Desktop 2.1.5 — focused visual polish
+   Loaded after 2.1.4. Presentation only: no V206 or FXReplay business logic changes. */
+
+/* --------------------------------------------------------------------------
+   Topbar: give the workspace heading enough vertical breathing room.
+   -------------------------------------------------------------------------- */
+:root{--tj-topbar:78px}
+body.tj-desktop-v2 .tj-topbar{
+  min-height:78px!important;
+  padding:9px 14px 10px!important;
+  box-sizing:border-box!important;
+}
+body.tj-desktop-v2 .tj-workspace-heading{
+  grid-template-rows:min-content min-content!important;
+  gap:4px!important;
+  align-content:center!important;
+  padding:2px 0 3px!important;
+}
+body.tj-desktop-v2 .tj-workspace-kicker{
+  margin:0!important;
+  line-height:1.1!important;
+}
+body.tj-desktop-v2 #tjWorkspaceTitle{
+  line-height:1.2!important;
+  padding:0 0 1px!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+}
+body.tj-desktop-v2 .tj-search,
+body.tj-desktop-v2 .tj-top-actions{align-self:center!important}
+
+/* --------------------------------------------------------------------------
+   Journal: remove decorative wash from the execution surface.
+   Controls stay; only the unnecessary coloured banding disappears.
+   -------------------------------------------------------------------------- */
+#viewTrading.tj-journal-workspace #tableSection{
+  background:rgba(13,26,51,.82)!important;
+  background-image:none!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.025)!important;
+}
+#viewTrading.tj-journal-workspace #tableSection::before,
+#viewTrading.tj-journal-workspace #tableSection::after,
+#viewTrading.tj-journal-workspace #tableSection>.toolbar::before,
+#viewTrading.tj-journal-workspace #tableSection>.toolbar::after{
+  content:none!important;
+  display:none!important;
+}
+#viewTrading.tj-journal-workspace #tableSection>.toolbar{
+  background:transparent!important;
+  background-image:none!important;
+  box-shadow:none!important;
+}
+
+/* 2.1.4 accidentally applied min-height to .cal-day (the number label) instead
+   of the cell. That pushed P&L/meta outside the visible card. */
+#viewTrading.tj-journal-workspace #journalCalCard .cal-body{
+  --cal-row:96px!important;
+  --cal-gap:8px!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid{
+  grid-auto-rows:var(--cal-row)!important;
+  gap:var(--cal-gap)!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-cell{
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+  padding:9px 10px!important;
+  gap:3px!important;
+  overflow:hidden!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-day{
+  min-height:0!important;
+  height:auto!important;
+  flex:0 0 auto!important;
+  line-height:1.1!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-pnl{
+  margin-top:auto!important;
+  flex:0 0 auto!important;
+  line-height:1.1!important;
+}
+#viewTrading.tj-journal-workspace #journalCalGrid .cal-meta{
+  flex:0 0 auto!important;
+  line-height:1.15!important;
+}
+#viewTrading.tj-journal-workspace #journalCalWeeks .cal-week{
+  height:var(--cal-row)!important;
+  min-height:var(--cal-row)!important;
+}
+
+/* --------------------------------------------------------------------------
+   Backtesting overview: use the left column instead of leaving a dead void.
+   The chart grows to the analytical rail height and becomes the visual anchor.
+   -------------------------------------------------------------------------- */
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-grid{
+  align-items:stretch!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main{
+  display:flex!important;
+  flex-direction:column!important;
+  min-height:clamp(500px,64vh,650px)!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard{
+  flex:1 1 auto!important;
+  height:100%!important;
+  min-height:clamp(500px,64vh,650px)!important;
+  margin:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard .chart-box{
+  flex:1 1 auto!important;
+  height:auto!important;
+  min-height:clamp(420px,54vh,570px)!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard canvas{
+  width:100%!important;
+  height:100%!important;
+}
+#viewBacktest.tj-backtest-workspace .tj-bt-dashboard-side{
+  align-self:stretch!important;
+}
+
+@media(max-width:1120px){
+  :root{--tj-topbar:74px}
+  body.tj-desktop-v2 .tj-topbar{min-height:74px!important}
+  #viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main,
+  #viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard{
+    min-height:420px!important;
+  }
+  #viewBacktest.tj-backtest-workspace .tj-bt-dashboard-main>#btChartCard .chart-box{
+    min-height:340px!important;
+  }
+}
