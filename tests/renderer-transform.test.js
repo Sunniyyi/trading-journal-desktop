@@ -25,9 +25,11 @@ assert(output.includes('./ui/layout-v215.css'), 'Desktop 2.1.5 polish stylesheet
 assert(output.includes('./ui/update-center.css'), 'Desktop integrated update-center stylesheet is missing.');
 assert(output.includes('./ui/final-polish.css'), 'Desktop 2.1.9 final polish stylesheet is missing.');
 assert(output.includes('./ui/overview-polish.css'), 'Desktop 2.1.10 overview polish stylesheet is missing.');
+assert(output.includes('./ui/widget-polish.css'), 'Desktop 2.1.11 widget polish stylesheet is missing.');
 assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
 assert(output.indexOf('./ui/update-center.css') < output.indexOf('./ui/final-polish.css'), 'Final polish must load after update-center styles.');
-assert(output.indexOf('./ui/final-polish.css') < output.indexOf('./ui/overview-polish.css'), 'Overview polish must load last.');
+assert(output.indexOf('./ui/final-polish.css') < output.indexOf('./ui/overview-polish.css'), 'Overview polish must load after the global final polish.');
+assert(output.indexOf('./ui/overview-polish.css') < output.indexOf('./ui/widget-polish.css'), 'Widget polish must load last so floating windows keep their dedicated composition.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
 
