@@ -13,6 +13,7 @@ assert(output.includes(CHART_LOCAL), 'Local Chart.js path is missing.');
 assert(output.includes('./desktop-performance.js'), 'Desktop performance layer is missing.');
 assert(output.includes('./ui/bootstrap.js'), 'Desktop UI bootstrap is missing.');
 assert(output.includes('./ui/stability-runtime.js'), 'Desktop stability runtime is missing.');
+assert(output.indexOf('./ui/stability-runtime.js') < output.indexOf('./ui/bootstrap.js'), 'Stability runtime must load before the desktop shell bootstrap.');
 assert(output.includes('./ui/tokens.css'), 'Desktop design tokens are missing.');
 assert(output.includes('./ui/shell.css'), 'Desktop shell stylesheet is missing.');
 assert(output.includes('./ui/components.css'), 'Desktop component stylesheet is missing.');
