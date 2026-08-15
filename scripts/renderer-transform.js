@@ -81,6 +81,7 @@ function injectDesktopRuntime(source) {
     '<script src="./desktop-performance.js"></script>',
     '<script type="module" src="./ui/stability-runtime.js"></script>',
     '<script type="module" src="./ui/bootstrap.js"></script>',
+    '<script type="module" src="./ui/workspaces/scan.js"></script>',
     marker
   ].join('\n');
   return replaceOnce(source, marker, injection, 'desktop runtime injection');
@@ -108,6 +109,7 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/backtest-layout-v217.css">',
     '<link rel="stylesheet" href="./ui/backtest-polish-v218.css">',
     '<link rel="stylesheet" href="./ui/backtest-calendar-v219.css">',
+    '<link rel="stylesheet" href="./ui/scan-premium-v220.css">',
     '<link rel="stylesheet" href="./ui/backtest-state-guard.css">',
     '<link rel="stylesheet" href="./ui/workspace-routing-fix.css">'
   ].join('\n');
