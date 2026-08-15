@@ -14,8 +14,9 @@
     "start": "npm run prepare:renderer && electron .",
     "package": "npm run prepare:renderer && electron-forge package",
     "make": "npm run prepare:renderer && electron-forge make",
+    "check:js": "node --check src/main.js && node --check src/preload.js && node --check src/preload/page-bridge.js && node --check src/preload/update-hud.js && node --check src/app-updater.js && node --check src/bridge-server.js && node --check src/extension-manager.js && node --check src/renderer/desktop-performance.js && node --check src/renderer/workers/monte-carlo-worker.js && node --check scripts/reconstruct-renderer.js && node --check scripts/renderer-transform.js && node --check extension/fxreplay-v21-desktop/background.js && node --check extension/fxreplay-v21-desktop/fxreplay-content.js && node --check extension/fxreplay-v21-desktop/fxreplay-runtime-hook.js && node --check extension/fxreplay-v21-desktop/site-bridge.js && node --check extension/fxreplay-v21-desktop/popup.js",
     "test": "node tests/bridge-server.test.js && node tests/renderer-transform.test.js",
-    "verify": "node tests/bridge-server.test.js && node tests/extension-manager.test.js && node tests/renderer-transform.test.js",
+    "verify": "npm run check:js && node tests/bridge-server.test.js && node tests/extension-manager.test.js && node tests/renderer-transform.test.js",
     "prepare:renderer": "node scripts/reconstruct-renderer.js"
   },
   "devDependencies": {
