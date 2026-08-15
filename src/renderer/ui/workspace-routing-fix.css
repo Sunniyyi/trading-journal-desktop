@@ -1,0 +1,21 @@
+/* Trading Journal Desktop v2.1.13 — workspace routing visibility guard
+   The desktop shell uses [hidden] for custom workspaces. Some later polish layers
+   use display:* !important, so hidden must win explicitly. */
+
+body.tj-desktop-v2 #tjOverviewView[hidden],
+body.tj-desktop-v2 #tjDisciplineView[hidden],
+body.tj-desktop-v2 .tj-workspace[hidden]{
+  display:none!important;
+}
+
+/* Dataset is the routing source of truth. These guards prevent a custom page
+   from leaking through even if another stylesheet accidentally forces display. */
+body.tj-desktop-v2:not([data-workspace="overview"]) #tjOverviewView,
+body.tj-desktop-v2:not([data-workspace="discipline"]) #tjDisciplineView{
+  display:none!important;
+}
+
+/* Accueil keeps its intended flex layout only while it is the active workspace. */
+body.tj-desktop-v2[data-workspace="overview"] #tjOverviewView:not([hidden]){
+  display:flex!important;
+}
