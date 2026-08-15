@@ -24,6 +24,15 @@ function sendUpdaterStatus(status = getUpdaterStatus()) {
   mainWindow.webContents.send('desktop:update-status', status || {});
 }
 
+function requestIntegratedUpdateCenter() {
+  const current = getUpdaterStatus();
+  if (mainWindow && !mainWindow.isDestroyed()) {
+    mainWindow.webContents.send('desktop:request-update-center');
+    return current;
+  }
+  return showUpdateCenter();
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     width: 1740,
@@ -71,7 +80,7 @@ function createMenu() {
     {
       label: 'Mises à jour',
       submenu: [
-        { label: 'Centre de mise à jour…', accelerator: 'CmdOrCtrl+U', click: () => showUpdateCenter() },
+        { label: 'Centre de mise à jour…', accelerator: 'CmdOrCtrl+U', click: () => requestIntegratedUpdateCenter() },
         { label: 'Vérifier maintenant', click: () => checkForUpdates({ manual: true }) },
         { label: 'Télécharger la mise à jour disponible', click: () => startAvailableUpdate({ manual: true }) },
         { label: 'Redémarrer sur la mise à jour prête', click: () => installDownloadedUpdate() },
@@ -130,7 +139,7 @@ function installIpc() {
   ipcMain.handle('desktop:check-update', () => checkForUpdates({ manual: false }));
   ipcMain.handle('desktop:start-update', () => startAvailableUpdate({ manual: false }));
   ipcMain.handle('desktop:restart-update', () => installDownloadedUpdate());
-  ipcMain.handle('desktop:open-update-center', () => showUpdateCenter());
+  ipcMain.handle('desktop:open-update-center', () => requestIntegratedUpdateCenter());
   ipcMain.handle('desktop:open-update-config', () => openUpdaterConfig());
 }
 
