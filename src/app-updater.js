@@ -223,7 +223,9 @@ async function showUpdateCenter() {
   }
 
   const newestVersion = latest?.version || status.availableVersion || 'inconnue';
-  const newerExists = latest?.version ? compareVersions(latest.version, currentVersion) > 0 : status.state === 'downloading' || status.state === 'downloaded';
+  const newerExists = latest?.version
+    ? compareVersions(latest.version, currentVersion) > 0
+    : status.state === 'downloading' || status.state === 'downloaded';
 
   let message = 'Trading Journal est à jour.';
   let stateLine = 'Aucune mise à jour plus récente détectée.';
@@ -352,7 +354,7 @@ async function initUpdater() {
       type: 'info',
       title: 'Mise à jour prête',
       message: 'Une nouvelle version de Trading Journal a été téléchargée.',
-      detail: `Version installée : ${app.getVersion()}\nMise à jour : ${downloadedVersion || 'nouvelle version'}\n\nTu peux l’installer maintenant ou plus tard depuis le menu « Mises à jour ».\`,
+      detail: `Version installée : ${app.getVersion()}\nMise à jour : ${downloadedVersion || 'nouvelle version'}\n\nTu peux l’installer maintenant ou plus tard depuis le menu « Mises à jour ».`,
       buttons: ['Redémarrer et installer', 'Plus tard'],
       defaultId: 0,
       cancelId: 1,
