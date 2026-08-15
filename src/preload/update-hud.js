@@ -12,6 +12,7 @@ function ensureHud(document) {
     style.id = STYLE_ID;
     style.textContent = `
       #${HUD_ID}{position:fixed;right:18px;bottom:18px;width:min(380px,calc(100vw - 36px));z-index:2147483646;box-sizing:border-box;padding:11px 12px 10px;border:1px solid rgba(116,173,255,.28);border-radius:14px;background:rgba(7,15,34,.94);box-shadow:0 18px 50px rgba(0,0,0,.42),inset 0 1px 0 rgba(255,255,255,.04);color:#e7f0ff;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;backdrop-filter:blur(14px);transition:opacity .18s ease,transform .18s ease}
+      body.tj-desktop-v2 #${HUD_ID}{bottom:78px}
       #${HUD_ID}[hidden]{display:none!important}
       #${HUD_ID} .tj-up-row{display:flex;align-items:center;gap:9px;min-width:0}
       #${HUD_ID} .tj-up-dot{width:9px;height:9px;border-radius:999px;flex:0 0 auto;background:#6e8cff;box-shadow:0 0 16px rgba(110,140,255,.65)}
