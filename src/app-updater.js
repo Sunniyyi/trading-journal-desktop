@@ -51,10 +51,12 @@ function normalizedRepo(cfg = updateConfig) {
 }
 
 function feedFromConfig(cfg) {
-  if (cfg.feedUrl) return String(cfg.feedUrl).trim();
+  if (cfg.feedUrl) return String(cfg.feedUrl).trim().replace(/\/$/, '');
   const repo = normalizedRepo(cfg);
   if (/^[^/\s]+\/[^/\s]+$/.test(repo)) {
-    return `https://update.electronjs.org/${repo}/${process.platform}-${process.arch}/${app.getVersion()}`;
+    // Direct Squirrel.Windows static feed. GitHub redirects "latest" to the
+    // newest stable release; RELEASES and the .nupkg therefore stay together.
+    return `https://github.com/${repo}/releases/latest/download`;
   }
   return '';
 }
@@ -92,6 +94,21 @@ function notify(title, body) {
   } catch (_) {}
 }
 
+function cleanUpdateError(err) {
+  const raw = String(err?.message || err || 'Erreur inconnue');
+  if (/\b404\b|introuvable/i.test(raw)) {
+    return 'Les fichiers de mise à jour sont momentanément introuvables sur GitHub (404). Réessaie dans quelques instants.';
+  }
+  if (/ENOTFOUND|EAI_AGAIN|internet|network|réseau/i.test(raw)) {
+    return 'Impossible de joindre GitHub. Vérifie ta connexion Internet puis réessaie.';
+  }
+  if (/timed? ?out|timeout|délai/i.test(raw)) {
+    return 'GitHub met trop de temps à répondre. Réessaie dans quelques instants.';
+  }
+  const firstUseful = raw.split(/\r?\n/).find(line => line.trim() && !/System\.|Squirrel\.|---|stack|trace/i.test(line));
+  return (firstUseful || raw).trim().slice(0, 500);
+}
+
 function fetchLatestRelease() {
   const repo = normalizedRepo();
   return new Promise((resolve, reject) => {
@@ -119,11 +136,15 @@ function fetchLatestRelease() {
         }
         try {
           const data = JSON.parse(raw);
+          const assets = Array.isArray(data.assets) ? data.assets : [];
+          const hasReleases = assets.some(a => a?.name === 'RELEASES');
+          const hasNupkg = assets.some(a => /-full\.nupkg$/i.test(String(a?.name || '')));
           resolve({
             version: normalizeVersion(data.tag_name || data.name || ''),
             name: String(data.name || data.tag_name || ''),
             url: String(data.html_url || ''),
-            publishedAt: String(data.published_at || '')
+            publishedAt: String(data.published_at || ''),
+            updaterReady: hasReleases && hasNupkg
           });
         } catch (err) {
           reject(err);
@@ -134,6 +155,25 @@ function fetchLatestRelease() {
     req.on('timeout', () => req.destroy(new Error('Délai GitHub dépassé.')));
     req.on('error', reject);
   });
+}
+
+async function showAlreadyCurrent(version, manual) {
+  setStatus({
+    state: 'current',
+    detail: 'Application à jour.',
+    checkedAt: Date.now(),
+    availableVersion: version || app.getVersion()
+  });
+  if (manual) {
+    await dialog.showMessageBox({
+      type: 'info',
+      title: 'Trading Journal à jour',
+      message: 'Aucune nouvelle mise à jour n’est disponible.',
+      detail: `Version installée : ${app.getVersion()}\nDernière version publiée : ${version || app.getVersion()}`,
+      buttons: ['OK'],
+      noLink: true
+    });
+  }
 }
 
 async function checkForUpdates({ manual = false } = {}) {
@@ -158,29 +198,88 @@ async function checkForUpdates({ manual = false } = {}) {
   const feed = feedFromConfig(updateConfig);
   if (!feed) {
     const out = setStatus({ state: 'error', detail: 'Configuration updater invalide.', checkedAt: Date.now() });
-    if (manual) await dialog.showErrorBox('Mise à jour', out.detail);
+    if (manual) await dialog.showMessageBox({ type: 'error', title: 'Erreur de mise à jour', message: out.detail });
     return out;
+  }
+
+  setStatus({ state: 'checking', detail: 'Vérification de la dernière version sur GitHub…', checkedAt: Date.now() });
+  if (manual) notify('Trading Journal — Mise à jour', `Vérification en cours… Version installée : ${app.getVersion()}`);
+
+  let latest;
+  try {
+    latest = await fetchLatestRelease();
+    if (latest.version) status.availableVersion = latest.version;
+  } catch (err) {
+    const detail = cleanUpdateError(err);
+    setStatus({ state: 'error', detail, checkedAt: Date.now() });
+    if (manual) {
+      await dialog.showMessageBox({
+        type: 'error',
+        title: 'Erreur de mise à jour',
+        message: 'Trading Journal n’a pas pu vérifier la dernière version sur GitHub.',
+        detail,
+        buttons: ['OK'],
+        noLink: true
+      });
+    }
+    return status;
+  }
+
+  if (!latest.version || compareVersions(latest.version, app.getVersion()) <= 0) {
+    await showAlreadyCurrent(latest.version, manual);
+    return status;
+  }
+
+  if (!latest.updaterReady) {
+    const detail = `La version ${latest.version} est publiée, mais ses fichiers de mise à jour Squirrel ne sont pas encore tous disponibles.`;
+    setStatus({ state: 'error', detail, checkedAt: Date.now(), availableVersion: latest.version });
+    if (manual) {
+      await dialog.showMessageBox({
+        type: 'warning',
+        title: 'Mise à jour en préparation',
+        message: `La version ${latest.version} existe mais n’est pas encore prête à être installée automatiquement.`,
+        detail: 'Attends quelques instants puis clique à nouveau sur « Vérifier maintenant ».',
+        buttons: ['OK'],
+        noLink: true
+      });
+    }
+    return status;
   }
 
   try {
     manualCheckPending = manual === true;
     clearManualTimer();
     autoUpdater.setFeedURL({ url: feed });
-    setStatus({ state: 'checking', detail: 'Recherche d’une mise à jour…', checkedAt: Date.now() });
+    setStatus({
+      state: 'checking',
+      detail: `Mise à jour ${latest.version} trouvée. Préparation du téléchargement…`,
+      checkedAt: Date.now(),
+      availableVersion: latest.version
+    });
 
     if (manualCheckPending) {
-      notify('Trading Journal — Mise à jour', `Recherche en cours… Version installée : ${app.getVersion()}`);
+      await dialog.showMessageBox({
+        type: 'info',
+        title: 'Nouvelle mise à jour disponible',
+        message: `Trading Journal ${latest.version} est disponible.`,
+        detail: `Version installée : ${app.getVersion()}\nNouvelle version : ${latest.version}\n\nLe téléchargement va démarrer automatiquement.`,
+        buttons: ['Télécharger la mise à jour'],
+        noLink: true
+      });
+
       manualCheckTimer = setTimeout(async () => {
         if (!manualCheckPending) return;
         manualCheckPending = false;
-        setStatus({ state: 'error', detail: 'Aucune réponse du serveur de mise à jour après 20 secondes.', checkedAt: Date.now() });
+        setStatus({ state: 'error', detail: 'Le téléchargement n’a pas démarré après 30 secondes.', checkedAt: Date.now() });
         await dialog.showMessageBox({
           type: 'warning',
-          title: 'Vérification des mises à jour',
-          message: 'La vérification prend anormalement longtemps.',
-          detail: 'Aucune réponse n’a été reçue après 20 secondes. Vérifie ta connexion Internet puis réessaie.'
+          title: 'Mise à jour',
+          message: 'Le téléchargement ne démarre pas.',
+          detail: 'Réessaie depuis le Centre de mise à jour. Si le problème persiste, les fichiers GitHub peuvent être temporairement indisponibles.',
+          buttons: ['OK'],
+          noLink: true
         });
-      }, 20000);
+      }, 30000);
     }
 
     autoUpdater.checkForUpdates();
@@ -188,8 +287,18 @@ async function checkForUpdates({ manual = false } = {}) {
     clearManualTimer();
     const wasManual = manualCheckPending || manual;
     manualCheckPending = false;
-    const out = setStatus({ state: 'error', detail: err.message || String(err), checkedAt: Date.now() });
-    if (wasManual) await dialog.showErrorBox('Mise à jour', out.detail);
+    const detail = cleanUpdateError(err);
+    const out = setStatus({ state: 'error', detail, checkedAt: Date.now() });
+    if (wasManual) {
+      await dialog.showMessageBox({
+        type: 'error',
+        title: 'Erreur de mise à jour',
+        message: 'Le téléchargement de la mise à jour n’a pas pu démarrer.',
+        detail,
+        buttons: ['OK'],
+        noLink: true
+      });
+    }
     return out;
   }
   return status;
@@ -219,7 +328,7 @@ async function showUpdateCenter() {
     latest = await fetchLatestRelease();
     if (latest.version) status.availableVersion = latest.version;
   } catch (err) {
-    lookupError = err?.message || String(err);
+    lookupError = cleanUpdateError(err);
   }
 
   const newestVersion = latest?.version || status.availableVersion || 'inconnue';
@@ -235,9 +344,12 @@ async function showUpdateCenter() {
   } else if (status.state === 'downloading') {
     message = 'Une nouvelle mise à jour est disponible.';
     stateLine = 'Téléchargement en cours en arrière-plan.';
-  } else if (newerExists) {
+  } else if (newerExists && latest?.updaterReady !== false) {
     message = 'Une nouvelle mise à jour est disponible.';
     stateLine = 'Clique sur « Mettre à jour maintenant » pour lancer le téléchargement.';
+  } else if (newerExists && latest?.updaterReady === false) {
+    message = 'Une nouvelle version vient d’être publiée.';
+    stateLine = 'Ses fichiers de mise à jour sont encore en préparation.';
   } else if (lookupError) {
     message = 'Impossible de confirmer la dernière version publiée.';
     stateLine = `Erreur : ${lookupError}`;
@@ -253,7 +365,7 @@ async function showUpdateCenter() {
   let buttons;
   if (status.state === 'downloaded') {
     buttons = ['Redémarrer et installer', 'Vérifier à nouveau', 'Fermer'];
-  } else if (newerExists) {
+  } else if (newerExists && latest?.updaterReady !== false) {
     buttons = ['Mettre à jour maintenant', 'Vérifier à nouveau', 'Fermer'];
   } else {
     buttons = ['Vérifier à nouveau', 'Fermer'];
@@ -275,17 +387,7 @@ async function showUpdateCenter() {
     autoUpdater.quitAndInstall();
     return;
   }
-  if (action === 'Mettre à jour maintenant') {
-    await checkForUpdates({ manual: false });
-    await dialog.showMessageBox({
-      type: 'info',
-      title: 'Mise à jour lancée',
-      message: 'Le téléchargement de la nouvelle version a été lancé.',
-      detail: 'Tu peux continuer à utiliser Trading Journal. Dès que la mise à jour sera prête, une fenêtre te proposera de redémarrer et de l’installer.'
-    });
-    return;
-  }
-  if (action === 'Vérifier à nouveau') {
+  if (action === 'Mettre à jour maintenant' || action === 'Vérifier à nouveau') {
     await checkForUpdates({ manual: true });
   }
 }
@@ -294,7 +396,7 @@ async function initUpdater() {
   await ensureConfigFile();
 
   autoUpdater.on('checking-for-update', () => {
-    setStatus({ state: 'checking', detail: 'Recherche d’une mise à jour…', checkedAt: Date.now() });
+    setStatus({ state: 'checking', detail: 'Préparation du téléchargement…', checkedAt: Date.now() });
   });
 
   autoUpdater.on('update-available', async () => {
@@ -302,13 +404,15 @@ async function initUpdater() {
     const wasManual = manualCheckPending;
     manualCheckPending = false;
     setStatus({ state: 'downloading', detail: 'Mise à jour disponible, téléchargement en arrière-plan…', checkedAt: Date.now() });
-    notify('Trading Journal — Mise à jour disponible', 'Une nouvelle version est disponible et son téléchargement démarre automatiquement.');
+    notify('Trading Journal — Téléchargement', `Téléchargement de la version ${status.availableVersion || 'disponible'} en cours.`);
     if (wasManual) {
       await dialog.showMessageBox({
         type: 'info',
-        title: 'Mise à jour trouvée',
-        message: 'Une nouvelle version de Trading Journal est disponible.',
-        detail: 'Le téléchargement démarre automatiquement en arrière-plan. Une nouvelle fenêtre apparaîtra lorsqu’elle sera prête à être installée.'
+        title: 'Téléchargement en cours',
+        message: `Trading Journal ${status.availableVersion || 'nouvelle version'} est en cours de téléchargement.`,
+        detail: 'Tu peux continuer à utiliser le journal. Une fenêtre apparaîtra automatiquement lorsque la mise à jour sera prête.',
+        buttons: ['OK'],
+        noLink: true
       });
     }
   });
@@ -318,28 +422,23 @@ async function initUpdater() {
     const wasManual = manualCheckPending;
     manualCheckPending = false;
     setStatus({ state: 'current', detail: 'Application à jour.', checkedAt: Date.now() });
-    if (wasManual) {
-      await dialog.showMessageBox({
-        type: 'info',
-        title: 'Trading Journal à jour',
-        message: `Tu utilises déjà la dernière version : ${app.getVersion()}.`,
-        detail: 'Aucune mise à jour plus récente n’est disponible.'
-      });
-    }
+    if (wasManual) await showAlreadyCurrent(status.availableVersion || app.getVersion(), true);
   });
 
   autoUpdater.on('error', async err => {
     clearManualTimer();
     const wasManual = manualCheckPending;
     manualCheckPending = false;
-    const detail = err?.message || String(err);
+    const detail = cleanUpdateError(err);
     setStatus({ state: 'error', detail, checkedAt: Date.now() });
     if (wasManual) {
       await dialog.showMessageBox({
         type: 'error',
         title: 'Erreur de mise à jour',
-        message: 'Trading Journal n’a pas pu vérifier les mises à jour.',
-        detail
+        message: 'Trading Journal n’a pas pu télécharger la mise à jour.',
+        detail,
+        buttons: ['OK'],
+        noLink: true
       });
     }
   });
@@ -353,8 +452,8 @@ async function initUpdater() {
     const answer = await dialog.showMessageBox({
       type: 'info',
       title: 'Mise à jour prête',
-      message: 'Une nouvelle version de Trading Journal a été téléchargée.',
-      detail: `Version installée : ${app.getVersion()}\nMise à jour : ${downloadedVersion || 'nouvelle version'}\n\nTu peux l’installer maintenant ou plus tard depuis le menu « Mises à jour ».`,
+      message: 'La nouvelle version de Trading Journal est prête.',
+      detail: `Version installée : ${app.getVersion()}\nNouvelle version : ${downloadedVersion || status.availableVersion || 'nouvelle version'}\n\nRedémarre maintenant pour terminer l’installation.`,
       buttons: ['Redémarrer et installer', 'Plus tard'],
       defaultId: 0,
       cancelId: 1,
