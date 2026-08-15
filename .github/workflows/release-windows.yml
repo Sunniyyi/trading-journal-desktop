@@ -46,7 +46,9 @@ jobs:
 
       - name: Verify application
         shell: pwsh
-        run: npm run verify
+        run: |
+          npm run verify 2>&1 | Tee-Object -FilePath verify-output.log
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
       - name: Read package version
         id: version
@@ -82,7 +84,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: windows-build-diagnostics
-          path: build-output.log
+          path: |
+            verify-output.log
+            build-output.log
           if-no-files-found: ignore
           retention-days: 2
 
