@@ -41,7 +41,8 @@
     }catch(_){}
   }
 
-  // Ask the page to republish its page list immediately, then poll.
+  // This is only the legacy file:// compatibility bridge. Desktop uses the
+  // local HTTP bridge directly, so there is no reason to wake Chrome 6-7x/sec.
   window.postMessage({source:'fxr-extension',type:'FXR_EXTENSION_BRIDGE_READY',at:Date.now()},'*');
-  poll();setInterval(poll,150);
+  poll();setInterval(poll,750);
 })();
