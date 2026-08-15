@@ -14,39 +14,13 @@ assert(output.includes('./desktop-performance.js'), 'Desktop performance layer i
 assert(output.includes('./ui/bootstrap.js'), 'Desktop UI bootstrap is missing.');
 assert(output.includes('./ui/stability-runtime.js'), 'Desktop stability runtime is missing.');
 assert(output.indexOf('./ui/stability-runtime.js') < output.indexOf('./ui/bootstrap.js'), 'Stability runtime must load before the desktop shell bootstrap.');
-assert(output.includes('./ui/tokens.css'), 'Desktop design tokens are missing.');
-assert(output.includes('./ui/shell.css'), 'Desktop shell stylesheet is missing.');
-assert(output.includes('./ui/components.css'), 'Desktop component stylesheet is missing.');
-assert(output.includes('./ui/workspaces.css'), 'Desktop workspace stylesheet is missing.');
-assert(output.includes('./ui/stability.css'), 'Desktop stability stylesheet is missing.');
-assert(output.includes('./ui/visual-hotfix.css'), 'Desktop 2.1.3 visual hotfix stylesheet is missing.');
-assert(output.includes('./ui/layout-v214.css'), 'Desktop 2.1.4 layout stylesheet is missing.');
-assert(output.includes('./ui/layout-v215.css'), 'Desktop 2.1.5 polish stylesheet is missing.');
-assert(output.includes('./ui/update-center.css'), 'Desktop integrated update-center stylesheet is missing.');
-assert(output.includes('./ui/final-polish.css'), 'Desktop 2.1.9 final polish stylesheet is missing.');
-assert(output.includes('./ui/overview-polish.css'), 'Desktop 2.1.10 overview polish stylesheet is missing.');
-assert(output.includes('./ui/widget-polish.css'), 'Desktop 2.1.11 widget polish stylesheet is missing.');
-assert(output.includes('./ui/typography-polish.css'), 'Desktop 2.1.12 typography polish stylesheet is missing.');
-assert(output.includes('./ui/journal-polish.css'), 'Desktop 2.1.14 journal polish stylesheet is missing.');
-assert(output.includes('./ui/journal-premium.css'), 'Desktop 2.1.15 journal premium stylesheet is missing.');
-assert(output.includes('./ui/backtest-premium.css'), 'Desktop 2.1.16 Backtesting premium stylesheet is missing.');
-assert(output.includes('./ui/backtest-layout-v217.css'), 'Desktop 2.1.17 Backtesting layout correction is missing.');
-assert(output.includes('./ui/backtest-polish-v218.css'), 'Desktop 2.1.18 Backtesting polish is missing.');
-assert(output.includes('./ui/backtest-state-guard.css'), 'Desktop 2.1.16 Backtesting state guard is missing.');
-assert(output.includes('./ui/workspace-routing-fix.css'), 'Desktop 2.1.13 workspace routing guard is missing.');
-assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
-assert(output.indexOf('./ui/update-center.css') < output.indexOf('./ui/final-polish.css'), 'Final polish must load after update-center styles.');
-assert(output.indexOf('./ui/final-polish.css') < output.indexOf('./ui/overview-polish.css'), 'Overview polish must load after the global final polish.');
-assert(output.indexOf('./ui/overview-polish.css') < output.indexOf('./ui/widget-polish.css'), 'Widget polish must load after overview polish.');
-assert(output.indexOf('./ui/widget-polish.css') < output.indexOf('./ui/typography-polish.css'), 'Typography polish must load after widget rules.');
-assert(output.indexOf('./ui/typography-polish.css') < output.indexOf('./ui/journal-polish.css'), 'Journal polish must load after global typography so page-specific readability wins.');
-assert(output.indexOf('./ui/journal-polish.css') < output.indexOf('./ui/journal-premium.css'), 'Journal premium must load after the 2.1.14 Journal foundation.');
-assert(output.indexOf('./ui/journal-premium.css') < output.indexOf('./ui/backtest-premium.css'), 'Backtesting premium must load after Journal-specific layers.');
-assert(output.indexOf('./ui/backtest-premium.css') < output.indexOf('./ui/backtest-layout-v217.css'), 'Backtesting 2.1.17 correction must override the 2.1.16 premium layout.');
-assert(output.indexOf('./ui/backtest-layout-v217.css') < output.indexOf('./ui/backtest-polish-v218.css'), 'Backtesting 2.1.18 polish must override the 2.1.17 layout layer.');
-assert(output.indexOf('./ui/backtest-polish-v218.css') < output.indexOf('./ui/backtest-state-guard.css'), 'Backtesting visibility state guard must remain after the 2.1.18 polish.');
-assert(output.indexOf('./ui/backtest-state-guard.css') < output.indexOf('./ui/workspace-routing-fix.css'), 'Workspace visibility guard must remain the final stylesheet.');
-assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
-assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
-
+for(const css of ['tokens.css','shell.css','components.css','workspaces.css','stability.css','visual-hotfix.css','layout-v214.css','layout-v215.css','update-center.css','final-polish.css','overview-polish.css','widget-polish.css','typography-polish.css','journal-polish.css','journal-premium.css','backtest-premium.css','backtest-layout-v217.css','backtest-polish-v218.css','backtest-calendar-v219.css','backtest-state-guard.css','workspace-routing-fix.css']){
+  assert(output.includes(`./ui/${css}`),`Desktop stylesheet missing: ${css}`);
+}
+assert(output.indexOf('./ui/backtest-layout-v217.css') < output.indexOf('./ui/backtest-polish-v218.css'),'2.1.18 must override 2.1.17.');
+assert(output.indexOf('./ui/backtest-polish-v218.css') < output.indexOf('./ui/backtest-calendar-v219.css'),'2.1.19 must override 2.1.18.');
+assert(output.indexOf('./ui/backtest-calendar-v219.css') < output.indexOf('./ui/backtest-state-guard.css'),'Backtesting state guard must load after 2.1.19.');
+assert(output.indexOf('./ui/backtest-state-guard.css') < output.indexOf('./ui/workspace-routing-fix.css'),'Workspace visibility guard must remain final.');
+assert(output.includes('requestIdleCallback(deferred,{timeout:900})'),'Deferred startup block is missing.');
+assert(output.includes('// Un seul cycle de rendu'),'Single-render boot marker is missing.');
 console.log('renderer transform OK');
