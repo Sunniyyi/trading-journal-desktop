@@ -80,6 +80,7 @@ function injectDesktopRuntime(source) {
   const injection = [
     '<script src="./desktop-performance.js"></script>',
     '<script type="module" src="./ui/bootstrap.js"></script>',
+    '<script type="module" src="./ui/stability-runtime.js"></script>',
     marker
   ].join('\n');
   return replaceOnce(source, marker, injection, 'desktop runtime injection');
