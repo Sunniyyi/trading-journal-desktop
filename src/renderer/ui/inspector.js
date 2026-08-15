@@ -20,10 +20,11 @@ const related={
   discipline:[['journal','Journal'],['gate','Decision Gate'],['backtesting','Backtesting']]
 };
 
-function metric(label,value,cls=''){
-  return `<div class="tj-inspector-metric ${cls}"><span>${label}</span><b>${value}</b></div>`;
-}
 function safe(v,fallback='—'){const s=String(v??'').trim();return s||fallback;}
+function esc(v){return safe(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function metric(label,value,cls=''){
+  return `<div class="tj-inspector-metric ${cls}"><span>${esc(label)}</span><b>${esc(value)}</b></div>`;
+}
 
 export function createInspector({navigate}={}){
   const aside=el('aside','tj-inspector',{id:'tjInspector'});
@@ -70,7 +71,10 @@ export function createInspector({navigate}={}){
       snapshot.innerHTML=`<div class="tj-inspector-section-title">Discipline</div><div class="tj-inspector-metrics">${metric('Relus',vals[0]||'—')}${metric('Propres',vals[1]||'—','good')}${metric('Avec erreur',vals[2]||'—','bad')}${metric('Coût',vals[3]||'—','bad')}</div>`;
       return;
     }
-    snapshot.innerHTML=`<div class="tj-inspector-section-title">${byId(active)?.label||'Workspace'}</div><div class="tj-inspector-note">Ce panneau reste volontairement léger : il donne les repères utiles sans dupliquer l’écran principal.</div>`;
+    snapshot.replaceChildren(
+      el('div','tj-inspector-section-title',{text:byId(active)?.label||'Workspace'}),
+      el('div','tj-inspector-note',{text:'Ce panneau reste volontairement léger : il donne les repères utiles sans dupliquer l’écran principal.'})
+    );
   }
 
   function setWorkspace(id){
