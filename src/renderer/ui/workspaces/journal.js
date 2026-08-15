@@ -17,8 +17,16 @@ export function enhanceJournal(){
     const main=el('div','tj-journal-main');
     const side=el('aside','tj-journal-side');
 
+    // Calendar and table are two modes of the same execution surface.
+    // Keeping the calendar inside tableSection prevents the old min-height/table
+    // shell from creating a large empty block when Calendar mode is active.
+    if(calendar){
+      const toolbar=$('.toolbar',table);
+      if(toolbar) toolbar.after(calendar);
+      else table.prepend(calendar);
+    }
+
     main.appendChild(table);
-    if(calendar) main.appendChild(calendar);
     side.appendChild(chart);
     grid.append(main,side);
     stats.after(grid);
