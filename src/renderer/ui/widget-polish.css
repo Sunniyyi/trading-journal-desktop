@@ -1,0 +1,511 @@
+/* Trading Journal Desktop 2.1.11 — floating widgets polish
+   Presentation only. Keeps V206 widget drag/resize/state and FXReplay V21 logic intact. */
+
+:root{
+  --tj-widget-news-width:560px;
+  --tj-widget-market-width:470px;
+  --tj-widget-radius:18px;
+  --tj-widget-head:54px;
+  --tj-fxr-drawer-width:470px;
+}
+
+/* ========================================================================== 
+   1. Shared floating-window language
+   ========================================================================== */
+body.tj-desktop-v2 > .mw-widget,
+body.tj-desktop-v2 > .nw-widget{
+  max-width:min(760px,calc(100vw - 32px))!important;
+  max-height:calc(var(--tj-viewport-height,100vh) - var(--tj-topbar,82px) - var(--tj-statusbar,54px) - 28px)!important;
+  border-radius:var(--tj-widget-radius)!important;
+  border:1px solid rgba(118,164,235,.30)!important;
+  background:linear-gradient(180deg,rgba(16,30,59,.985),rgba(7,16,34,.992))!important;
+  box-shadow:0 26px 78px rgba(0,0,0,.48),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  backdrop-filter:blur(20px) saturate(122%)!important;
+  -webkit-backdrop-filter:blur(20px) saturate(122%)!important;
+  overflow:hidden!important;
+  isolation:isolate;
+}
+body.tj-desktop-v2 > .nw-widget{width:min(var(--tj-widget-news-width),calc(100vw - 32px));min-width:min(420px,calc(100vw - 32px))}
+body.tj-desktop-v2 > .mw-widget{width:min(var(--tj-widget-market-width),calc(100vw - 32px));min-width:min(390px,calc(100vw - 32px))}
+
+/* Active window gets a useful but quiet focus cue. V206 already manages the class. */
+body.tj-desktop-v2 > :is(.mw-widget,.nw-widget).ui-window-front{
+  z-index:96!important;
+  border-color:rgba(88,201,255,.46)!important;
+  box-shadow:0 30px 86px rgba(0,0,0,.56),0 0 0 1px rgba(88,201,255,.055),inset 0 1px 0 rgba(255,255,255,.07)!important;
+}
+
+/* Compact widgets should fit their real content instead of preserving a stale tall resize. */
+body.tj-desktop-v2 > .nw-widget.show:not(.ui-minimized):not(.ui-maximized):has(#nwDetails:not(.show)),
+body.tj-desktop-v2 > .mw-widget.show:not(.ui-minimized):not(.ui-maximized):has(#mwDetails:not(.show)){
+  height:auto!important;
+  min-height:0!important;
+  resize:horizontal!important;
+}
+
+/* When details are open, vertical resizing is useful again but remains viewport-safe. */
+body.tj-desktop-v2 > .nw-widget.show:not(.ui-minimized):not(.ui-maximized):has(#nwDetails.show),
+body.tj-desktop-v2 > .mw-widget.show:not(.ui-minimized):not(.ui-maximized):has(#mwDetails.show){
+  min-height:360px!important;
+  resize:both!important;
+}
+
+body.tj-desktop-v2 > .mw-widget.ui-maximized,
+body.tj-desktop-v2 > .nw-widget.ui-maximized{
+  left:max(18px,calc(var(--tj-sidebar,188px) + 18px))!important;
+  top:18px!important;
+  width:min(820px,calc(100vw - var(--tj-sidebar,188px) - var(--tj-inspector-width,0px) - 54px))!important;
+  height:calc(var(--tj-viewport-height,100vh) - var(--tj-statusbar,54px) - 36px)!important;
+  max-height:none!important;
+  border-radius:20px!important;
+}
+
+/* Header: readable hierarchy, proper hit targets, clear draggable surface. */
+body.tj-desktop-v2 > .nw-widget .nw-top,
+body.tj-desktop-v2 > .mw-widget .mw-top{
+  min-height:var(--tj-widget-head)!important;
+  padding:9px 10px 9px 12px!important;
+  gap:8px!important;
+  background:linear-gradient(180deg,rgba(32,51,91,.64),rgba(17,31,60,.42))!important;
+  border-bottom:1px solid rgba(133,162,224,.13)!important;
+  cursor:grab;
+  user-select:none;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget).ui-dragging :is(.nw-top,.mw-top){cursor:grabbing}
+body.tj-desktop-v2 > .nw-widget .nw-top::after,
+body.tj-desktop-v2 > .mw-widget .mw-top::after{
+  content:"";
+  position:absolute;
+  left:12px;right:12px;bottom:-1px;height:1px;
+  pointer-events:none;
+  opacity:.7;
+}
+body.tj-desktop-v2 > .nw-widget .nw-top::after{background:linear-gradient(90deg,rgba(255,197,84,.76),rgba(255,197,84,0))}
+body.tj-desktop-v2 > .mw-widget .mw-top::after{background:linear-gradient(90deg,rgba(88,201,255,.80),rgba(83,232,188,.40),transparent)}
+
+body.tj-desktop-v2 > .nw-widget :is(.nw-title,.mw-title),
+body.tj-desktop-v2 > .mw-widget :is(.nw-title,.mw-title){min-width:0!important}
+body.tj-desktop-v2 > .nw-widget .nw-title strong,
+body.tj-desktop-v2 > .mw-widget .mw-title strong{
+  font:760 13px/1.2 var(--tj-font)!important;
+  letter-spacing:-.01em!important;
+  color:#f6f8ff!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-title span,
+body.tj-desktop-v2 > .mw-widget .mw-title span{
+  margin-top:3px!important;
+  font:530 9.5px/1.25 var(--tj-mono,monospace)!important;
+  color:#8fa0c0!important;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget) :is(.nw-dot,.mw-live-dot){
+  width:8px!important;height:8px!important;flex:0 0 8px!important;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget) :is(.nw-risk,.mw-verdict){
+  min-height:25px!important;
+  padding:5px 8px!important;
+  border-radius:999px!important;
+  font-size:9px!important;
+  display:inline-flex!important;align-items:center!important;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget) :is(.ui-window-btn,.nw-icon-btn,.mw-icon-btn){
+  width:32px!important;height:32px!important;min-height:32px!important;flex:0 0 32px!important;
+  padding:0!important;border-radius:10px!important;
+  display:grid!important;place-items:center!important;
+  font-size:12px!important;
+  background:rgba(34,51,89,.64)!important;
+  border-color:rgba(126,158,220,.17)!important;
+  color:#a9b6cf!important;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget) :is(.ui-window-btn,.nw-icon-btn,.mw-icon-btn):hover{
+  color:white!important;background:rgba(54,76,123,.75)!important;border-color:rgba(112,178,255,.32)!important;
+}
+
+/* Minimized state should look like a compact status strip, not a broken modal. */
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget).ui-minimized{
+  width:min(410px,calc(100vw - 32px))!important;
+  min-width:300px!important;
+  border-radius:14px!important;
+}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget).ui-minimized :is(.nw-top,.mw-top){min-height:48px!important;border-bottom:0!important}
+body.tj-desktop-v2 > :is(.nw-widget,.mw-widget).ui-minimized :is(.nw-risk,.mw-verdict){margin-left:auto}
+
+/* ========================================================================== 
+   2. News widget — signal first, feed second
+   ========================================================================== */
+body.tj-desktop-v2 > .nw-widget .nw-body{
+  padding:12px!important;
+  display:grid!important;
+  gap:9px!important;
+  background:linear-gradient(180deg,rgba(15,28,56,.28),rgba(8,17,35,.12))!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-summary{
+  margin:0!important;
+  min-height:0!important;
+  padding:10px 12px!important;
+  border:1px solid rgba(255,199,97,.17)!important;
+  border-left:3px solid rgba(255,198,83,.86)!important;
+  border-radius:11px!important;
+  background:linear-gradient(100deg,rgba(246,177,56,.13),rgba(30,42,73,.32))!important;
+  font-size:11.5px!important;
+  line-height:1.5!important;
+  color:#d8e1f2!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-summary strong{color:#f5f7ff!important}
+body.tj-desktop-v2 > .nw-widget .nw-counts{
+  margin:0!important;gap:6px!important;align-items:center!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-count{
+  min-height:24px!important;
+  padding:5px 8px!important;
+  border-radius:999px!important;
+  font-size:9px!important;
+  background:rgba(11,22,44,.68)!important;
+  border-color:rgba(128,156,214,.13)!important;
+}
+body.tj-desktop-v2 > .nw-widget #nwCompactList{
+  margin:0!important;
+  max-height:224px!important;
+  overflow:auto!important;
+  overscroll-behavior:contain;
+  gap:7px!important;
+}
+body.tj-desktop-v2 > .nw-widget #nwCompactList:empty{display:none!important}
+body.tj-desktop-v2 > .nw-widget .nw-item{
+  min-height:50px!important;
+  padding:9px 10px!important;
+  gap:9px!important;
+  border-radius:11px!important;
+  background:rgba(14,27,53,.72)!important;
+  border-color:rgba(128,157,216,.12)!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-item:hover{background:rgba(26,42,77,.82)!important;border-color:rgba(112,178,255,.26)!important}
+body.tj-desktop-v2 > .nw-widget .nw-impact{min-width:58px!important;font-size:8.5px!important}
+body.tj-desktop-v2 > .nw-widget .nw-status{
+  margin:0!important;
+  padding:10px 11px!important;
+  border-radius:10px!important;
+  min-height:38px!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+  color:#9dacC8!important;
+  background:rgba(13,25,49,.60)!important;
+  border-color:rgba(128,156,214,.10)!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-footer{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:8px!important;
+  align-items:center!important;
+  margin:0!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-details-btn{
+  width:auto!important;
+  min-height:38px!important;
+  margin:0!important;
+  justify-content:flex-start!important;
+  padding:0 12px!important;
+  background:rgba(38,62,107,.52)!important;
+  border-color:rgba(108,171,255,.22)!important;
+  box-shadow:none!important;
+  color:#dfe8f8!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-countdown{
+  min-width:82px!important;
+  padding:6px 8px!important;
+  border:1px solid rgba(128,156,214,.11)!important;
+  border-radius:9px!important;
+  background:rgba(10,20,40,.58)!important;
+  color:#8595b5!important;
+  font-size:8.5px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-details{
+  padding:12px!important;
+  border-top-color:rgba(130,159,220,.13)!important;
+  background:rgba(7,15,32,.72)!important;
+}
+body.tj-desktop-v2 > .nw-widget .nw-section{margin-bottom:14px!important}
+body.tj-desktop-v2 > .nw-widget .nw-section-title{
+  margin-bottom:8px!important;
+  font-size:9px!important;letter-spacing:.10em!important;color:#aab8d4!important;
+}
+
+/* ========================================================================== 
+   3. Market widget — compact terminal-style reading
+   ========================================================================== */
+body.tj-desktop-v2 > .mw-widget .mw-simple{
+  padding:12px!important;
+  background:linear-gradient(180deg,rgba(15,29,56,.26),rgba(8,17,35,.12))!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-primary{
+  margin:0!important;
+  padding:5px 12px!important;
+  border:1px solid rgba(92,176,255,.16)!important;
+  border-left:3px solid rgba(88,201,255,.88)!important;
+  border-radius:11px!important;
+  background:linear-gradient(105deg,rgba(52,133,207,.13),rgba(47,59,105,.20))!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-line{
+  display:grid!important;
+  grid-template-columns:72px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:start!important;
+  padding:8px 0!important;
+  margin:0!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-line+.mw-summary-line{
+  border-top:1px solid rgba(130,158,215,.10)!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-key{
+  padding-top:1px!important;
+  font:780 8px/1.35 var(--tj-mono,monospace)!important;
+  letter-spacing:.08em!important;
+  color:#79d7f1!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-text{
+  font-size:11.5px!important;
+  line-height:1.52!important;
+  color:#d4def0!important;
+  overflow-wrap:anywhere!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-summary-text strong{color:#f4f7ff!important}
+body.tj-desktop-v2 > .mw-widget .mw-simple-bar{
+  margin:9px 0 0!important;
+  min-height:34px!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  gap:8px!important;
+  align-items:center!important;
+  padding:7px 9px!important;
+  border:1px solid rgba(126,156,218,.10)!important;
+  border-radius:9px!important;
+  background:rgba(9,19,39,.58)!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-simple-stats{
+  font-size:9.5px!important;
+  line-height:1.4!important;
+  color:#afbdd5!important;
+  white-space:normal!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-simple-bar .mw-countdown{
+  margin:0!important;
+  padding-left:9px!important;
+  border-left:1px solid rgba(125,153,210,.11)!important;
+  font-size:8.5px!important;
+  color:#8191b0!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-details-toggle{
+  min-height:38px!important;
+  margin-top:9px!important;
+  padding:0 12px!important;
+  justify-content:flex-start!important;
+  background:rgba(38,62,107,.52)!important;
+  border-color:rgba(108,171,255,.22)!important;
+  box-shadow:none!important;
+  color:#dfe8f8!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-details{
+  padding:12px!important;
+  background:rgba(7,15,32,.72)!important;
+  border-top-color:rgba(130,159,220,.13)!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-detail-grid{gap:8px!important}
+body.tj-desktop-v2 > .mw-widget .mw-detail-metric{
+  padding:9px 10px!important;
+  background:rgba(13,26,51,.70)!important;
+  border-color:rgba(126,155,214,.11)!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 > .mw-widget .mw-section-title{font-size:9px!important;color:#aab8d4!important;letter-spacing:.10em!important}
+
+/* ========================================================================== 
+   4. FX Replay drawer — dedicated narrow composition, not a squeezed page card
+   ========================================================================== */
+body.tj-desktop-v2 #tjFxrDrawer{
+  position:fixed!important;
+  top:calc(var(--tj-topbar,82px) + 12px)!important;
+  right:16px!important;
+  bottom:calc(var(--tj-statusbar,54px) + 12px)!important;
+  width:min(var(--tj-fxr-drawer-width),calc(100vw - 32px))!important;
+  max-width:none!important;
+  max-height:none!important;
+  padding:0!important;
+  overflow:hidden!important;
+  z-index:110!important;
+  border:1px solid rgba(106,164,248,.30)!important;
+  border-radius:20px!important;
+  background:linear-gradient(180deg,rgba(16,29,58,.992),rgba(7,16,34,.996))!important;
+  box-shadow:0 30px 92px rgba(0,0,0,.56),inset 0 1px 0 rgba(255,255,255,.055)!important;
+  backdrop-filter:blur(22px) saturate(120%)!important;
+  -webkit-backdrop-filter:blur(22px) saturate(120%)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer[hidden]{display:none!important}
+body.tj-desktop-v2 #tjFxrDrawer>.tj-panel-head{
+  position:sticky!important;
+  top:0!important;
+  z-index:4!important;
+  min-height:76px!important;
+  margin:0!important;
+  padding:14px 14px 13px 16px!important;
+  align-items:center!important;
+  border-bottom:1px solid rgba(130,159,221,.13)!important;
+  background:linear-gradient(180deg,rgba(29,47,84,.90),rgba(15,29,57,.90))!important;
+  backdrop-filter:blur(16px)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer>.tj-panel-head .tj-panel-title{font-size:15px!important}
+body.tj-desktop-v2 #tjFxrDrawer>.tj-panel-head .tj-panel-subtitle{font-size:9.5px!important;color:#8fa0bf!important}
+body.tj-desktop-v2 #tjFxrDrawer #tjFxrClose{width:34px!important;height:34px!important;min-height:34px!important;padding:0!important;display:grid!important;place-items:center!important}
+
+body.tj-desktop-v2 #tjFxrDrawer #fxrSyncCard{
+  height:calc(100% - 76px)!important;
+  margin:0!important;
+  padding:14px!important;
+  overflow:auto!important;
+  scrollbar-gutter:stable;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+/* The drawer already has its own title: keep only the FXR logo + bridge status here. */
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-head{
+  min-height:46px!important;
+  margin:0 0 12px!important;
+  padding:0 0 11px!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border-bottom:1px solid rgba(129,158,216,.11)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-title{align-items:center!important;gap:0!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-title>div{display:none!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-logo{
+  width:42px!important;height:42px!important;border-radius:12px!important;
+  font-size:10px!important;
+  box-shadow:0 8px 22px rgba(75,117,220,.16)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-status{
+  max-width:calc(100% - 54px)!important;
+  min-height:29px!important;
+  padding:6px 9px!important;
+  font-size:8px!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  background:rgba(11,22,44,.62)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+  margin:0!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-grid>.field{
+  grid-column:1/-1!important;
+  min-width:0!important;
+  padding:11px!important;
+  border-radius:11px!important;
+  background:rgba(13,26,51,.68)!important;
+  border-color:rgba(126,155,214,.11)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-grid>.field label,
+body.tj-desktop-v2 #tjFxrDrawer .fxr-stat b{
+  font:760 8.5px/1.3 var(--tj-font)!important;
+  letter-spacing:.10em!important;
+  text-transform:uppercase!important;
+  color:#8999b8!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-grid :is(select,input){
+  width:100%!important;
+  min-height:40px!important;
+  margin-top:7px!important;
+  font-size:11.5px!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-help{
+  margin-top:6px!important;
+  font-size:9px!important;line-height:1.4!important;color:#8393b1!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-stat{
+  min-width:0!important;
+  min-height:82px!important;
+  padding:11px!important;
+  border-radius:11px!important;
+  background:rgba(13,26,51,.68)!important;
+  border-color:rgba(126,155,214,.11)!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-stat span{
+  margin-top:8px!important;
+  font-size:17px!important;line-height:1.1!important;color:#f2f6ff!important;
+  overflow-wrap:anywhere!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-stat small{
+  margin-top:5px!important;
+  font-size:9px!important;line-height:1.35!important;color:#8292af!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-stat:last-of-type{grid-column:1/-1!important;min-height:68px!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-import-progress{
+  margin-top:10px!important;
+  padding:11px!important;
+  border-radius:11px!important;
+  background:rgba(8,19,39,.78)!important;
+  border-color:rgba(112,169,245,.16)!important;
+}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-import-progress-head b{font-size:11px!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-import-progress-head small{font-size:9px!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-import-progress-head strong{font-size:15px!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-import-progress-track{height:8px!important;margin-top:9px!important}
+body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-note,
+body.tj-desktop-v2 #tjFxrDrawer .fxr-network-line{
+  margin-top:9px!important;
+  padding:9px 10px!important;
+  border-radius:9px!important;
+  font-size:9px!important;
+  line-height:1.45!important;
+  color:#94a4c0!important;
+}
+
+/* If inspector + FXR are both open, keep floating default Market widget out of the drawer.
+   Manually positioned windows remain under user control. */
+body.tj-desktop-v2:has(#tjFxrDrawer:not([hidden])) > .mw-widget.show:not(.ui-positioned):not(.ui-maximized){
+  right:calc(var(--tj-fxr-drawer-width) + 30px)!important;
+}
+body.tj-inspector-open:not(:has(#tjFxrDrawer:not([hidden]))) > .mw-widget.show:not(.ui-positioned):not(.ui-maximized){
+  right:calc(var(--tj-inspector-width,400px) + 18px)!important;
+}
+body.tj-desktop-v2 > .nw-widget.show:not(.ui-positioned):not(.ui-maximized){
+  left:calc(var(--tj-sidebar,188px) + 18px)!important;
+  bottom:calc(var(--tj-statusbar,54px) + 16px)!important;
+}
+body.tj-desktop-v2 > .mw-widget.show:not(.ui-positioned):not(.ui-maximized){
+  bottom:calc(var(--tj-statusbar,54px) + 16px)!important;
+}
+
+/* ========================================================================== 
+   5. Narrow windows / accessibility
+   ========================================================================== */
+@media(max-width:1280px){
+  :root{--tj-fxr-drawer-width:430px}
+  body.tj-desktop-v2 > .nw-widget{min-width:min(390px,calc(100vw - 24px))}
+  body.tj-desktop-v2 > .mw-widget{min-width:min(370px,calc(100vw - 24px))}
+}
+@media(max-width:900px){
+  body.tj-desktop-v2 #tjFxrDrawer{right:10px!important;top:10px!important;bottom:10px!important;width:min(440px,calc(100vw - 20px))!important}
+  body.tj-desktop-v2 > :is(.nw-widget,.mw-widget){max-height:calc(100vh - 24px)!important}
+}
+@media(max-width:700px){
+  body.tj-desktop-v2 > :is(.nw-widget,.mw-widget){
+    left:10px!important;right:10px!important;width:auto!important;min-width:0!important;max-width:none!important;
+  }
+  body.tj-desktop-v2 > .nw-widget .nw-footer{grid-template-columns:1fr!important}
+  body.tj-desktop-v2 > .nw-widget .nw-countdown{justify-self:start!important}
+  body.tj-desktop-v2 > .mw-widget .mw-summary-line{grid-template-columns:62px minmax(0,1fr)!important}
+  body.tj-desktop-v2 #tjFxrDrawer .fxr-sync-grid{grid-template-columns:1fr!important}
+  body.tj-desktop-v2 #tjFxrDrawer .fxr-stat:last-of-type{grid-column:auto!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body.tj-desktop-v2 > :is(.nw-widget,.mw-widget),
+  body.tj-desktop-v2 #tjFxrDrawer{transition:none!important;animation:none!important}
+}
