@@ -1,0 +1,26 @@
+{
+  "name": "trading-journal-desktop",
+  "productName": "Trading Journal",
+  "version": "1.0.3",
+  "description": "Trading Journal Desktop V1 (V206 + FXReplay V21) avec mises à jour GitHub automatiques.",
+  "author": "Noam",
+  "license": "UNLICENSED",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "npm run prepare:renderer && electron .",
+    "package": "npm run prepare:renderer && electron-forge package",
+    "make": "npm run prepare:renderer && electron-forge make",
+    "test": "node tests/bridge-server.test.js",
+    "verify": "node tests/bridge-server.test.js && node tests/extension-manager.test.js",
+    "prepare:renderer": "node scripts/reconstruct-renderer.js"
+  },
+  "devDependencies": {
+    "@electron-forge/cli": "7.11.2",
+    "@electron-forge/maker-squirrel": "7.11.2",
+    "@electron-forge/maker-zip": "7.11.2",
+    "electron": "43.2.0"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "1.0.1"
+  }
+}

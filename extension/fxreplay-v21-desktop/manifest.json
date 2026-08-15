@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "FXReplay → Trading Journal Desktop Bridge v21 (Managed)",
+  "version": "2.1.1",
+  "description": "Moteur V21 FAST inchangé, bridge desktop géré et rechargé automatiquement par Trading Journal.",
+  "permissions": [
+    "activeTab",
+    "debugger",
+    "scripting",
+    "storage",
+    "tabs"
+  ],
+  "host_permissions": [
+    "file:///*",
+    "https://app.fxreplay.com/*",
+    "http://127.0.0.1:17841/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "FXReplay Sync"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://app.fxreplay.com/*"
+      ],
+      "js": [
+        "fxreplay-runtime-hook.js"
+      ],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "https://app.fxreplay.com/*"
+      ],
+      "js": [
+        "fxreplay-content.js"
+      ],
+      "run_at": "document_start",
+      "world": "ISOLATED",
+      "all_frames": false
+    },
+    {
+      "matches": [
+        "file:///*"
+      ],
+      "js": [
+        "site-bridge.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

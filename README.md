@@ -1,23 +1,52 @@
-# Trading Journal Desktop
+# Trading Journal Desktop V1
 
-Dépôt officiel de **Trading Journal Desktop**.
+Application desktop **compatibility-first** construite à partir du **Trade Journal V206** et du moteur **FXReplay V21**.
 
-## Canal de mise à jour
+## Ce qui est conservé
 
-- Interface de référence : **V206**
-- Moteur FXReplay de référence : **V21**
-- Plateforme : **Windows x64**
-- Mises à jour : **GitHub Releases + Squirrel.Windows**
+Le renderer est le V206 original : Journal, Backtesting, calendrier, simulations, Mistake Analytics, Decision Gate, Scan TA, Contexte Marché, pages Backtest, setup par page, Risk fixe, screenshots, zoom, exports/imports, IndexedDB, sauvegardes, etc.
 
-Le dépôt contient deux workflows GitHub Actions :
+La migration desktop n'essaie volontairement pas de réécrire ces fonctions dans cette V1.
 
-1. **Bootstrap desktop source** : sert une seule fois à extraire l’archive `desktop-source.zip` dans le dépôt.
-2. **Build and publish Windows release** : vérifie le projet, construit `Setup.exe`, `RELEASES` et `*-full.nupkg`, puis crée automatiquement une GitHub Release.
+## Installation Windows (source)
 
-Une fois le bootstrap terminé, les futures modifications peuvent être faites directement sur les fichiers du dépôt puis publiées sans demander de retélécharger manuellement tout le logiciel.
+1. Installe Node.js si nécessaire.
+2. Décompresse ce projet.
+3. Lance `scripts/INSTALLER_DEPENDENCIES_WINDOWS.bat`.
+4. Lance `scripts/START_WINDOWS.bat`.
 
-## Première initialisation
+Pour fabriquer un installateur Windows : `scripts/BUILD_WINDOWS.bat`.
 
-Déposer une seule fois à la racine du dépôt l’archive `desktop-source.zip` fournie pour la Desktop V1. Le workflow de bootstrap l’extrait, supprime l’archive du dépôt et pousse le projet. La publication Windows démarre ensuite automatiquement.
+Electron Forge génèrera les fichiers dans `out/make/`.
 
-> Ne jamais publier ici de sauvegardes personnelles du journal, mots de passe, tokens, clés API ou autres données privées.
+## FXReplay
+
+Installe l'extension située dans :
+
+`extension/fxreplay-v21-desktop/`
+
+Dans Chrome :
+
+1. `chrome://extensions`
+2. Mode développeur
+3. **Charger l'extension non empaquetée**
+4. Choisis le dossier `fxreplay-v21-desktop`
+
+L'application doit être ouverte. L'extension communique avec elle uniquement via `http://127.0.0.1:17841`.
+
+## Données existantes
+
+Lis `docs/MIGRATION_V206.md` avant de basculer définitivement. Chrome et Electron n'utilisent pas le même stockage IndexedDB.
+
+## Versions de base
+
+- Renderer : Trade Journal V206
+- FXReplay : V21 FAST, adapté uniquement pour le bridge desktop
+- Electron : 43.2.0
+- Electron Forge : 7.11.2
+
+## Mises à jour automatiques
+
+Le dépôt officiel est `Sunniyyi/trading-journal-desktop`. Les builds Windows sont générés par GitHub Actions et publiés dans GitHub Releases. L’application installée utilise `update.electronjs.org` avec Squirrel.Windows.
+
+Pour publier une future version : modifier le code, augmenter `version` dans `package.json`, puis pousser sur `main`. Le workflow crée automatiquement la release avec `Setup.exe`, `RELEASES` et `*-full.nupkg`.

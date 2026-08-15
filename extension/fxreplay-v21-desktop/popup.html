@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FXReplay Sync v10</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,sans-serif}body{margin:0;width:455px;background:#091326;color:#e9f1ff}main{padding:15px}h1{font-size:17px;margin:0 0 4px}p{font-size:11.5px;color:#91a3c5;line-height:1.45;margin:0 0 13px}.card{border:1px solid #233654;background:#0e1b33;border-radius:12px;padding:11px;margin-top:9px}label{display:block;font-size:10.5px;color:#91a3c5;margin-bottom:5px}select,button{width:100%;min-height:40px;border-radius:9px;border:1px solid #2d4264;background:#12213e;color:#f4f7ff;padding:0 9px;font-size:12px}button{cursor:pointer;font-weight:750}.primary{background:linear-gradient(90deg,#61d7ff,#8d7cff)!important;color:#07101e!important;border:0!important}.secondary{margin-top:7px}.toggle{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;margin:9px 0}.toggle input{width:18px;height:18px}.line{display:flex;justify-content:space-between;gap:8px;font-size:10.8px;padding:5px 0;border-bottom:1px solid #1e2e48}.line:last-child{border-bottom:0}.line b{text-align:right;max-width:300px;overflow:hidden;text-overflow:ellipsis}.ok{color:#55e0c2}.warn{color:#ffbf58}.bad{color:#ff7183}#status{font-size:10.5px;line-height:1.5;margin-top:9px;color:#91a3c5}.small,.diag{font-size:9.5px;color:#7184a7;line-height:1.45;margin-top:8px}.diag{padding:7px;border:1px dashed #263a5b;border-radius:8px;word-break:break-word}
+</style></head><body><main>
+<h1>FXReplay → Trading Journal Desktop Bridge v21 · Managed</h1>
+<p>V21 enregistre le trade avant les screenshots. Objectif : <b>moins de 10 secondes</b>, généralement 1–3 s une fois Details disponible.</p>
+<div class="card">
+<label>Page Backtest cible</label><select id="target"><option value="">— aucune page —</option></select>
+<div class="toggle"><span>Auto-sync</span><input id="auto" type="checkbox"></div>
+<div class="toggle"><span>Copier screenshots</span><input id="shot" type="checkbox"></div>
+<button class="secondary" id="reconnect">↻ Reconnecter le Trade Journal</button>
+<button class="secondary" id="debugger">⌁ Reconnecter le Network Debugger</button>
+</div>
+<div class="card">
+<div style="display:flex;justify-content:space-between;gap:12px;align-items:center">
+  <div><b id="progressPhase" style="font-size:12px">Prêt</b><div id="progressDetail" style="font-size:9.5px;color:#91a3c5;margin-top:3px;line-height:1.4">En attente…</div></div>
+  <div style="text-align:right"><b id="progressPct" style="font-size:18px;color:#62dbff">0%</b><div id="progressElapsed" style="font-size:9px;color:#91a3c5;margin-top:2px">0.0 s</div></div>
+</div>
+<div style="height:9px;border:1px solid #293d5e;background:#071225;border-radius:99px;overflow:hidden;margin-top:9px"><div id="progressBar" style="height:100%;width:0%;background:linear-gradient(90deg,#55d7ff,#887aff,#55e3b7);transition:width .25s ease"></div></div>
+</div>
+<div class="card">
+<div class="line"><span>Application / fichier local</span><b id="file">—</b></div>
+<div class="line"><span>Mise à jour extension</span><b id="extupdate">—</b></div>
+<div class="line"><span>Trade Journal connecté</span><b id="site">—</b></div>
+<div class="line"><span>Network Debugger</span><b id="dbg">—</b></div>
+<div class="line"><span>Dernière réponse Debugger</span><b id="dbgevent">—</b></div>
+<div class="line"><span>Hook page</span><b id="hook">—</b></div>
+<div class="line"><span>CorrelationId suivis</span><b id="watch">0</b></div>
+<div class="line"><span>Dernier événement corrélé</span><b id="corr">—</b></div>
+<div class="line"><span>Contexte graphique</span><b id="tf">—</b></div>
+<div class="line"><span>File d’attente</span><b id="pending">0</b></div>
+<div class="line"><span>Dernier trade candidat</span><b id="detected">—</b></div>
+<div id="details" class="diag">Details DOM : en attente…</div>
+<div id="status">—</div>
+<button class="primary" id="capture" style="margin-top:10px">Forcer la lecture du trade ouvert</button>
+</div>
+<div class="card small">
+<b>Important :</b> Chrome peut afficher une barre indiquant que l’extension débogue l’onglet FX Replay. C’est normal pour cette version. Si DevTools est déjà attaché à l’onglet, ferme DevTools puis reconnecte le Network Debugger.
+</div>
+<script src="popup.js"></script></main></body></html>

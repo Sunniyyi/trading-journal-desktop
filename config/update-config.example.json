@@ -1,0 +1,7 @@
+{
+  "enabled": true,
+  "githubRepo": "OWNER/REPO",
+  "feedUrl": "",
+  "checkIntervalMinutes": 10,
+  "checkOnStartup": true
+}

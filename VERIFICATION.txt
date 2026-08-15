@@ -1,0 +1,21 @@
+TRADING JOURNAL DESKTOP V1 + AUTO-UPDATE — VERIFICATION
+
+Base métier conservée :
+- Renderer V206 SHA-256 : 6d988e41e5c1b94848ae67d4c88a2fedaa499cf04603b12164d6ace80540cff6
+- FXReplay V21 fxreplay-content.js SHA-256 : fa2d735035c1a5f9a5af04b0b4b2e0e7903b644d42381f759f86784de5167e37
+- FXReplay V21 fxreplay-runtime-hook.js SHA-256 : dba21a1252f8a7dd402c5df9cb87d0350ba5db321fd2ce85462ce5fa1dd67b51
+
+Les trois hashes sont identiques à Desktop V1 originale.
+
+Ajouts uniquement infrastructure :
+- src/app-updater.js
+- src/extension-manager.js
+- GET /api/extension-version dans bridge-server.js
+- menu updater / dossier extension dans main.js
+- polling d'une version d'extension gérée dans background.js
+- manifest bridge 2.1.1 (moteur content/runtime inchangé)
+
+Tests exécutés :
+- node --check : OK sur tous les JS
+- tests/bridge-server.test.js : OK
+- tests/extension-manager.test.js : OK
