@@ -6,6 +6,7 @@ const assert = require('node:assert/strict');
 const root = path.resolve(__dirname, '..');
 const files = [
   'src/renderer/ui/bootstrap.js',
+  'src/renderer/ui/stability-runtime.js',
   'src/renderer/ui/shell.js',
   'src/renderer/ui/config.js',
   'src/renderer/ui/command-palette.js',
@@ -19,7 +20,8 @@ const files = [
   'src/renderer/ui/tokens.css',
   'src/renderer/ui/shell.css',
   'src/renderer/ui/components.css',
-  'src/renderer/ui/workspaces.css'
+  'src/renderer/ui/workspaces.css',
+  'src/renderer/ui/stability.css'
 ];
 for (const rel of files) {
   const full = path.join(root, rel);
@@ -40,5 +42,13 @@ for (const capability of ['toggleSidebar','toggleInspector','toggleFocus','toggl
 const config = fs.readFileSync(path.join(root, 'src/renderer/ui/config.js'), 'utf8');
 for (const id of ['overview','journal','backtesting','scan','context','gate','discipline','settings']) {
   assert(config.includes(`id:'${id}'`), `Workspace missing from config: ${id}`);
+}
+const stability = fs.readFileSync(path.join(root, 'src/renderer/ui/stability.css'), 'utf8');
+for (const marker of ['.tj-inspector-scroll{box-sizing:border-box}','@media(max-width:1280px)','@media(prefers-reduced-motion:reduce)']) {
+  assert(stability.includes(marker), `Visual stability guard missing: ${marker}`);
+}
+const stabilityRuntime = fs.readFileSync(path.join(root, 'src/renderer/ui/stability-runtime.js'), 'utf8');
+for (const capability of ['positionToolsMenu','hardenCommandPalette','hardenViewportUnits']) {
+  assert(stabilityRuntime.includes(capability), `Visual stability runtime capability missing: ${capability}`);
 }
 console.log('ui architecture OK');
