@@ -19,7 +19,7 @@ export function enhanceBacktesting(){
 
   const tabsRow=el('div','tj-bt-tabs-row');
   const tabs=el('div','tj-section-tabs');
-  const hint=el('span','tj-badge',{text:'Vue compacte · moins de défilement'});
+  const hint=el('span','tj-badge',{text:'Vue claire · panneaux séparés'});
   tabsRow.append(tabs,hint);
   const context=$('.bt-context',detail);
   if(context) context.after(tabsRow); else detail.prepend(tabsRow);
@@ -30,7 +30,10 @@ export function enhanceBacktesting(){
 
   const stats=$('#btStats',main), chart=$('#btChartCard',main), comment=$('.bt-comment-card',main), perf=$('#btPerfCard',main);
   const mc=$('#btMcCard',main), wf=$('#btWfCard',main), dsr=$('#btDsrCard',main);
-  const months=$('#btMonthsCard',main), back=$('#btBackBar',main), cal=$('#btDayCalCard',main), table=$('.tablecard',main), pagination=$('#btPagination',main);
+  const months=$('#btMonthsCard',main), back=$('#btBackBar',main), cal=$('#btDayCalCard',main);
+  const tbody=$('#btTbody',main);
+  const table=tbody?.closest('.tablecard')||null;
+  const pagination=$('#btPagination',main);
 
   if(stats) overview.appendChild(stats);
   const dashboard=el('div','tj-bt-dashboard-grid');
@@ -42,14 +45,10 @@ export function enhanceBacktesting(){
   dashboard.append(dashMain,dashSide); overview.appendChild(dashboard);
 
   const tradesGrid=el('div','tj-bt-trades-grid');
-  const tradesLeft=el('div','tj-bt-trades-left');
+  const tradesLeft=el('aside','tj-bt-trades-left');
   const tradesRight=el('div','tj-bt-trades-right');
   if(side) tradesLeft.appendChild(side);
-  if(months) tradesLeft.appendChild(months);
-  if(cal) tradesLeft.appendChild(cal);
-  if(back) tradesRight.appendChild(back);
-  if(table) tradesRight.appendChild(table);
-  if(pagination) tradesRight.appendChild(pagination);
+  [back,months,cal,table,pagination].filter(Boolean).forEach(node=>tradesRight.appendChild(node));
   tradesGrid.append(tradesLeft,tradesRight); trades.appendChild(tradesGrid);
 
   const simsGrid=el('div','tj-bt-sims-grid');
