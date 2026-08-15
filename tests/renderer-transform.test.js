@@ -1,6 +1,6 @@
 'use strict';
 
-// Release 2.1.3 gate: the visual hotfix must be present in every generated renderer.
+// Release 2.1.4 gate: every generated renderer must contain the final readability layer.
 const assert = require('node:assert/strict');
 const { reconstructBaseline, verifyBaseline } = require('../scripts/reconstruct-renderer');
 const { transformRenderer, CHART_CDN, CHART_LOCAL } = require('../scripts/renderer-transform');
@@ -21,7 +21,8 @@ assert(output.includes('./ui/components.css'), 'Desktop component stylesheet is 
 assert(output.includes('./ui/workspaces.css'), 'Desktop workspace stylesheet is missing.');
 assert(output.includes('./ui/stability.css'), 'Desktop stability stylesheet is missing.');
 assert(output.includes('./ui/visual-hotfix.css'), 'Desktop 2.1.3 visual hotfix stylesheet is missing.');
-assert(output.indexOf('./ui/stability.css') < output.indexOf('./ui/visual-hotfix.css'), 'Visual hotfix must load after the base stability stylesheet.');
+assert(output.includes('./ui/layout-v214.css'), 'Desktop 2.1.4 layout stylesheet is missing.');
+assert(output.indexOf('./ui/visual-hotfix.css') < output.indexOf('./ui/layout-v214.css'), '2.1.4 layout must load after the 2.1.3 hotfix.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
 
