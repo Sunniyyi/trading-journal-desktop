@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "FXReplay → Trading Journal Desktop Bridge v21 (Managed)",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "description": "Moteur V21 FAST inchangé, bridge desktop géré et rechargé automatiquement par Trading Journal.",
   "permissions": [
     "activeTab",
