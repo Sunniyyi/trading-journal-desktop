@@ -5,7 +5,7 @@ const workspaceHints={
   overview:['Vérifie la cible FX Replay avant une session.','Utilise le contexte marché avant de passer au Decision Gate.'],
   journal:['Travaille une journée ou une période à la fois.','Les tableaux défilent dans leur panneau : garde la vue principale fixe.'],
   backtesting:['Fixe le risque au niveau de la session, pas trade par trade.','Compare la courbe, les trades puis les simulations dans cet ordre.'],
-  scan:['Dépose les timeframes les plus utiles avant de lancer l’analyse.','Privilégie une lecture HTF → LTF pour garder un scénario cohérent.'],
+  scan:['Garde le même actif et le même instant sur les trois captures.','Lis le résultat HTF → structure → trigger avant de regarder le score final.'],
   context:['Lis d’abord biais, volatilité et catalyseurs.','Le contexte sert à filtrer les trades, pas à forcer une entrée.'],
   gate:['Un élément bloquant doit rester visible avant la décision.','Le verdict doit confirmer ton plan, pas le remplacer.'],
   discipline:['Cherche les erreurs répétées avant les erreurs coûteuses isolées.','Transforme chaque revue en une règle concrète pour la prochaine session.']
@@ -62,6 +62,16 @@ export function createInspector({navigate}={}){
       snapshot.innerHTML=`<div class="tj-inspector-section-title">Journal</div><div class="tj-inspector-metrics">${metric('Capital',text('#statCapital .val','—'),'good')}${metric('P&L',text('#statPnl .val','—'))}${metric('Win rate',text('#statWr .val','—'))}${metric('Profit factor',text('#statPf .val','—'))}</div>`;
       return;
     }
+    if(active==='scan'){
+      const captures=['#scanImgContext','#scanImgStructure','#scanImgTrigger'].filter(sel=>Boolean($(sel)?.getAttribute('src'))).length;
+      const profile=$('#scanProfile')?.selectedOptions?.[0]?.textContent?.split('—')?.[0]?.trim()||'—';
+      const result=$('#scanResult');
+      const hasResult=Boolean(result)&&result.style.display!=='none';
+      const verdict=hasResult?text('#scanDirectionBadge','—'):(captures?'Prêt à analyser':'En attente');
+      const confluence=hasResult?text('#scanConfluence','—'):'—';
+      snapshot.innerHTML=`<div class="tj-inspector-section-title">Scan en cours</div><div class="tj-inspector-metrics">${metric('Captures',`${captures}/3`,captures===3?'good':'')}${metric('Profil',profile)}${metric('Verdict',verdict,hasResult?'good':'')}${metric('Confluence',confluence)}</div>`;
+      return;
+    }
     if(active==='context'){
       snapshot.innerHTML=`<div class="tj-inspector-section-title">Lecture marché</div><div class="tj-inspector-metrics">${metric('Biais',text('#ctxBriefBias','—'))}${metric('Volatilité',text('#ctxVolValue','—'))}${metric('News',text('#ctxNewsValue','—'))}${metric('Attention',text('#ctxAttentionLevel','—'))}</div>`;
       return;
@@ -92,9 +102,10 @@ export function createInspector({navigate}={}){
   aside.querySelector('[data-inspector-action="update"]')?.addEventListener('click',()=>window.desktopApp?.openUpdateCenter?.());
   aside.querySelector('[data-inspector-action="settings"]')?.addEventListener('click',()=>callLegacy('openSettings'));
 
-  const watched=[$('#fxrTargetPage'),$('#fxrRiskAmount'),$('#fxrPendingCount'),$('#fxrLastImport'),$('#statCapital .val'),$('#statPnl .val'),$('#statWr .val'),$('#statPf .val'),$('#ctxBriefBias'),$('#ctxVolValue'),$('#ctxNewsValue'),$('#ctxAttentionLevel'),...document.querySelectorAll('#mistakeKpis span')].filter(Boolean);
+  const watched=[$('#fxrTargetPage'),$('#fxrRiskAmount'),$('#fxrPendingCount'),$('#fxrLastImport'),$('#statCapital .val'),$('#statPnl .val'),$('#statWr .val'),$('#statPf .val'),$('#scanReadyText'),$('#scanDirectionBadge'),$('#scanFinalScore'),$('#scanConfluence'),$('#ctxBriefBias'),$('#ctxVolValue'),$('#ctxNewsValue'),$('#ctxAttentionLevel'),...document.querySelectorAll('#mistakeKpis span')].filter(Boolean);
   observeText(watched,renderSnapshot);
   $('#fxrTargetPage')?.addEventListener('change',renderSnapshot);$('#fxrRiskAmount')?.addEventListener('input',renderSnapshot);
+  $('#scanAsset')?.addEventListener('input',renderSnapshot);$('#scanProfile')?.addEventListener('change',renderSnapshot);
   setWorkspace('overview');
   return{element:aside,setWorkspace,refresh:renderSnapshot};
 }
