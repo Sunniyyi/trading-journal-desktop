@@ -13,7 +13,9 @@ assert(output.includes(CHART_LOCAL), 'Local Chart.js path is missing.');
 assert(output.includes('./desktop-performance.js'), 'Desktop performance layer is missing.');
 assert(output.includes('./ui/bootstrap.js'), 'Desktop UI bootstrap is missing.');
 assert(output.includes('./ui/stability-runtime.js'), 'Desktop stability runtime is missing.');
+assert(output.includes('./ui/workspaces/scan.js'), 'Desktop 2.1.20 Scan TA runtime is missing.');
 assert(output.indexOf('./ui/stability-runtime.js') < output.indexOf('./ui/bootstrap.js'), 'Stability runtime must load before the desktop shell bootstrap.');
+assert(output.indexOf('./ui/bootstrap.js') < output.indexOf('./ui/workspaces/scan.js'), 'Scan TA enhancer must load after the desktop shell bootstrap.');
 assert(output.includes('./ui/tokens.css'), 'Desktop design tokens are missing.');
 assert(output.includes('./ui/shell.css'), 'Desktop shell stylesheet is missing.');
 assert(output.includes('./ui/components.css'), 'Desktop component stylesheet is missing.');
@@ -33,6 +35,7 @@ assert(output.includes('./ui/backtest-premium.css'), 'Desktop 2.1.16 Backtesting
 assert(output.includes('./ui/backtest-layout-v217.css'), 'Desktop 2.1.17 Backtesting layout correction is missing.');
 assert(output.includes('./ui/backtest-polish-v218.css'), 'Desktop 2.1.18 Backtesting polish is missing.');
 assert(output.includes('./ui/backtest-calendar-v219.css'), 'Desktop 2.1.19 calendar-first Backtesting layer is missing.');
+assert(output.includes('./ui/scan-premium-v220.css'), 'Desktop 2.1.20 Scan TA premium layer is missing.');
 assert(output.includes('./ui/backtest-state-guard.css'), 'Desktop 2.1.16 Backtesting state guard is missing.');
 assert(output.includes('./ui/workspace-routing-fix.css'), 'Desktop 2.1.13 workspace routing guard is missing.');
 assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
@@ -46,7 +49,8 @@ assert(output.indexOf('./ui/journal-premium.css') < output.indexOf('./ui/backtes
 assert(output.indexOf('./ui/backtest-premium.css') < output.indexOf('./ui/backtest-layout-v217.css'), 'Backtesting 2.1.17 correction must override the 2.1.16 premium layout.');
 assert(output.indexOf('./ui/backtest-layout-v217.css') < output.indexOf('./ui/backtest-polish-v218.css'), 'Backtesting 2.1.18 polish must override the 2.1.17 layout layer.');
 assert(output.indexOf('./ui/backtest-polish-v218.css') < output.indexOf('./ui/backtest-calendar-v219.css'), 'Backtesting 2.1.19 calendar-first layer must override 2.1.18 polish.');
-assert(output.indexOf('./ui/backtest-calendar-v219.css') < output.indexOf('./ui/backtest-state-guard.css'), 'Backtesting visibility state guard must remain after the 2.1.19 layer.');
+assert(output.indexOf('./ui/backtest-calendar-v219.css') < output.indexOf('./ui/scan-premium-v220.css'), 'Scan TA 2.1.20 must load after the Backtesting page-specific layers.');
+assert(output.indexOf('./ui/scan-premium-v220.css') < output.indexOf('./ui/backtest-state-guard.css'), 'State guards must remain after the Scan TA presentation layer.');
 assert(output.indexOf('./ui/backtest-state-guard.css') < output.indexOf('./ui/workspace-routing-fix.css'), 'Workspace visibility guard must remain the final stylesheet.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
