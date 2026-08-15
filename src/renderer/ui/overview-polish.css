@@ -1,0 +1,527 @@
+/* Trading Journal Desktop 2.1.10 — Accueil + chrome/inspecteur polish
+   Loaded after final-polish.css. Presentation only. */
+
+:root{
+  --tj-topbar:84px;
+  --tj-inspector-open-width:400px;
+}
+
+/* ========================================================================== 
+   TOPBAR — clearer hierarchy, calmer accent, better spacing
+   ========================================================================== */
+body.tj-desktop-v2 .tj-topbar{
+  min-height:84px!important;
+  grid-template-columns:minmax(260px,320px) minmax(360px,1fr) auto!important;
+  gap:18px!important;
+  padding:11px 16px 12px!important;
+  background:linear-gradient(180deg,rgba(8,18,38,.985),rgba(8,18,38,.94))!important;
+  border-bottom:1px solid rgba(121,157,222,.16)!important;
+  box-shadow:0 8px 28px rgba(1,6,18,.14)!important;
+}
+body.tj-desktop-v2 .tj-topbar::after{
+  height:1px!important;
+  opacity:.38!important;
+  box-shadow:none!important;
+}
+body.tj-desktop-v2 .tj-workspace-heading{
+  align-self:center!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:5px!important;
+  min-width:0!important;
+  padding-left:2px!important;
+}
+body.tj-desktop-v2 .tj-workspace-kicker{
+  margin:0!important;
+  font-size:8.5px!important;
+  line-height:1!important;
+  letter-spacing:.15em!important;
+  color:#8295ba!important;
+}
+body.tj-desktop-v2 #tjWorkspaceTitle{
+  margin:0!important;
+  font-size:21px!important;
+  line-height:1.12!important;
+  font-weight:790!important;
+  letter-spacing:-.022em!important;
+  color:#f7f9ff!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+body.tj-desktop-v2 .tj-search{
+  width:min(100%,680px)!important;
+  height:42px!important;
+  justify-self:center!important;
+  border-color:rgba(133,164,224,.19)!important;
+  background:rgba(17,30,59,.74)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.035)!important;
+}
+body.tj-desktop-v2 .tj-search:hover{
+  border-color:rgba(100,178,255,.34)!important;
+  background:rgba(20,35,67,.82)!important;
+}
+body.tj-desktop-v2 .tj-top-actions{
+  align-self:center!important;
+  gap:8px!important;
+}
+body.tj-desktop-v2 .tj-top-button{
+  height:40px!important;
+  padding-inline:11px!important;
+  border-radius:11px!important;
+  background:rgba(19,33,64,.66)!important;
+  border-color:rgba(130,158,216,.18)!important;
+  color:#d3ddf0!important;
+}
+body.tj-desktop-v2 .tj-top-button:hover,
+body.tj-desktop-v2 .tj-top-button[aria-pressed="true"]{
+  background:rgba(31,49,91,.82)!important;
+  border-color:rgba(105,176,255,.34)!important;
+  color:#fff!important;
+}
+body.tj-desktop-v2 .tj-top-button.is-primary{
+  padding-inline:14px!important;
+  background:linear-gradient(135deg,rgba(79,93,229,.92),rgba(94,63,214,.96))!important;
+  border-color:rgba(143,134,255,.50)!important;
+  box-shadow:0 8px 22px rgba(70,55,183,.22)!important;
+}
+
+/* ========================================================================== 
+   ACCUEIL — 2 reading zones + full-width actions
+   ========================================================================== */
+#tjOverviewView{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+  min-height:100%!important;
+  overflow:auto!important;
+  padding-bottom:18px!important;
+}
+#tjOverviewView>.tj-kpi-grid{
+  display:grid!important;
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:12px!important;
+}
+#tjOverviewView>.tj-kpi-grid .tj-kpi{
+  min-height:116px!important;
+  padding:16px 17px!important;
+  border-color:rgba(136,164,224,.16)!important;
+  background:linear-gradient(180deg,rgba(22,36,69,.90),rgba(13,25,51,.94))!important;
+}
+#tjOverviewView>.tj-kpi-grid .tj-kpi::before{
+  content:"";
+  position:absolute;
+  left:16px;
+  top:14px;
+  width:20px;
+  height:2px;
+  border-radius:99px;
+  background:linear-gradient(90deg,var(--tj-cyan),var(--tj-violet));
+  opacity:.72;
+}
+#tjOverviewView>.tj-kpi-grid .tj-kpi-label{
+  margin-top:8px!important;
+  font-size:9px!important;
+  color:#a7b4cf!important;
+}
+#tjOverviewView>.tj-kpi-grid .tj-kpi-value{
+  margin-top:11px!important;
+  font-size:24px!important;
+}
+#tjOverviewView>.tj-kpi-grid .tj-kpi-sub{
+  margin-top:7px!important;
+  font-size:10.5px!important;
+  color:#93a2bf!important;
+}
+
+#tjOverviewView .tj-overview-main{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.35fr) minmax(340px,.65fr)!important;
+  grid-template-areas:
+    "activity summary"
+    "actions actions"!important;
+  align-items:start!important;
+  gap:14px!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+}
+#tjOverviewView .tj-overview-activity{
+  grid-area:activity!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:18px!important;
+}
+#tjOverviewView .tj-overview-summary{
+  grid-area:summary!important;
+  min-height:0!important;
+  padding:18px!important;
+  gap:10px!important;
+}
+#tjOverviewView .tj-overview-actions-panel{
+  grid-area:actions!important;
+  min-height:0!important;
+  padding:16px 18px 18px!important;
+}
+#tjOverviewView .tj-panel-head{
+  margin-bottom:14px!important;
+  align-items:flex-start!important;
+}
+#tjOverviewView .tj-panel-title{
+  font-size:14px!important;
+  line-height:1.25!important;
+}
+#tjOverviewView .tj-panel-subtitle{
+  max-width:620px!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+  color:#92a1bf!important;
+}
+
+/* Status list becomes a readable two-column cockpit rather than five long rows. */
+#tjOverviewView .tj-activity-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:9px!important;
+  flex:0 0 auto!important;
+}
+#tjOverviewView .tj-activity-row{
+  min-height:72px!important;
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr) auto!important;
+  gap:10px!important;
+  align-items:center!important;
+  padding:11px 12px!important;
+  border:1px solid rgba(129,156,214,.11)!important;
+  border-radius:13px!important;
+  background:rgba(10,21,44,.42)!important;
+}
+#tjOverviewView .tj-activity-row:last-child{
+  grid-column:1/-1!important;
+}
+#tjOverviewView .tj-activity-row:hover{
+  background:rgba(26,42,78,.58)!important;
+  border-color:rgba(104,171,247,.22)!important;
+}
+#tjOverviewView .tj-activity-icon{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+  font-size:14px!important;
+}
+#tjOverviewView .tj-activity-row b{
+  display:block!important;
+  font-size:11.5px!important;
+  line-height:1.25!important;
+  color:#ecf2ff!important;
+}
+#tjOverviewView .tj-activity-row small{
+  display:block!important;
+  margin-top:4px!important;
+  font-size:10px!important;
+  line-height:1.35!important;
+  color:#91a1bf!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+#tjOverviewView .tj-activity-value{
+  min-width:42px!important;
+  font-size:9.5px!important;
+  line-height:1.2!important;
+  color:#9aa9c4!important;
+}
+#tjOverviewView .tj-session-progress{
+  height:7px!important;
+  margin-top:12px!important;
+  background:rgba(107,136,196,.12)!important;
+}
+
+/* Daily summary is compact but each line remains easy to scan. */
+#tjOverviewView .tj-summary-block{
+  padding:13px 14px!important;
+  border-radius:13px!important;
+  background:rgba(9,20,42,.42)!important;
+  border-color:rgba(130,157,216,.11)!important;
+}
+#tjOverviewView .tj-summary-block h3{
+  margin:0 0 8px!important;
+  font-size:11.5px!important;
+  color:#eef3ff!important;
+}
+#tjOverviewView .tj-summary-line{
+  min-height:29px!important;
+  padding:5px 0!important;
+  align-items:center!important;
+  font-size:10.5px!important;
+}
+#tjOverviewView .tj-summary-line span:first-child{color:#91a1bf!important}
+#tjOverviewView .tj-summary-line b{
+  color:#e4ebf9!important;
+  text-align:right!important;
+  overflow-wrap:anywhere!important;
+}
+
+/* Quick actions become a true launcher, full width. */
+#tjOverviewView .tj-overview-actions{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+}
+#tjOverviewView .tj-action-card{
+  min-height:76px!important;
+  padding:12px 13px!important;
+  border-radius:13px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  gap:5px!important;
+  background:rgba(12,24,49,.52)!important;
+  border-color:rgba(130,158,217,.13)!important;
+}
+#tjOverviewView .tj-action-card:hover{
+  background:linear-gradient(135deg,rgba(48,83,145,.23),rgba(89,69,180,.22))!important;
+  border-color:rgba(98,177,255,.30)!important;
+}
+#tjOverviewView .tj-action-card strong{
+  margin:0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  color:#f0f4ff!important;
+}
+#tjOverviewView .tj-action-card span{
+  font-size:10px!important;
+  line-height:1.35!important;
+  color:#91a1bf!important;
+}
+
+/* ========================================================================== 
+   INSPECTOR — wider, shorter reading path, no tunnel effect
+   ========================================================================== */
+body.tj-desktop-v2 .tj-inspector{
+  background:linear-gradient(180deg,rgba(8,18,38,.98),rgba(8,18,38,.94))!important;
+  border-left-color:rgba(130,159,219,.16)!important;
+  box-shadow:-18px 0 44px rgba(0,0,0,.16)!important;
+}
+body.tj-desktop-v2 .tj-inspector-head{
+  height:76px!important;
+  padding:14px 16px 12px 18px!important;
+  border-bottom-color:rgba(132,160,220,.12)!important;
+}
+body.tj-desktop-v2 .tj-inspector-head .tj-eyebrow{
+  font-size:8.5px!important;
+  color:#8092b7!important;
+}
+body.tj-desktop-v2 .tj-inspector-head h2{
+  margin-top:5px!important;
+  font-size:15px!important;
+  line-height:1.2!important;
+  color:#f2f6ff!important;
+}
+body.tj-desktop-v2 .tj-inspector-head .tj-icon-button{
+  width:34px!important;
+  height:34px!important;
+  border-radius:10px!important;
+}
+body.tj-desktop-v2 .tj-inspector-scroll{
+  height:calc(100% - 76px)!important;
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  align-content:start!important;
+  gap:10px!important;
+  padding:12px 12px 16px 14px!important;
+  overflow:auto!important;
+}
+body.tj-desktop-v2 .tj-inspector-section{
+  margin:0!important;
+  min-width:0!important;
+  padding:13px!important;
+  border-radius:14px!important;
+  border-color:rgba(131,159,217,.12)!important;
+  background:rgba(255,255,255,.022)!important;
+}
+body.tj-desktop-v2 #tjInspectorSnapshot{
+  grid-column:1/-1!important;
+  padding:14px!important;
+  background:linear-gradient(180deg,rgba(20,35,68,.68),rgba(11,24,49,.72))!important;
+}
+body.tj-desktop-v2 .tj-inspector-section-title{
+  margin-bottom:10px!important;
+  font-size:8.5px!important;
+  line-height:1.2!important;
+  letter-spacing:.12em!important;
+  color:#8091b4!important;
+}
+body.tj-desktop-v2 .tj-inspector-metrics{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+body.tj-desktop-v2 .tj-inspector-metric{
+  min-width:0!important;
+  min-height:66px!important;
+  padding:9px 10px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  border-radius:11px!important;
+  background:rgba(7,16,34,.54)!important;
+  border-color:rgba(128,155,213,.09)!important;
+}
+body.tj-desktop-v2 .tj-inspector-metric span{
+  font-size:8.5px!important;
+  line-height:1.25!important;
+  white-space:normal!important;
+  color:#8999b8!important;
+}
+body.tj-desktop-v2 .tj-inspector-metric b{
+  margin-top:6px!important;
+  font-size:11px!important;
+  line-height:1.25!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+  color:#e8eefb!important;
+}
+body.tj-desktop-v2 .tj-inspector-links{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+}
+body.tj-desktop-v2 .tj-inspector-link{
+  min-height:36px!important;
+  width:100%!important;
+  padding:8px 10px!important;
+  text-align:left!important;
+  border-radius:10px!important;
+  border:1px solid rgba(133,161,219,.16)!important;
+  background:rgba(16,29,57,.54)!important;
+  color:#dce5f7!important;
+  font-size:10.5px!important;
+}
+body.tj-desktop-v2 .tj-inspector-link:hover{
+  background:rgba(35,55,99,.70)!important;
+  border-color:rgba(102,174,251,.30)!important;
+}
+body.tj-desktop-v2 .tj-inspector-hints{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+}
+body.tj-desktop-v2 .tj-inspector-hint{
+  position:relative!important;
+  padding-left:12px!important;
+  font-size:9.5px!important;
+  line-height:1.45!important;
+  color:#b8c4da!important;
+}
+body.tj-desktop-v2 .tj-inspector-hint::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:.58em;
+  width:4px;
+  height:4px;
+  border-radius:1px;
+  background:linear-gradient(135deg,var(--tj-cyan),var(--tj-violet));
+}
+body.tj-desktop-v2 .tj-inspector-toolgrid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:7px!important;
+}
+body.tj-desktop-v2 .tj-inspector-toolgrid button{
+  min-height:42px!important;
+  padding:8px 9px!important;
+  border-radius:10px!important;
+  border:1px solid rgba(133,161,219,.15)!important;
+  background:rgba(16,29,57,.54)!important;
+  color:#dce5f7!important;
+  font-size:10px!important;
+  text-align:left!important;
+}
+body.tj-desktop-v2 .tj-inspector-toolgrid button:hover{
+  background:rgba(35,55,99,.70)!important;
+  border-color:rgba(102,174,251,.30)!important;
+}
+body.tj-desktop-v2 .tj-inspector-section:has(.tj-inspector-toolgrid){
+  grid-column:1/-1!important;
+}
+body.tj-desktop-v2 .tj-inspector-shortcuts{
+  grid-column:1/-1!important;
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:7px 12px!important;
+  min-height:40px!important;
+  margin:1px 0 0!important;
+  padding:9px 10px!important;
+  border-top:1px solid rgba(130,158,217,.10)!important;
+  color:#7485a6!important;
+  font-size:8.5px!important;
+}
+body.tj-desktop-v2 .tj-inspector-shortcuts span{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+}
+body.tj-desktop-v2 .tj-inspector-shortcuts kbd{
+  min-width:20px!important;
+  height:19px!important;
+  display:inline-grid!important;
+  place-items:center!important;
+  padding:0 5px!important;
+  border-radius:5px!important;
+  border:1px solid rgba(132,159,216,.14)!important;
+  background:rgba(255,255,255,.035)!important;
+  color:#93a2c0!important;
+  font-size:7.5px!important;
+}
+
+/* When the inspector is open, the workspace reflows instead of being squeezed. */
+body.tj-inspector-open #tjOverviewView>.tj-kpi-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+}
+body.tj-inspector-open #tjOverviewView .tj-overview-main{
+  grid-template-columns:1fr!important;
+  grid-template-areas:"activity" "summary" "actions"!important;
+}
+body.tj-inspector-open #tjOverviewView .tj-overview-summary{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+}
+body.tj-inspector-open #tjOverviewView .tj-overview-summary>.tj-panel-head{
+  grid-column:1/-1!important;
+}
+
+/* ========================================================================== 
+   RESPONSIVE
+   ========================================================================== */
+@media(max-width:1460px){
+  :root{--tj-inspector-open-width:380px}
+  body.tj-desktop-v2 .tj-topbar{grid-template-columns:minmax(220px,280px) minmax(300px,1fr) auto!important;gap:12px!important}
+  body.tj-desktop-v2 .tj-top-actions{gap:6px!important}
+  #tjOverviewView .tj-overview-main{grid-template-columns:minmax(0,1.2fr) minmax(320px,.8fr)!important}
+}
+@media(max-width:1280px){
+  body.tj-desktop-v2 .tj-topbar{grid-template-columns:minmax(200px,250px) minmax(260px,1fr) auto!important}
+  body.tj-desktop-v2 .tj-top-button span{display:none!important}
+  #tjOverviewView>.tj-kpi-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #tjOverviewView .tj-overview-main{grid-template-columns:1fr!important;grid-template-areas:"activity" "summary" "actions"!important}
+  #tjOverviewView .tj-overview-summary{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #tjOverviewView .tj-overview-summary>.tj-panel-head{grid-column:1/-1!important}
+}
+@media(max-width:1040px){
+  :root{--tj-inspector-open-width:350px}
+  #tjOverviewView .tj-activity-list{grid-template-columns:1fr!important}
+  #tjOverviewView .tj-activity-row:last-child{grid-column:auto!important}
+  #tjOverviewView .tj-overview-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.tj-desktop-v2 .tj-inspector-scroll{grid-template-columns:1fr!important}
+  body.tj-desktop-v2 #tjInspectorSnapshot,
+  body.tj-desktop-v2 .tj-inspector-section:has(.tj-inspector-toolgrid),
+  body.tj-desktop-v2 .tj-inspector-shortcuts{grid-column:1!important}
+  body.tj-desktop-v2 .tj-inspector-metrics{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:820px){
+  #tjOverviewView>.tj-kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #tjOverviewView .tj-overview-summary{grid-template-columns:1fr!important}
+  #tjOverviewView .tj-overview-actions{grid-template-columns:1fr!important}
+}
