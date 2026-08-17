@@ -1,0 +1,368 @@
+/* Trading Journal Desktop 2.1.23 — Backtesting simulations premium
+   Presentation only. Preserves V206 simulation controls, results and handlers. */
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-page-v223{
+  gap:22px!important;
+  padding-bottom:20px!important;
+}
+
+/* --------------------------------------------------------------------------
+   LAB HEADER — clear workflow before the tools
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:24px!important;
+  min-height:112px!important;
+  padding:21px 24px!important;
+  margin:0!important;
+  border:1px solid rgba(129,163,230,.16)!important;
+  border-radius:19px!important;
+  background:
+    radial-gradient(circle at 94% 18%,rgba(104,87,255,.09),transparent 32%),
+    radial-gradient(circle at 2% 100%,rgba(48,183,235,.055),transparent 28%),
+    linear-gradient(180deg,rgba(19,34,67,.91),rgba(10,23,47,.95))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 16px 36px rgba(0,0,0,.10)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223 .tj-bt-sims-intro-copy{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  gap:5px!important;
+  min-width:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223 .tj-bt-trades-eyebrow{
+  margin:0 0 2px!important;
+  color:#8da1c9!important;
+  font-size:8.7px!important;
+  font-weight:800!important;
+  letter-spacing:.15em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223 .tj-bt-sims-title{
+  font-size:18px!important;
+  line-height:1.16!important;
+  letter-spacing:-.018em!important;
+  color:#f5f8ff!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223 .tj-bt-trades-sub{
+  max-width:760px!important;
+  margin-top:2px!important;
+  color:#a3b2ce!important;
+  font-size:10.5px!important;
+  line-height:1.52!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-v223{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  flex-wrap:wrap!important;
+  gap:7px!important;
+  max-width:430px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-chip-v223{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:7px!important;
+  min-height:33px!important;
+  padding:6px 10px 6px 7px!important;
+  border:1px solid rgba(124,159,225,.14)!important;
+  border-radius:999px!important;
+  background:rgba(255,255,255,.025)!important;
+  color:#b6c4dd!important;
+  font-size:9.4px!important;
+  font-weight:720!important;
+  white-space:nowrap!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-chip-v223 b{
+  display:grid!important;
+  place-items:center!important;
+  width:21px!important;
+  height:21px!important;
+  border-radius:999px!important;
+  background:linear-gradient(135deg,rgba(64,190,240,.18),rgba(117,90,255,.20))!important;
+  border:1px solid rgba(88,191,244,.20)!important;
+  color:#7dddfd!important;
+  font-size:8.3px!important;
+  font-weight:850!important;
+}
+
+/* --------------------------------------------------------------------------
+   TOOL GRID — generous spacing and purposeful hierarchy
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid-v223{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.58fr) minmax(400px,.78fr)!important;
+  grid-template-areas:
+    "mc dsr"
+    "wf wf"!important;
+  gap:22px!important;
+  align-items:start!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard.tj-bt-sim-card-v223{grid-area:mc!important}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard.tj-bt-sim-card-v223{grid-area:dsr!important}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard.tj-bt-sim-card-v223{grid-area:wf!important}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223{
+  position:relative!important;
+  min-width:0!important;
+  min-height:272px!important;
+  padding:20px 20px 18px!important;
+  overflow:hidden!important;
+  border:1px solid rgba(126,160,228,.17)!important;
+  border-radius:19px!important;
+  background:
+    radial-gradient(circle at 92% 0,rgba(88,87,240,.055),transparent 30%),
+    linear-gradient(180deg,rgba(20,35,69,.94),rgba(10,23,48,.96))!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03),0 16px 34px rgba(0,0,0,.11)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223::before{
+  content:""!important;
+  position:absolute!important;
+  inset:0 auto auto 20px!important;
+  width:58px!important;
+  height:2px!important;
+  border-radius:999px!important;
+  background:linear-gradient(90deg,#59d5ff,#867dff)!important;
+  opacity:.90!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard.tj-bt-sim-card-v223{
+  min-height:258px!important;
+}
+
+/* --------------------------------------------------------------------------
+   CARD HEADERS — title first, help secondary
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-head-v223{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:14px!important;
+  min-height:38px!important;
+  margin:0!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-head-v223 h2{
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  color:#f4f7ff!important;
+  font-size:14.8px!important;
+  font-weight:830!important;
+  line-height:1.18!important;
+  letter-spacing:-.012em!important;
+  text-wrap:balance!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .tj-bt-sim-head-v223 h2{
+  max-width:330px!important;
+  font-size:13.7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-head-v223 button{
+  min-height:34px!important;
+  height:34px!important;
+  padding:0 11px!important;
+  flex:0 0 auto!important;
+  border-radius:10px!important;
+  border-color:rgba(126,158,221,.15)!important;
+  background:rgba(22,40,78,.70)!important;
+  color:#b9c6dd!important;
+  box-shadow:none!important;
+  font-size:9.5px!important;
+  font-weight:720!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-head-v223 button:hover{
+  border-color:rgba(76,194,247,.28)!important;
+  background:rgba(38,70,128,.32)!important;
+  color:#f2f6ff!important;
+}
+
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-meta-v223{
+  display:flex!important;
+  align-items:center!important;
+  gap:9px!important;
+  min-width:0!important;
+  margin:8px 0 17px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-step-v223{
+  flex:0 0 auto!important;
+  min-height:24px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  padding:0 8px!important;
+  border-radius:999px!important;
+  border:1px solid rgba(86,194,241,.18)!important;
+  background:rgba(48,172,220,.07)!important;
+  color:#70d8fb!important;
+  font-size:7.8px!important;
+  font-weight:830!important;
+  letter-spacing:.09em!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-subtitle-v223{
+  min-width:0!important;
+  color:#91a2c0!important;
+  font-size:9.7px!important;
+  line-height:1.38!important;
+}
+
+/* --------------------------------------------------------------------------
+   PARAMETER CONSOLES — larger controls, cleaner rhythm
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223{
+  display:grid!important;
+  align-items:end!important;
+  gap:14px!important;
+  margin:0!important;
+  padding:16px 17px!important;
+  border:1px solid rgba(126,157,219,.11)!important;
+  border-radius:14px!important;
+  background:rgba(5,15,35,.46)!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.014)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btMcCard .tj-bt-sim-controls-v223{
+  grid-template-columns:minmax(135px,1.05fr) minmax(140px,1fr) minmax(150px,1fr) auto!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btDsrCard .tj-bt-sim-controls-v223{
+  grid-template-columns:minmax(180px,1fr) auto!important;
+}
+body[data-workspace="backtesting"] #viewBacktest #btWfCard .tj-bt-sim-controls-v223{
+  grid-template-columns:repeat(3,minmax(150px,1fr)) auto!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 label,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 .field{
+  min-width:0!important;
+  gap:7px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 label>span:first-child,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 .label{
+  color:#98a8c4!important;
+  font-size:8.6px!important;
+  font-weight:790!important;
+  letter-spacing:.055em!important;
+  line-height:1.2!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 input,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 select{
+  min-height:42px!important;
+  height:42px!important;
+  padding:0 12px!important;
+  border-radius:10px!important;
+  border-color:rgba(123,155,219,.18)!important;
+  background:rgba(5,16,37,.88)!important;
+  color:#eef4ff!important;
+  font-size:10.7px!important;
+  font-weight:650!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.018)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 input:focus,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 select:focus{
+  border-color:rgba(87,201,248,.42)!important;
+  box-shadow:0 0 0 2px rgba(73,178,245,.08)!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223>button,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 .btn.primary{
+  min-width:94px!important;
+  min-height:42px!important;
+  height:42px!important;
+  padding:0 15px!important;
+  border-radius:11px!important;
+  font-size:10.5px!important;
+  font-weight:800!important;
+  box-shadow:0 9px 20px rgba(82,166,238,.15)!important;
+}
+
+/* --------------------------------------------------------------------------
+   EXPLANATION STRIPS — readable, not glued to the form
+   -------------------------------------------------------------------------- */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-note-v223,
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223>.mc-empty{
+  min-height:48px!important;
+  margin:14px 0 0!important;
+  padding:11px 13px!important;
+  display:flex!important;
+  align-items:center!important;
+  border:1px solid rgba(126,156,217,.09)!important;
+  border-radius:12px!important;
+  background:rgba(255,255,255,.018)!important;
+  color:#92a3c0!important;
+  font-size:9.2px!important;
+  line-height:1.48!important;
+}
+
+/* Keep result sections controlled by V206; only style them when they exist. */
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223 .mc-stats{
+  gap:10px!important;
+  margin-top:16px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223 .mc-stats>.stat{
+  min-height:88px!important;
+  padding:13px!important;
+  border-radius:12px!important;
+}
+body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223 .chart-box{
+  margin-top:16px!important;
+  border-radius:14px!important;
+}
+
+/* --------------------------------------------------------------------------
+   RESPONSIVE — based on actual Backtesting width
+   -------------------------------------------------------------------------- */
+@container tj-backtest (max-width:1180px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-grid-v223{
+    grid-template-columns:1fr!important;
+    grid-template-areas:"mc" "dsr" "wf"!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223{
+    grid-template-columns:1fr!important;
+    gap:14px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-v223{
+    justify-content:flex-start!important;
+    max-width:none!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btDsrCard .tj-bt-sim-head-v223 h2{
+    max-width:none!important;
+  }
+}
+
+@container tj-backtest (max-width:900px){
+  body[data-workspace="backtesting"] #viewBacktest #btMcCard .tj-bt-sim-controls-v223,
+  body[data-workspace="backtesting"] #viewBacktest #btWfCard .tj-bt-sim-controls-v223{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btDsrCard .tj-bt-sim-controls-v223{
+    grid-template-columns:1fr auto!important;
+  }
+}
+
+@container tj-backtest (max-width:620px){
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-hero-v223{
+    padding:17px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-v223{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    width:100%!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sims-flow-chip-v223{
+    width:100%!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-card-v223{
+    padding:17px!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-head-v223{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-meta-v223{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest #btMcCard .tj-bt-sim-controls-v223,
+  body[data-workspace="backtesting"] #viewBacktest #btDsrCard .tj-bt-sim-controls-v223,
+  body[data-workspace="backtesting"] #viewBacktest #btWfCard .tj-bt-sim-controls-v223{
+    grid-template-columns:1fr!important;
+  }
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223>button,
+  body[data-workspace="backtesting"] #viewBacktest .tj-bt-sim-controls-v223 .btn.primary{
+    width:100%!important;
+  }
+}
