@@ -36,6 +36,7 @@ assert(output.includes('./ui/backtest-layout-v217.css'), 'Desktop 2.1.17 Backtes
 assert(output.includes('./ui/backtest-polish-v218.css'), 'Desktop 2.1.18 Backtesting polish is missing.');
 assert(output.includes('./ui/backtest-calendar-v219.css'), 'Desktop 2.1.19 calendar-first Backtesting layer is missing.');
 assert(output.includes('./ui/scan-premium-v220.css'), 'Desktop 2.1.20 Scan TA premium layer is missing.');
+assert(output.includes('./ui/scan-guide-hotfix-v221.css'), 'Desktop 2.1.21 Scan TA guide hotfix is missing.');
 assert(output.includes('./ui/backtest-state-guard.css'), 'Desktop 2.1.16 Backtesting state guard is missing.');
 assert(output.includes('./ui/workspace-routing-fix.css'), 'Desktop 2.1.13 workspace routing guard is missing.');
 assert(output.indexOf('./ui/layout-v215.css') < output.indexOf('./ui/update-center.css'), 'Update center styles must load after the 2.1.5 polish layer.');
@@ -50,7 +51,8 @@ assert(output.indexOf('./ui/backtest-premium.css') < output.indexOf('./ui/backte
 assert(output.indexOf('./ui/backtest-layout-v217.css') < output.indexOf('./ui/backtest-polish-v218.css'), 'Backtesting 2.1.18 polish must override the 2.1.17 layout layer.');
 assert(output.indexOf('./ui/backtest-polish-v218.css') < output.indexOf('./ui/backtest-calendar-v219.css'), 'Backtesting 2.1.19 calendar-first layer must override 2.1.18 polish.');
 assert(output.indexOf('./ui/backtest-calendar-v219.css') < output.indexOf('./ui/scan-premium-v220.css'), 'Scan TA 2.1.20 must load after the Backtesting page-specific layers.');
-assert(output.indexOf('./ui/scan-premium-v220.css') < output.indexOf('./ui/backtest-state-guard.css'), 'State guards must remain after the Scan TA presentation layer.');
+assert(output.indexOf('./ui/scan-premium-v220.css') < output.indexOf('./ui/scan-guide-hotfix-v221.css'), 'Scan guide 2.1.21 hotfix must override the Scan TA premium layer.');
+assert(output.indexOf('./ui/scan-guide-hotfix-v221.css') < output.indexOf('./ui/backtest-state-guard.css'), 'State guards must remain after the Scan guide hotfix.');
 assert(output.indexOf('./ui/backtest-state-guard.css') < output.indexOf('./ui/workspace-routing-fix.css'), 'Workspace visibility guard must remain the final stylesheet.');
 assert(output.includes('requestIdleCallback(deferred,{timeout:900})'), 'Deferred startup block is missing.');
 assert(output.includes('// Un seul cycle de rendu'), 'Single-render boot marker is missing.');
