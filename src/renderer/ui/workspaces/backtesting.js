@@ -42,14 +42,34 @@ export function enhanceBacktesting(){
   const table=tbody?.closest('.tablecard')||null;
   const pagination=$('#btPagination',main);
 
-  if(stats) overview.appendChild(stats);
   const dashboard=el('div','tj-bt-dashboard-grid');
   const dashMain=el('div','tj-bt-dashboard-main');
   const dashSide=el('div','tj-bt-dashboard-side');
+
+  // 2.1.22: the six diagnostics belong to the analytical canvas, not above it.
+  if(stats){
+    stats.classList.add('tj-bt-kpi-strip');
+    dashboard.appendChild(stats);
+  }
+
   if(chart) dashMain.appendChild(chart);
-  if(comment) dashSide.appendChild(comment);
+  if(comment){
+    comment.classList.add('tj-bt-note-card','is-compact');
+    const noteToggle=el('button','tj-bt-note-toggle',{type:'button',text:'Agrandir la note'});
+    noteToggle.setAttribute('aria-expanded','false');
+    noteToggle.addEventListener('click',()=>{
+      const expanded=comment.classList.toggle('is-expanded');
+      comment.classList.toggle('is-compact',!expanded);
+      noteToggle.textContent=expanded?'Réduire la note':'Agrandir la note';
+      noteToggle.setAttribute('aria-expanded',String(expanded));
+      afterPaint(()=>window.dispatchEvent(new Event('resize')));
+    });
+    comment.appendChild(noteToggle);
+    dashSide.appendChild(comment);
+  }
   if(perf) dashSide.appendChild(perf);
-  dashboard.append(dashMain,dashSide); overview.appendChild(dashboard);
+  dashboard.append(dashMain,dashSide);
+  overview.appendChild(dashboard);
 
   const tradesGrid=el('div','tj-bt-trades-grid');
   const tradesLeft=el('aside','tj-bt-trades-left');
