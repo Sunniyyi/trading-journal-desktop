@@ -111,6 +111,7 @@ function injectDesktopStyles(source) {
     '<link rel="stylesheet" href="./ui/backtest-calendar-v219.css">',
     '<link rel="stylesheet" href="./ui/scan-premium-v220.css">',
     '<link rel="stylesheet" href="./ui/scan-guide-hotfix-v221.css">',
+    '<link rel="stylesheet" href="./ui/backtest-overview-v222.css">',
     '<link rel="stylesheet" href="./ui/backtest-state-guard.css">',
     '<link rel="stylesheet" href="./ui/workspace-routing-fix.css">'
   ].join('\n');
