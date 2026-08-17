@@ -12,6 +12,23 @@ function viewButton(label,id,onClick){
   return b;
 }
 
+function decorateSimulationCard(card,{kind,step,subtitle}){
+  if(!card) return;
+  card.classList.add('tj-bt-sim-card-v223',`tj-bt-sim-${kind}`);
+  const head=card.querySelector('.mc-head');
+  if(head){
+    head.classList.add('tj-bt-sim-head-v223');
+    const meta=el('div','tj-bt-sim-meta-v223');
+    meta.append(
+      el('span','tj-bt-sim-step-v223',{text:`ÉTAPE ${step}`}),
+      el('span','tj-bt-sim-subtitle-v223',{text:subtitle})
+    );
+    head.after(meta);
+  }
+  card.querySelector('.mc-params')?.classList.add('tj-bt-sim-controls-v223');
+  card.querySelector('.mc-empty')?.classList.add('tj-bt-sim-note-v223');
+}
+
 export function enhanceBacktesting(){
   const view=$('#viewBacktest');
   if(!view || view.dataset.tjV2==='1') return;
@@ -106,18 +123,44 @@ export function enhanceBacktesting(){
   [back,months,cal,table,pagination].filter(Boolean).forEach(node=>tradesRight.appendChild(node));
   tradesGrid.append(tradesLeft,tradesRight); trades.appendChild(tradesGrid);
 
-  const simsIntro=el('div','tj-bt-sims-intro');
-  simsIntro.append(
-    el('div','tj-bt-sims-intro-copy'),
-    el('span','tj-bt-sims-note',{text:'Monte-Carlo · Robustesse statistique · Validation hors-échantillon'})
-  );
-  const simsCopy=simsIntro.firstElementChild;
-  simsCopy?.append(
+  // 2.1.23: simulations become a guided robustness lab while preserving V206 controls and handlers.
+  sims.classList.add('tj-bt-sims-page-v223');
+  const simsIntro=el('div','tj-bt-sims-intro tj-bt-sims-hero-v223');
+  const simsCopy=el('div','tj-bt-sims-intro-copy');
+  simsCopy.append(
     el('span','tj-bt-trades-eyebrow',{text:'LABORATOIRE DE ROBUSTESSE'}),
     el('strong','tj-bt-sims-title',{text:'Tester la stratégie au-delà du simple P&L'}),
-    el('span','tj-bt-trades-sub',{text:'Commence par Monte-Carlo, vérifie ensuite la significativité avec PSR/DSR, puis termine par Walk-Forward.'})
+    el('span','tj-bt-trades-sub',{text:'Trois validations complémentaires : distribution du risque, significativité statistique, puis comportement hors-échantillon.'})
   );
-  const simsGrid=el('div','tj-bt-sims-grid');
+  const simsFlow=el('div','tj-bt-sims-flow-v223',{role:'list','aria-label':'Ordre recommandé des simulations'});
+  [
+    ['01','Monte-Carlo'],
+    ['02','PSR / DSR'],
+    ['03','Walk-Forward']
+  ].forEach(([n,label])=>{
+    const chip=el('span','tj-bt-sims-flow-chip-v223',{role:'listitem'});
+    chip.append(el('b','',{text:n}),el('span','',{text:label}));
+    simsFlow.appendChild(chip);
+  });
+  simsIntro.append(simsCopy,simsFlow);
+
+  decorateSimulationCard(mc,{
+    kind:'mc',
+    step:'01',
+    subtitle:'Stress-teste l’ordre des trades et la dispersion des trajectoires possibles.'
+  });
+  decorateSimulationCard(dsr,{
+    kind:'dsr',
+    step:'02',
+    subtitle:'Mesure la crédibilité statistique du Sharpe en tenant compte des variantes testées.'
+  });
+  decorateSimulationCard(wf,{
+    kind:'wf',
+    step:'03',
+    subtitle:'Vérifie si la stratégie conserve sa qualité sur des fenêtres hors-échantillon.'
+  });
+
+  const simsGrid=el('div','tj-bt-sims-grid tj-bt-sims-grid-v223');
   [mc,dsr,wf].filter(Boolean).forEach(node=>simsGrid.appendChild(node));
   sims.append(simsIntro,simsGrid);
 
