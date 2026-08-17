@@ -1,0 +1,33 @@
+/* Trading Journal Desktop 2.1.21 — Scan TA capture guide hotfix
+   The native <details> state remains authoritative; this layer makes
+   visibility explicit so Electron/global CSS cannot leave the tutorial hidden. */
+
+body[data-workspace="scan"] #viewScan.tj-scan-premium .tj-scan-guide-details{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  align-self:stretch!important;
+}
+
+body[data-workspace="scan"] #viewScan.tj-scan-premium .tj-scan-guide-details:not([open]) > .scan-capture-guide{
+  display:none!important;
+}
+
+body[data-workspace="scan"] #viewScan.tj-scan-premium .tj-scan-guide-details[open] > .scan-capture-guide{
+  display:block!important;
+  width:100%!important;
+  max-width:none!important;
+  visibility:visible!important;
+  opacity:1!important;
+  height:auto!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+
+body[data-workspace="scan"] #viewScan.tj-scan-premium .tj-scan-guide-details[open]{
+  overflow:visible!important;
+}
+
+body[data-workspace="scan"] #viewScan.tj-scan-premium .tj-scan-guide-details[open] > .tj-scan-guide-summary{
+  border-bottom:1px solid rgba(122,153,215,.13)!important;
+}
